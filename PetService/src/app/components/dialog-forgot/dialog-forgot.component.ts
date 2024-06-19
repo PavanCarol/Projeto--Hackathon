@@ -24,10 +24,10 @@ import { merge } from 'rxjs';
     MatButtonModule,
     MatIconModule,
   ],
-  templateUrl: './dialog-register.component.html',
-  styleUrl: './dialog-register.component.scss',
+  templateUrl: './dialog-forgot.component.html',
+  styleUrl: './dialog-forgot.component.scss',
 })
-export class DialogRegisterComponent {
+export class DialogForgotComponent {
   email = new FormControl('', [Validators.required, Validators.email]);
   hide = true;
   errorMessage = '';

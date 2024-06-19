@@ -12,8 +12,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { merge } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { DialogRegisterComponent } from '../components/dialog-forgot/dialog-register.component';
 import { MatDialog } from '@angular/material/dialog';
+import { DialogForgotComponent } from '../components/dialog-forgot/dialog-forgot.component';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -46,7 +46,7 @@ export class LoginComponent {
     enterAnimationDuration: string,
     exitAnimationDuration: string
   ): void {
-    this.dialog.open(DialogRegisterComponent, {
+    this.dialog.open(DialogForgotComponent, {
       enterAnimationDuration,
       exitAnimationDuration,
     });

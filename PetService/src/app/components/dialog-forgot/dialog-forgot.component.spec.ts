@@ -1,17 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DialogForgotComponent } from './dialog-forgot.component';
 
-import { LoginComponent } from './login.component';
-
-describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
+describe('DialogForgotComponent', () => {
+  let component: DialogForgotComponent;
+  let fixture: ComponentFixture<DialogForgotComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent],
+      imports: [DialogForgotComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(DialogForgotComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
