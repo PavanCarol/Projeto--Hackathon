@@ -1,0 +1,95 @@
+:host {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    position: relative;
+  }
+  .background-img {
+    position: fixed;
+    top: -1px;
+    left: -1px;
+    width: 101%;
+    height: 101%;
+    object-fit: cover;
+    z-index: -2; /* Certifique-se de que a imagem está atrás do conteúdo */
+  }
+  
+  .background-overlay {
+    position: fixed;
+    top: -1px;
+    left: -1px;
+    width: 101%;
+    height: 101%;
+    background-color: rgba(0, 0, 0, 0.6); /* Ajuste o valor alfa para a opacidade desejada */
+    z-index: 0; /* Certifique-se de que o overlay está acima da imagem, mas abaixo do conteúdo */
+  }
+
+  .conteiner{
+    display: flex;
+    z-index: 10;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.vet-image {
+    width: 100%; /* Ajuste conforme necessário */
+    max-width: 300px; /* Ajuste conforme necessário */
+    height: auto;
+    border-radius: 10px; /* Para cantos arredondados */
+  
+  }
+  .image-container {
+    display: flex;
+    align-items: flex-end;
+    z-index: 4;
+    width: 600px;
+    height: 100vh;
+
+    img{
+        height: 82%;
+    }
+  }
+  .forms{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    background-color: #3E8FF5;
+    width: 65vh;
+    height: 90%;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.password{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  column-gap: 20px !important;
+  width: 100%;
+  }
+  .login{
+    width: 80%;
+    color: white;
+    background-color: #6BDA4E;
+    height: 68px;
+    border: none;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+  }
+  .content-btn{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+.logo_brancoFundo{
+    width: 260px;
+}
