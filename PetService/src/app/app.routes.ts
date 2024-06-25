@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './components/dashboard/home/home.component';
+import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { ClinicaComponent } from './clinica/clinica/clinica.component';
 
 export const routes: Routes = [
   {
@@ -15,5 +16,9 @@ export const routes: Routes = [
   {
     path: 'cadastro',
     component: RegisterComponent,
+  },
+  {
+    path: 'clinica',
+    component: ClinicaComponent,
   },
 ];

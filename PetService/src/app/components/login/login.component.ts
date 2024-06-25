@@ -13,7 +13,7 @@ import { merge } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogForgotComponent } from '../components/dialog-forgot/dialog-forgot.component';
+import { DialogForgotComponent } from '../dialog-forgot/dialog-forgot.component';
 @Component({
   selector: 'app-login',
   standalone: true,
