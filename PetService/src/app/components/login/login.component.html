@@ -1,0 +1,58 @@
+<div class="background-overlay"></div>
+<img src="img/clinica-veterinaria.svg" class="background-img" />
+<div class="container">
+  <div class="body">
+    <div class="container-body">
+      <img src="img/logo_brancoFundo.png" style="width: 380px" />
+      <h1 style="color: white; margin: 0px">Login</h1>
+      <div class="input-container">
+        <div class="input">
+          <mat-form-field style="width: 422px !important">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              [formControl]="email"
+              (blur)="updateErrorMessage()"
+              required
+            />
+            @if (email.invalid) {
+            <mat-error>{{ errorMessage }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+        <div class="input">
+          <mat-form-field style="width: 422px !important">
+            <mat-label>Senha*</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'" />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="clickEvent($event)"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide"
+            >
+              <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+        <button type="submit" class="login">
+          Entrar
+          <mat-icon style="height: 22px !important; width: 32px !important"
+            >logout</mat-icon
+          >
+        </button>
+      </div>
+      <div class="links">
+        <a href="/cadastro">Cadastre-se</a>
+        <a (click)="openDialog('300ms', '300ms')">Esqueci Senha</a>
+      </div>
+    </div>
+  </div>
+  <div class="text">
+    <img src="img/Name.svg" class="img-name" />
+    <div class="text-body">
+      Seu Pet Sempre encãotado com nossos serviços!
+      <span>Agendamentos Simples para Consultas, Banho e Tosa!</span>
+    </div>
+  </div>
+</div>

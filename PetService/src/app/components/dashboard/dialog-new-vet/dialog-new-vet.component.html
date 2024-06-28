@@ -1,0 +1,36 @@
+<div class="forms">
+  <h2>Registro Veterinario</h2>
+  <h3>Imagem do Veterinario</h3>
+  <input type="file" style="margin-bottom: 20px" />
+  <div class="forms-together">
+    <mat-form-field>
+      <mat-label>Nome</mat-label>
+      <input matInput [formControl]="name" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Sobrenome </mat-label>
+      <input matInput [formControl]="sobrenome" />
+    </mat-form-field>
+  </div>
+  <mat-form-field style="width: 464px">
+    <mat-label>Data de Nascimento</mat-label>
+    <input matInput [formControl]="date" type="date" />
+  </mat-form-field>
+  <mat-form-field style="width: 464px">
+    <mat-label>Atua há</mat-label>
+    <input matInput [formControl]="tempoAtuacao" type="number" />
+  </mat-form-field>
+  <mat-form-field style="width: 464px">
+    <mat-label>Faculdade</mat-label>
+    <input matInput [formControl]="faculdade" />
+  </mat-form-field>
+  <mat-form-field style="width: 464px">
+    <mat-label>Pós Graduação</mat-label>
+    <input matInput [formControl]="posGratuacao" />
+  </mat-form-field>
+  <div>
+    <button class="btnRegistro">
+      <img src="img/icon/save.svg" />Criar Registro
+    </button>
+  </div>
+</div>

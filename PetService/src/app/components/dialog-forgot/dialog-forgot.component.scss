@@ -1,0 +1,48 @@
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    right: 20px;
+  }
+  
+  .vet-image {
+    width: 100%; /* Ajuste conforme necessário */
+    max-width: 300px; /* Ajuste conforme necessário */
+    height: auto;
+    border-radius: 10px; /* Para cantos arredondados */
+  
+  }
+  .forms{
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    flex-direction: column;
+    width: 530px;
+}
+.password{
+  display: flex;
+  column-gap: 20px !important;
+  width: 100%;
+  }
+  .login{
+    width: 80%;
+    color: white;
+    background-color: #6BDA4E;
+    height: 68px;
+    border: none;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+  }
+  .content-btn{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

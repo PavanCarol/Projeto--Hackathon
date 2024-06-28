@@ -1,0 +1,39 @@
+.forms{
+    padding: 10px;
+    flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.forms-together{
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+
+}
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: var(--mdc-filled-text-field-container-color);
+    width: 122px !important;
+    border-radius: 10px !important;
+    height: 74px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.btnRegistro {
+    padding: 10px;
+    color: black;
+    background-color: #F45F13;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 500;
+    column-gap: 5px;
+
+    img{
+        width: 27px;
+    }
+}
