@@ -20,9 +20,7 @@
             "outputPath": "dist/pet-service",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -31,9 +29,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -61,6 +57,9 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
@@ -78,10 +77,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -90,9 +86,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         }
@@ -115,9 +109,7 @@
             "outputPath": "dist/dialog-register",
             "index": "projects/dialog-register/src/index.html",
             "browser": "projects/dialog-register/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "projects/dialog-register/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -126,9 +118,7 @@
                 "input": "projects/dialog-register/public"
               }
             ],
-            "styles": [
-              "projects/dialog-register/src/styles.scss"
-            ],
+            "styles": ["projects/dialog-register/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -173,10 +163,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "projects/dialog-register/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -185,9 +172,7 @@
                 "input": "projects/dialog-register/public"
               }
             ],
-            "styles": [
-              "projects/dialog-register/src/styles.scss"
-            ],
+            "styles": ["projects/dialog-register/src/styles.scss"],
             "scripts": []
           }
         }

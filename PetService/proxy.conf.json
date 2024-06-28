@@ -1,0 +1,10 @@
+{
+  "/*": {
+    "target": "https://login.microsoftonline.com",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}

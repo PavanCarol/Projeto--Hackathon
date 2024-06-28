@@ -1,30 +1,13 @@
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  FormControl,
-  Validators,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { merge } from 'rxjs';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogForgotComponent } from '../dialog-forgot/dialog-forgot.component';
+import { HttpRequestService } from '../../services/http-request.service';
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
 
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -33,7 +16,8 @@ export class LoginComponent {
   email = new FormControl('', [Validators.required, Validators.email]);
   hide = true;
   errorMessage = '';
-  constructor(public dialog: MatDialog) {
+  constructor(public dialog: MatDialog, private htp: HttpRequestService) {
+    this.htp.getToken();
     merge(this.email.statusChanges, this.email.valueChanges)
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.updateErrorMessage());
