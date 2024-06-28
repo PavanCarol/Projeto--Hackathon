@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <title>Cadastro</title>
+  </head>
+  <body>
+    <div class="background-overlay"></div>
+    <img src="../image/clinica-veterinaria.svg" class="background-img" />
+    <div class="conteiner">
+      <div class="image-container">
+        <img src="../image/vet.png" class="veterinaria" />
+      </div>
+      <div class="forms">
+        <div style="display: flex; align-items: flex-start; width: 100%">
+          <a
+            href="../login/login.html"
+            class="btn-voltar"
+            style="text-decoration: none"
+          >
+            <img src="../image/icon/arrow_back.svg" />
+            Voltar
+          </a>
+        </div>
+        <img src="../image/logos/logo_semFundo.png" class="logo_brancoFundo" />
+        <div
+          style="
+            display: flex;
+            font-size: 40px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white;
+          "
+        >
+          Criar Conta
+        </div>
+        <div class="input-container">
+          <div class="input">
+            <div class="title-Input">Nome Completo*</div>
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                required
+                class="form-control"
+                style="width: 436px"
+              />
+            </div>
+          </div>
+          <div class="input">
+            <div class="title-Input">Email*</div>
+            <div class="input-group mb-3">
+              <input
+                type="email"
+                required
+                class="form-control"
+                style="width: 436px"
+              />
+            </div>
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              column-gap: 20px;
+            "
+          >
+            <div class="input">
+              <div class="title-Input">Senha*</div>
+              <div class="input-group mb-3">
+                <input type="password" id="password" class="form-control" />
+                <div class="input-group-append">
+                  <span class="input-group-text" id="togglePassword">
+                    <img
+                      id="eyeIcon"
+                      src="../image/icon/visibility.svg"
+                      alt="Show/Hide Password"
+                    />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="input">
+              <div class="title-Input">Confirmar Senha*</div>
+              <div class="input-group mb-3">
+                <input type="password" id="password" class="form-control" />
+                <div class="input-group-append">
+                  <span class="input-group-text" id="togglePassword">
+                    <img
+                      id="eyeIcon"
+                      src="../image/icon/visibility.svg"
+                      alt="Show/Hide Password"
+                    />
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="content-btn">
+          <button type="submit" class="cadastro">Cadastrar-se</button>
+        </div>
+      </div>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
