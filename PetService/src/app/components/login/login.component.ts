@@ -17,10 +17,10 @@ export class LoginComponent {
   hide = true;
   errorMessage = '';
   constructor(public dialog: MatDialog, private htp: HttpRequestService) {
-    this.htp.getToken();
-    merge(this.email.statusChanges, this.email.valueChanges)
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => this.updateErrorMessage());
+    // this.htp.getToken();
+    // merge(this.email.statusChanges, this.email.valueChanges)
+    //   .pipe(takeUntilDestroyed())
+    //   .subscribe(() => this.updateErrorMessage());
   }
   clickEvent(event: MouseEvent) {
     this.hide = !this.hide;

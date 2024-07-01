@@ -4,78 +4,106 @@
   <div class="image-container">
     <img src="img/vet.png" class="veterinaria" />
   </div>
-  <div class="forms">
+  <div class="forms" *ngIf="register">
     <div style="display: flex; align-items: flex-start; width: 100%">
       <a href="/" class="btn-voltar" style="text-decoration: none">
         <mat-icon>arrow_back_ios</mat-icon> Voltar
       </a>
     </div>
     <img src="img/logo_brancoFundo.png" class="logo_brancoFundo" />
-    <div
-      style="
-        display: flex;
-        font-size: 40px;
-        font-weight: 600;
-        margin-bottom: 20px;
-        color: white;
-      "
-    >
-      Criar Conta
-    </div>
-    <mat-form-field style="width: 523px">
-      <mat-label>Nome Completo</mat-label>
-      <input matInput />
-    </mat-form-field>
-    <div class="example-container">
-      <mat-form-field style="width: 523px">
-        <mat-label>Enter your email</mat-label>
-        <input
-          matInput
-          placeholder="pat@example.com"
-          [formControl]="email"
-          (blur)="updateErrorMessage()"
-          required
-          class="teste"
-        />
-        @if (email.invalid) {
-        <mat-error>{{ errorMessage }}</mat-error>
-        }
-      </mat-form-field>
-    </div>
-    <div class="password">
-      <div class="container">
-        <mat-form-field>
-          <mat-label>Enter your password</mat-label>
-          <input matInput [type]="hide ? 'password' : 'text'" />
-          <button
-            mat-icon-button
-            matSuffix
-            (click)="clickEvent($event)"
-            [attr.aria-label]="'Hide password'"
-            [attr.aria-pressed]="hide"
-          >
-            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
-          </button>
-        </mat-form-field>
+    <form id="cadastro" [formGroup]="register" (ngSubmit)="cadastrar()">
+      <div
+        style="
+          display: flex;
+          font-size: 40px;
+          font-weight: 600;
+          margin-bottom: 20px;
+          color: white;
+        "
+      >
+        Criar Conta
       </div>
-      <div class="container">
-        <mat-form-field>
-          <mat-label>Enter your password</mat-label>
-          <input matInput [type]="hide ? 'password' : 'text'" />
-          <button
-            mat-icon-button
-            matSuffix
-            (click)="clickEvent($event)"
-            [attr.aria-label]="'Hide password'"
-            [attr.aria-pressed]="hide"
+      <div class="formulario__campo">
+        <div>Nome Completo*</div>
+        <input formControlName="nome" class="campo__escrita" />
+        <div
+          *ngIf="
+            register.get('nome')?.invalid &&
+            (register.get('nome')?.touched || register.get('nome')?.dirty)
+          "
+        >
+          <span
+            class="erro_texto"
+            *ngIf="register.get('nome')?.errors?.['required']"
+            >*Campo Obrigatorio.</span
           >
-            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
-          </button>
-        </mat-form-field>
+        </div>
       </div>
-    </div>
-    <div class="content-btn">
-      <button type="submit" class="cadastro">Cadastrar-se</button>
-    </div>
+      <div class="formulario__campo">
+        <div>Email*</div>
+        <input formControlName="email" class="campo__escrita" />
+        <div
+          *ngIf="
+            register.get('email')?.invalid &&
+            (register.get('email')?.touched || register.get('email')?.dirty)
+          "
+        >
+          <span
+            class="erro_texto"
+            *ngIf="register.get('email')?.errors?.['required']"
+            >*Campo Obrigatorio.</span
+          >
+        </div>
+      </div>
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          column-gap: 10px;
+        "
+      >
+        <div class="formulario__campo">
+          <div>Senha*</div>
+          <input
+            formControlName="senha"
+            class="campo__escrita"
+            type="password"
+          />
+
+          <div
+            *ngIf="
+              register.get('senha')?.invalid &&
+              (register.get('senha')?.touched || register.get('senha')?.dirty)
+            "
+          >
+            <span
+              class="erro_texto"
+              *ngIf="register.get('senha')?.errors?.['required']"
+              >*Campo Obrigatorio.</span
+            >
+          </div>
+        </div>
+        <div class="formulario__campo">
+          <div>Confirme sua senha*</div>
+          <input
+            formControlName="confirmSenha"
+            class="campo__escrita"
+            type="password"
+          />
+          <div
+            *ngIf="
+              register.get('confirmSenha')?.touched ||
+              register.get('confirmSenha')?.dirty
+            "
+          >
+            <span class="erro_texto">As senhas não correspondem.</span>
+          </div>
+        </div>
+      </div>
+      <div class="content-btn">
+        <button type="submit" class="cadastro">Cadastrar-se</button>
+      </div>
+    </form>
   </div>
 </div>
