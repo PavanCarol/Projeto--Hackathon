@@ -59,16 +59,17 @@
         style="
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: space-between;
           column-gap: 10px;
+          width: 377px;
         "
       >
         <div class="formulario__campo">
           <div>Senha*</div>
           <input
             formControlName="senha"
-            class="campo__escrita"
             type="password"
+            style="border: none; padding: 10px; border-radius: 5px"
           />
 
           <div
@@ -88,20 +89,17 @@
           <div>Confirme sua senha*</div>
           <input
             formControlName="confirmSenha"
-            class="campo__escrita"
             type="password"
+            style="border: none; padding: 10px; border-radius: 5px"
           />
           <div
-            *ngIf="
-              register.get('confirmSenha')?.touched ||
-              register.get('confirmSenha')?.dirty
-            "
+            *ngIf="register.errors?.['passwordsMismatch'] && (register.get('confirmSenha')?.touched || register.get('confirmSenha')?.dirty)"
           >
             <span class="erro_texto">As senhas não correspondem.</span>
           </div>
         </div>
       </div>
-      <div class="content-btn">
+      <div class="content-btn" style="margin-top: 20px">
         <button type="submit" class="cadastro">Cadastrar-se</button>
       </div>
     </form>

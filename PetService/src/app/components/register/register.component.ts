@@ -18,6 +18,7 @@ import { routes } from '../../app.routes';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpRequestService } from '../../services/http-request.service';
+import { passwordMatchValidator } from '../../../password-match.validator';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -35,12 +36,15 @@ import { HttpRequestService } from '../../services/http-request.service';
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent implements OnInit {
-  register = this.formBuilder.group({
-    nome: ['', [Validators.required, Validators.minLength(2)]],
-    email: ['', [Validators.required, Validators.email]],
-    senha: ['', [Validators.required]],
-    confirmSenha: ['', [Validators.required]],
-  });
+  register = this.formBuilder.group(
+    {
+      nome: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      senha: ['', [Validators.required]],
+      confirmSenha: ['', [Validators.required]],
+    },
+    { validators: passwordMatchValidator }
+  );
 
   errorMessage: string = '';
   hide = true;
@@ -57,7 +61,6 @@ export class RegisterComponent implements OnInit {
   }
 
   cadastrar() {
-    console.log('oi');
     // if (this.register.valid) {
     this.httpService.request('/cadastro').subscribe(
       (response) => {

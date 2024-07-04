@@ -22,5 +22,33 @@
       <a href="configuration">CONFIGURAÇÃO</a>
     </div>
   </div>
-  <div class="body"></div>
+  <div class="body">
+    <div class="all-body">
+      <div class="header-body">
+        <button class="text-number">(11)XXXXX-XXXX</button>
+      </div>
+      <div>
+        <div class="header-chat">
+          <img src="img/icon/user.png" class="imgUser" />
+          <div class="informacoesUser">
+            <p>Nome</p>
+            <p>telefone</p>
+          </div>
+        </div>
+        <p id="status"></p>
+
+        <div id="historic">
+          <div *ngFor="let response of chatResponses">
+            <p>{{ response }}</p>
+          </div>
+        </div>
+        <div class="footer">
+          <input type="text" class="input-Enviar" id="message-input" />
+          <button class="btnEnviar" id="btn-submit" (click)="sendMessage()">
+            <img src="img/icon/play.png" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

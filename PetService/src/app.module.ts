@@ -16,6 +16,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 
 import { LoginComponent } from './app/components/login/login.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent],
@@ -29,6 +30,7 @@ import { LoginComponent } from './app/components/login/login.component';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
+    CommonModule,
   ],
   bootstrap: [AppComponent],
   providers: [provideHttpClient(withInterceptorsFromDi())],

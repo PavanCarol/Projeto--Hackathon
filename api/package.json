@@ -4,13 +4,14 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "json-server": "^1.0.0-beta.1",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "openai": "^4.52.3"
   },
   "name": "api",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node teste.js"
   },
   "author": "Carol",
   "license": "ISC",
