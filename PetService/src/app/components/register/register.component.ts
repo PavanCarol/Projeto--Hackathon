@@ -19,6 +19,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpRequestService } from '../../services/http-request.service';
 import { passwordMatchValidator } from '../../../password-match.validator';
+import { DialogSucessComponent } from '../../dialog/dialog-sucess/dialog-sucess.component';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -52,29 +54,33 @@ export class RegisterComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private httpService: HttpRequestService
+    private httpService: HttpRequestService,
+    private dialog: MatDialog
   ) {}
   ngOnInit(): void {}
+
   clickEvent(event: MouseEvent) {
     this.hide = !this.hide;
     event.stopPropagation();
   }
 
   cadastrar() {
-    // if (this.register.valid) {
-    this.httpService.request('/cadastro').subscribe(
-      (response) => {
-        if (response.sucesso) {
-          // this.router.navigate(['/']);
-          console.log('foi');
-        } else {
-          console.log(response.mensagem);
+    if (this.register.valid) {
+      const formData = this.register.value;
+      this.httpService.register(formData).subscribe(
+        (response) => {
+          if (response.sucesso) {
+            // this.router.navigate(['/']);
+           console.log('foi');
+           this.dialog.open(DialogSucessComponent);
+          } else {
+            console.log(response.mensagem);
+          }
+        },
+        (error) => {
+          console.error(error);
         }
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-    // }
+      );
+    }
   }
 }

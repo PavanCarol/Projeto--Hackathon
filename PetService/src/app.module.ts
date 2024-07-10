@@ -15,11 +15,10 @@ import {
 
 import { MatIconModule } from '@angular/material/icon';
 
-import { LoginComponent } from './app/components/login/login.component';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),

@@ -6,11 +6,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class HttpRequestService {
+  private apiUrl = 'http://localhost:3301/api'; // URL base do backend
   constructor(private http: HttpClient) {}
 
-  request(apiUrl: string): Observable<any> {
-    const body = {};
+  register(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/cadastro`, data); // Envia os dados para a rota /cadastro
+  }
 
-    return this.http.post(`http://localhost:3300/api${apiUrl}`, body);
+  login(loginData: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, loginData);
   }
 }

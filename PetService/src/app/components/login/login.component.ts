@@ -1,27 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, Validators } from '@angular/forms';
-
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { merge } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogForgotComponent } from '../dialog-forgot/dialog-forgot.component';
 import { HttpRequestService } from '../../services/http-request.service';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { DialogErrorComponent } from '../../dialog/dialog-error/dialog-error.component';
 @Component({
   selector: 'app-login',
-
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    CommonModule,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
-  email = new FormControl('', [Validators.required, Validators.email]);
+export class LoginComponent implements OnInit{
+  loginForm = this.formBuilder.group({
+    email: ['', [Validators.required, Validators.email]],
+    senha: ['', Validators.required]
+  });
   hide = true;
-  errorMessage = '';
-  constructor(public dialog: MatDialog, private htp: HttpRequestService) {
-    // this.htp.getToken();
-    // merge(this.email.statusChanges, this.email.valueChanges)
-    //   .pipe(takeUntilDestroyed())
-    //   .subscribe(() => this.updateErrorMessage());
+  errorMessage:string = '';
+  constructor(
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private http: HttpClient,
+    private httpService: HttpRequestService,
+    private dialog: MatDialog
+  ) {
+   
   }
+  ngOnInit(): void {}
   clickEvent(event: MouseEvent) {
     this.hide = !this.hide;
     event.stopPropagation();
@@ -35,14 +60,23 @@ export class LoginComponent {
       exitAnimationDuration,
     });
   }
-
-  updateErrorMessage() {
-    if (this.email.hasError('required')) {
-      this.errorMessage = 'Campo obrigatorio*';
-    } else if (this.email.hasError('email')) {
-      this.errorMessage = 'Email não é valido*';
-    } else {
-      this.errorMessage = '';
+  onSubmit(): void {
+    if (this.loginForm.valid) {
+      const loginData = this.loginForm.value;
+      this.httpService.login(loginData).subscribe(
+        (response) => {
+          if (response.sucesso) {  // Acesse 'sucesso' conforme a estrutura da resposta do servidor
+            console.log('foi');
+            this.router.navigate(['/home']); // Navega para a página inicial ou outra rota
+          } else {
+            console.error('Credenciais inválidas');
+            this.dialog.open(DialogErrorComponent);
+          }
+        }, 
+        (error) => {
+          console.error('Erro ao fazer login', error);
+        }
+      );
     }
   }
 }
