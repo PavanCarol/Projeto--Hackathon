@@ -2,10 +2,10 @@ const express = require("express");
 const body = require("body-parser");
 const cors = require("cors");
 const app = express();
-const port = 3300;
+const port = 3301;
 
-app.use(cors());
 app.use(body.json());
+app.use(cors());
 
 // Função para obter o token de autenticação
 async function getAuthToken() {
@@ -51,9 +51,75 @@ app.post("/api/getToken", async (req, res) => {
 // Rota de cadastro que usa o token de autenticação
 app.post("/api/cadastro", async (req, res) => {
   try {
+    const { nome, email, senha } = req.body; // Obtém os dados do corpo da solicitação
     const token = await getAuthToken(); // Obtém o token de autenticação
-    const url =
-      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/accounts?$select=emailaddress1,name,cra6a_senha";
+    
+    // URL para criar um novo registro
+    const url = "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/accounts";
+
+    // Dados a serem enviados
+    const data = {
+      name: nome,
+      emailaddress1: email,
+      cra6a_senha: senha
+    };
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        "Accept": "application/json",
+        "Authorization": `Bearer ${token}`, // Inclui o token de autenticação
+      },
+      body: JSON.stringify(data) // Envia os dados no corpo da solicitação
+    });
+
+    console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
+
+    if (response.status === 204) {
+      // Resposta 204 não tem corpo, então apenas confirme o sucesso
+      res.status(201).json({
+        sucesso: true,
+        mensagem: "Cadastro realizado com sucesso!",
+      });
+    } else {
+      // Para outras respostas, tente processar o corpo como JSON
+      const responseBody = await response.text(); // Obtém o corpo da resposta como texto
+      console.log(`Corpo da Resposta: ${responseBody}`); // Adiciona log para o corpo da resposta
+
+      if (response.ok) {
+        // Se a resposta for bem-sucedida, mas não for 204, faz o parse do corpo como JSON
+        const responseData = JSON.parse(responseBody); // Faz o parse do corpo da resposta
+        res.status(201).json({
+          sucesso: true,
+          mensagem: "Cadastro realizado com sucesso!",
+          data: responseData, // Inclui os dados retornados na resposta
+        });
+      } else {
+        // Se a resposta não for bem-sucedida, lance um erro
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+    }
+  } catch (error) {
+    console.error("Erro:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao cadastrar.",
+      error: error.message,
+    });
+  }
+});
+
+// Rota de login que usa o token de autenticação
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, senha } = req.body; // Obtém os dados do corpo da solicitação
+    const token = await getAuthToken(); // Obtém o token de autenticação
+
+    // URL para consultar registros de conta
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/accounts?$filter=emailaddress1 eq '${email}' and cra6a_senha eq '${senha}'`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -61,29 +127,39 @@ app.post("/api/cadastro", async (req, res) => {
         "OData-MaxVersion": "4.0",
         "OData-Version": "4.0",
         "Content-Type": "application/json; charset=utf-8",
-        Accept: "application/json",
-        Prefer: "odata.include-annotations=*",
-        Authorization: `Bearer ${token}`, // Inclui o token de autenticação
+        "Accept": "application/json",
+        "Authorization": `Bearer ${token}`, // Inclui o token de autenticação
       },
     });
-    console.log(response);
 
-    if (!response.ok) {
+    console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
+
+    if (response.status === 200) {
+      const data = await response.json();
+      console.log(`Corpo da Resposta: ${JSON.stringify(data)}`); // Adiciona log para o corpo da resposta
+
+      if (data.value.length > 0) {
+        // Se há registros encontrados, as credenciais são válidas
+        res.status(200).json({
+          sucesso: true,
+          mensagem: "Login bem-sucedido!",
+        });
+      } else {
+        // Se não há registros encontrados, as credenciais são inválidas
+        res.status(401).json({
+          sucesso: false,
+          mensagem: "Credenciais inválidas",
+        });
+      }
+    } else {
+      // Para outras respostas, lance um erro
       throw new Error("Network response was not ok " + response.statusText);
     }
-
-    const data = await response.json();
-
-    res.status(201).json({
-      sucesso: true,
-      mensagem: "foi!",
-      data: data, // Inclui os dados retornados na resposta
-    });
   } catch (error) {
     console.error("Erro:", error);
     res.status(500).json({
       sucesso: false,
-      mensagem: "Erro ao cadastrar.",
+      mensagem: "Erro ao fazer login.",
       error: error.message,
     });
   }
