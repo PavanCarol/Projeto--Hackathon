@@ -1,36 +1,81 @@
-<div class="forms">
-  <h2>Registro Veterinario</h2>
-  <h3>Imagem do Veterinario</h3>
-  <input type="file" style="margin-bottom: 20px" />
-  <div class="forms-together">
-    <mat-form-field>
-      <mat-label>Nome</mat-label>
-      <input matInput [formControl]="name" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Sobrenome </mat-label>
-      <input matInput [formControl]="sobrenome" />
-    </mat-form-field>
-  </div>
-  <mat-form-field style="width: 464px">
-    <mat-label>Data de Nascimento</mat-label>
-    <input matInput [formControl]="date" type="date" />
-  </mat-form-field>
-  <mat-form-field style="width: 464px">
-    <mat-label>Atua há</mat-label>
-    <input matInput [formControl]="tempoAtuacao" type="number" />
-  </mat-form-field>
-  <mat-form-field style="width: 464px">
-    <mat-label>Faculdade</mat-label>
-    <input matInput [formControl]="faculdade" />
-  </mat-form-field>
-  <mat-form-field style="width: 464px">
-    <mat-label>Pós Graduação</mat-label>
-    <input matInput [formControl]="posGratuacao" />
-  </mat-form-field>
-  <div>
-    <button class="btnRegistro">
-      <img src="img/icon/save.svg" />Criar Registro
-    </button>
-  </div>
+<div class="forms" *ngIf="clinica">
+  <h2>Registro clinica</h2>
+  <form id="clinica" [formGroup]="clinica" (ngSubmit)="cadastrarVeterinario()">
+    <h3>Imagem do Veterinario</h3>
+    <input type="file" formControlName="imagem" />
+
+    <div class="formulario__campo">
+      <div>Nome Completo*</div>
+      <input formControlName="nome" class="campo__escrita" />
+      <div
+        *ngIf="
+          clinica.get('nome')?.invalid &&
+          (clinica.get('nome')?.touched || clinica.get('nome')?.dirty)
+        "
+      >
+        <span
+          class="erro_texto"
+          *ngIf="clinica.get('nome')?.errors?.['required']"
+          >*Campo Obrigatorio.</span
+        >
+      </div>
+    </div>
+    <div class="formulario__campo">
+      <div>Data de Nascimento*</div>
+      <input formControlName="date" class="campo__escrita" />
+      <div
+        *ngIf="
+          clinica.get('date')?.invalid &&
+          (clinica.get('date')?.touched || clinica.get('date')?.dirty)
+        "
+      >
+        <span
+          class="erro_texto"
+          *ngIf="clinica.get('date')?.errors?.['required']"
+          >*Campo Obrigatorio.</span
+        >
+      </div>
+    </div>
+    <div class="formulario__campo">
+      <div>Atua há*</div>
+      <input formControlName="tempoAtuacao" class="campo__escrita" type="number" />
+      <div
+        *ngIf="
+          clinica.get('tempoAtuacao')?.invalid &&
+          (clinica.get('tempoAtuacao')?.touched || clinica.get('tempoAtuacao')?.dirty)
+        "
+      >
+        <span
+          class="erro_texto"
+          *ngIf="clinica.get('tempoAtuacao')?.errors?.['required']"
+          >*Campo Obrigatorio.</span
+        >
+      </div>
+    </div>
+    <div class="formulario__campo">
+      <div>Faculdade*</div>
+      <input formControlName="faculdade" class="campo__escrita" />
+      <div
+        *ngIf="
+          clinica.get('faculdade')?.invalid &&
+          (clinica.get('faculdade')?.touched || clinica.get('faculdade')?.dirty)
+        "
+      >
+        <span
+          class="erro_texto"
+          *ngIf="clinica.get('faculdade')?.errors?.['required']"
+          >*Campo Obrigatorio.</span
+        >
+      </div>
+    </div>
+    <div class="formulario__campo">
+      <div>Pós Graduação</div>
+      <input formControlName="posGratuacao" class="campo__escrita" />
+    </div>
+    <div>
+      <button class="btnRegistro">
+        <img src="img/icon/save.svg" />Criar Registro
+      </button>
+    </div>
+  </form>
 </div>

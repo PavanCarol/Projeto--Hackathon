@@ -1,5 +1,5 @@
 .forms{
-    padding: 10px;
+    padding: 20px 38px;
     flex-direction: column;
     display: flex;
     flex-direction: column;
@@ -32,8 +32,23 @@
     font-size: 17px;
     font-weight: 500;
     column-gap: 5px;
+    margin-top: 10px;
 
     img{
         width: 27px;
     }
 }
+.campo__escrita{
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+    width: 358px;
+  }
+  #clinica{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .erro_texto{
+    color: red;
+  }

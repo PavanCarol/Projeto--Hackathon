@@ -165,6 +165,73 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+app.post("/api/clinica", async (req, res) => {
+  try {
+    const { nome,date,tempoAtuacao,faculdade,posGratuacao,imagem } = req.body; // Obtém os dados do corpo da solicitação
+    const token = await getAuthToken(); // Obtém o token de autenticação
+    
+    // URL para criar um novo registro
+    const url = "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
+
+    // Dados a serem enviados
+    const data = {
+      cra6a_nomeveterinario: nome,
+      cra6a_imagemveterinario: imagem,
+      cra6a_anoatuacao: tempoAtuacao,
+      cra6a_datanascimento: date,
+      cra6a_faculdade:faculdade,
+      cra6a_posgraduacao:posGratuacao
+    };
+
+    const response = await fetch(url, {
+      method: "POST",
+    headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        "Accept": "application/json",
+        "Prefer": "odata.include-annotations=*",
+        "Authorization": `Bearer ${token}`,
+    },
+      body: JSON.stringify(data) // Envia os dados no corpo da solicitação
+    });
+
+    console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
+
+    if (response.status === 204) {
+      // Resposta 204 não tem corpo, então apenas confirme o sucesso
+      res.status(201).json({
+        sucesso: true,
+        mensagem: "Cadastro realizado com sucesso!",
+      });
+    } else {
+      // Para outras respostas, tente processar o corpo como JSON
+      const responseBody = await response.text(); // Obtém o corpo da resposta como texto
+      console.log(`Corpo da Resposta: ${responseBody}`); // Adiciona log para o corpo da resposta
+
+      if (response.ok) {
+        // Se a resposta for bem-sucedida, mas não for 204, faz o parse do corpo como JSON
+        const responseData = JSON.parse(responseBody); // Faz o parse do corpo da resposta
+        res.status(201).json({
+          sucesso: true,
+          mensagem: "Cadastro realizado com sucesso!",
+          data: responseData, // Inclui os dados retornados na resposta
+        });
+      } else {
+        // Se a resposta não for bem-sucedida, lance um erro
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+    }
+  } catch (error) {
+    console.error("Erro:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao cadastrar.",
+      error: error.message,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

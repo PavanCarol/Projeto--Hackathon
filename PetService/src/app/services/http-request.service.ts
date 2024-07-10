@@ -12,6 +12,13 @@ export class HttpRequestService {
   register(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/cadastro`, data); // Envia os dados para a rota /cadastro
   }
+  clinica(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/clinica`, data); // Envia os dados para a rota /cadastro
+  }
+
+  Pergunta(data: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/perguntas`, data);
+  }
 
   login(loginData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, loginData);
