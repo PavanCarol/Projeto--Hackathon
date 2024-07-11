@@ -53,7 +53,7 @@ app.post("/api/cadastro", async (req, res) => {
   try {
     const { nome, email, senha } = req.body; // Obtém os dados do corpo da solicitação
     const token = await getAuthToken(); // Obtém o token de autenticação
-    
+
     // URL para criar um novo registro
     const url = "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/accounts";
 
@@ -61,7 +61,7 @@ app.post("/api/cadastro", async (req, res) => {
     const data = {
       name: nome,
       emailaddress1: email,
-      cra6a_senha: senha
+      cra6a_senha: senha,
     };
 
     const response = await fetch(url, {
@@ -70,15 +70,15 @@ app.post("/api/cadastro", async (req, res) => {
         "OData-MaxVersion": "4.0",
         "OData-Version": "4.0",
         "Content-Type": "application/json; charset=utf-8",
-        "Accept": "application/json",
-        "Authorization": `Bearer ${token}`, // Inclui o token de autenticação
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`, // Inclui o token de autenticação
       },
-      body: JSON.stringify(data) // Envia os dados no corpo da solicitação
+      body: JSON.stringify(data), // Envia os dados no corpo da solicitação
     });
 
     console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
 
-    if (response.status === 204) {
+    if (response.status == 204) {
       // Resposta 204 não tem corpo, então apenas confirme o sucesso
       res.status(201).json({
         sucesso: true,
@@ -127,8 +127,8 @@ app.post("/api/login", async (req, res) => {
         "OData-MaxVersion": "4.0",
         "OData-Version": "4.0",
         "Content-Type": "application/json; charset=utf-8",
-        "Accept": "application/json",
-        "Authorization": `Bearer ${token}`, // Inclui o token de autenticação
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`, // Inclui o token de autenticação
       },
     });
 
@@ -167,33 +167,34 @@ app.post("/api/login", async (req, res) => {
 
 app.post("/api/clinica", async (req, res) => {
   try {
-    const { nome,date,tempoAtuacao,faculdade,posGratuacao,imagem } = req.body; // Obtém os dados do corpo da solicitação
+    const { nome, date, tempoAtuacao, faculdade, posGratuacao, imagem } =
+      req.body; // Obtém os dados do corpo da solicitação
     const token = await getAuthToken(); // Obtém o token de autenticação
-    
+
     // URL para criar um novo registro
-    const url = "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
+    const url =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
 
     // Dados a serem enviados
-    const data = {
+    const record = {
       cra6a_nomeveterinario: nome,
-      cra6a_imagemveterinario: imagem,
+      cra6a_imagemveterinario_url: imagem,
       cra6a_anoatuacao: tempoAtuacao,
       cra6a_datanascimento: date,
-      cra6a_faculdade:faculdade,
-      cra6a_posgraduacao:posGratuacao
+      cra6a_faculdade: faculdade,
+      cra6a_posgraduacao: posGratuacao,
     };
 
     const response = await fetch(url, {
       method: "POST",
-    headers: {
+      headers: {
         "OData-MaxVersion": "4.0",
         "OData-Version": "4.0",
         "Content-Type": "application/json; charset=utf-8",
-        "Accept": "application/json",
-        "Prefer": "odata.include-annotations=*",
-        "Authorization": `Bearer ${token}`,
-    },
-      body: JSON.stringify(data) // Envia os dados no corpo da solicitação
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(record),
     });
 
     console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
@@ -202,7 +203,7 @@ app.post("/api/clinica", async (req, res) => {
       // Resposta 204 não tem corpo, então apenas confirme o sucesso
       res.status(201).json({
         sucesso: true,
-        mensagem: "Cadastro realizado com sucesso!",
+        mensagem: "Cadastro na Clinica com sucesso",
       });
     } else {
       // Para outras respostas, tente processar o corpo como JSON

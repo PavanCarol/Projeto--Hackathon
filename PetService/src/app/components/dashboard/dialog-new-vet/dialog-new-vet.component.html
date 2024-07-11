@@ -22,7 +22,7 @@
     </div>
     <div class="formulario__campo">
       <div>Data de Nascimento*</div>
-      <input formControlName="date" class="campo__escrita" />
+      <input formControlName="date" class="campo__escrita" type="date" />
       <div
         *ngIf="
           clinica.get('date')?.invalid &&
@@ -38,11 +38,16 @@
     </div>
     <div class="formulario__campo">
       <div>Atua há*</div>
-      <input formControlName="tempoAtuacao" class="campo__escrita" type="number" />
+      <input
+        formControlName="tempoAtuacao"
+        class="campo__escrita"
+        type="number"
+      />
       <div
         *ngIf="
           clinica.get('tempoAtuacao')?.invalid &&
-          (clinica.get('tempoAtuacao')?.touched || clinica.get('tempoAtuacao')?.dirty)
+          (clinica.get('tempoAtuacao')?.touched ||
+            clinica.get('tempoAtuacao')?.dirty)
         "
       >
         <span
