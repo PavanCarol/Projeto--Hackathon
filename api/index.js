@@ -173,16 +173,16 @@ app.post("/api/clinica", async (req, res) => {
 
     // URL para criar um novo registro
     const url =
-      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/positions";
 
     // Dados a serem enviados
     const record = {
-      cra6a_nomeveterinario: nome,
-      cra6a_imagemveterinario_url: imagem,
+      name: nome,
+      cra6a_imagemveterinario: imagem,
       cra6a_anoatuacao: tempoAtuacao,
-      cra6a_datanascimento: date,
+      cra6a_datadenascimento: new Date(date).toISOString(),
       cra6a_faculdade: faculdade,
-      cra6a_posgraduacao: posGratuacao,
+      cra6a_graduacao: posGratuacao,
     };
 
     const response = await fetch(url, {
@@ -191,10 +191,11 @@ app.post("/api/clinica", async (req, res) => {
         "OData-MaxVersion": "4.0",
         "OData-Version": "4.0",
         "Content-Type": "application/json; charset=utf-8",
-        Accept: "application/json",
+        "Accept": "application/json",
+        "Prefer": "odata.include-annotations=*",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(record),
+      body: JSON.stringify(record)
     });
 
     console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta

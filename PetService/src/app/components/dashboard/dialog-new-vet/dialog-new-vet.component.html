@@ -22,7 +22,7 @@
     </div>
     <div class="formulario__campo">
       <div>Data de Nascimento*</div>
-      <input formControlName="date" class="campo__escrita" type="date" />
+      <input formControlName="date" class="campo__escrita" />
       <div
         *ngIf="
           clinica.get('date')?.invalid &&
@@ -41,7 +41,6 @@
       <input
         formControlName="tempoAtuacao"
         class="campo__escrita"
-        type="number"
       />
       <div
         *ngIf="
