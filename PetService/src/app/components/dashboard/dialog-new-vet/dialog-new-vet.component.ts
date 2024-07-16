@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -14,6 +13,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { HttpRequestService } from '../../../services/http-request.service';
 import { CommonModule } from '@angular/common';
+import { DialogCreateNewVeterinarioComponent } from '../../../dialog/dialog-create-new-veterinario/dialog-create-new-veterinario.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dialog-new-vet',
@@ -32,32 +33,43 @@ import { CommonModule } from '@angular/common';
   styleUrl: './dialog-new-vet.component.scss',
 })
 export class DialogNewVetComponent {
-  clinica = this.formBuilder.group(
-    {
-      nome: ['', [Validators.required, Validators.minLength(2)]],
-      date: ['', [Validators.required]],
-      tempoAtuacao: ['', [Validators.required]],
-      faculdade: ['', [Validators.required]],
-      posGratuacao: [''],
-      imagem:[''],
-    },
-  );
+  imageBase64: string = '';
+  clinica = this.formBuilder.group({
+    nome: ['', [Validators.required, Validators.minLength(2)]],
+    date: ['', [Validators.required]],
+    tempoAtuacao: ['', [Validators.required]],
+    faculdade: ['', [Validators.required]],
+    posGratuacao: [''],
+    imagem: [''],
+  });
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private httpService: HttpRequestService,
+    private dialog: MatDialog
   ) {}
   ngOnInit(): void {}
- 
 
-  cadastrarVeterinario(){
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imageBase64 = reader.result as string;
+        this.clinica.patchValue({ imagem: this.imageBase64 });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  cadastrarVeterinario() {
     if (this.clinica.valid) {
       const formData = this.clinica.value;
       this.httpService.clinica(formData).subscribe(
         (response) => {
           if (response.sucesso) {
-            // this.router.navigate(['/']);
-           console.log('foi');
+            console.log('foi');
+            this.dialog.open(DialogCreateNewVeterinarioComponent);
           } else {
             console.log(response.mensagem);
           }

@@ -167,23 +167,22 @@ app.post("/api/login", async (req, res) => {
 
 app.post("/api/clinica", async (req, res) => {
   try {
-    const { nome, date, tempoAtuacao, faculdade, posGratuacao, imagem } =
+    const { nome, tempoAtuacao, faculdade, posGratuacao, imagem, date } =
       req.body; // Obtém os dados do corpo da solicitação
     const token = await getAuthToken(); // Obtém o token de autenticação
 
     // URL para criar um novo registro
     const url =
-      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/positions";
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
 
     // Dados a serem enviados
-    const record = {
-      name: nome,
-      cra6a_imagemveterinario: imagem,
-      cra6a_anoatuacao: tempoAtuacao,
-      cra6a_datadenascimento: new Date(date).toISOString(),
-      cra6a_faculdade: faculdade,
-      cra6a_graduacao: posGratuacao,
-    };
+    var record = {};
+    record.cra6a_nomeveterinario = nome; // Text
+    record.cra6a_anoatuacao = tempoAtuacao; // Whole Number
+    record.cra6a_datanascimento = date;
+    record.cra6a_faculdade = faculdade; // Text
+    record.cra6a_imagemveterinario = imagem.split(",")[1];
+    record.cra6a_posgraduacao = posGratuacao; // Text
 
     const response = await fetch(url, {
       method: "POST",
@@ -191,16 +190,16 @@ app.post("/api/clinica", async (req, res) => {
         "OData-MaxVersion": "4.0",
         "OData-Version": "4.0",
         "Content-Type": "application/json; charset=utf-8",
-        "Accept": "application/json",
-        "Prefer": "odata.include-annotations=*",
+        Accept: "application/json",
+        Prefer: "odata.include-annotations=*",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(record)
+      body: JSON.stringify(record),
     });
 
-    console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
+    console.log(`Status da Resposta: ${response.status}`);
 
-    if (response.status === 204) {
+    if (response.status == 204) {
       // Resposta 204 não tem corpo, então apenas confirme o sucesso
       res.status(201).json({
         sucesso: true,

@@ -1,0 +1,55 @@
+:host {
+    display: block;
+    padding: 16px;
+  }
+  
+  .mat-dialog-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3f51b5; // Altere para a cor que você preferir
+  }
+  
+  .mat-dialog-content {
+    font-size: 16px;
+    margin-top: 16px;
+  }
+  
+  .mat-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+  }
+  .btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .divP{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  p{
+    margin: 5px 0px;
+    
+  }
+  button {
+    background-color: #8EE266; // Cor de fundo do botão
+    color: white; // Cor do texto do botão
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .divGif{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      .img{
+        width: 100px;
+    }
+  }
