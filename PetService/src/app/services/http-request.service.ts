@@ -15,7 +15,9 @@ export class HttpRequestService {
   clinica(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/clinica`, data); // Envia os dados para a rota /cadastro
   }
-
+  getClinicas(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getClinica`); // Faz uma solicitação GET para a rota /getClinica
+  }
   Pergunta(data: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/perguntas`, data);
   }

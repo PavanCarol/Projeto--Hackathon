@@ -31,7 +31,7 @@ export class ClinicaComponent implements OnInit {
   ngOnInit(): void {
     this.httpService.getClinicas().subscribe(
       (data) => {
-        this.clinicas = data.value; // Supondo que os dados vêm em um array 'value'
+        this.clinicas = data.value; // Verifique se os dados retornados têm essa estrutura
       },
       (error) => {
         console.error('Erro ao buscar dados das clínicas', error);
@@ -41,7 +41,6 @@ export class ClinicaComponent implements OnInit {
   get transformStyle() {
     return `translateX(-${this.currentIndex * 100}%)`;
   }
-
   nextSlide() {
     if (this.currentIndex < this.clinicas.length - 1) {
       this.currentIndex++;

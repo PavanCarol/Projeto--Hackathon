@@ -232,7 +232,40 @@ app.post("/api/clinica", async (req, res) => {
     });
   }
 });
+app.get("/api/getClinica", async (req, res) => {
+  try {
+    const token = await getAuthToken(); // Obtém o token de autenticação
 
+    // URL para consultar todos os registros de clínica
+    const url =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`, // Inclui o token de autenticação
+      },
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      res.status(200).json(data);
+    } else {
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Erro:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao buscar dados da clínica.",
+      error: error.message,
+    });
+  }
+});
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
