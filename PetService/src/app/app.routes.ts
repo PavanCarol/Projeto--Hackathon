@@ -5,6 +5,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { MensagemComponent } from './components/dashboard/mensagem/mensagem.component';
 import { ConfiguracaoComponent } from './components/dashboard/configuracao/configuracao.component';
 import { ClinicaComponent } from './components/dashboard/ClinicaVeterinaria/clinica/clinica.component';
+import { InformationVetComponent } from './components/dashboard/ClinicaVeterinaria/information-vet/information-vet.component';
 
 export const routes: Routes = [
   {
@@ -28,7 +29,11 @@ export const routes: Routes = [
     component: MensagemComponent,
   },
   {
-    path: 'configuration',
+    path: 'configuracao',
     component: ConfiguracaoComponent,
+  },
+  {
+    path: 'InformacaoVet',
+    component: InformationVetComponent,
   },
 ];

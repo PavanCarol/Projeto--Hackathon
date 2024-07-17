@@ -50,16 +50,30 @@ export class DialogNewVetComponent {
   ) {}
   ngOnInit(): void {}
 
-  onFileChange(event: Event) {
+  onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+
+      // Verifica o tamanho do arquivo (exemplo: 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        alert('O arquivo é muito grande. O tamanho máximo permitido é 5MB.');
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = () => {
         this.imageBase64 = reader.result as string;
+        console.log('Base64 da imagem:', this.imageBase64); // Log para verificar o conteúdo da imagem
         this.clinica.patchValue({ imagem: this.imageBase64 });
       };
+      reader.onerror = (error) => {
+        console.error('Erro ao ler o arquivo:', error);
+      };
       reader.readAsDataURL(file);
+    } else {
+      console.error('Nenhum arquivo foi selecionado.');
     }
   }
   cadastrarVeterinario() {

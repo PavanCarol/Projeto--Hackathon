@@ -7,7 +7,7 @@
       <a href="clinica">CLÍNICA</a>
       <a href="mensagem" style="height: 25px"> MENSAGENS </a>
       <a
-        href="configuration"
+        href="configuracao"
         style="
           background-color: white;
           font-weight: 600;
@@ -25,54 +25,107 @@
     <div class="header-body">
       <h2>Configuração do Bot</h2>
     </div>
-      <div style="padding: 10px; display: flex; flex-direction: column;">
-        <div style="display: flex; align-items:flex-start; flex-direction: column; justify-content: flex-start; margin: 0px 40px;">
-          <h3 
-          >Nome do Bot:</h3>
-            <input type="text">
-        </div>
+    <div style="padding: 10px; display: flex; flex-direction: column">
+      <div
+        style="
+          display: flex;
+          align-items: flex-start;
+          flex-direction: column;
+          justify-content: flex-start;
+          margin: 0px 40px;
+        "
+      >
+        <h3>Nome do Bot:</h3>
+        <input type="text" />
       </div>
-      <div style="padding: 10px; display: flex; align-items: center; justify-content:space-between;">
-        <div style="display: flex; align-items:flex-start; flex-direction: column; justify-content: flex-start; margin: 0px 40px;">
-          <h3 
-          >Horario de Abertura:</h3>
-            <input type="time">
-        </div>
-        <div style="display: flex; align-items:flex-start; flex-direction: column; justify-content: flex-start; margin: 0px 40px;">
-          <h3 
-          >Horario de Fechamento:</h3>
-            <input type="time">
+    </div>
+    <div
+      style="
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      "
+    >
+      <div
+        style="
+          display: flex;
+          align-items: flex-start;
+          flex-direction: column;
+          justify-content: flex-start;
+          margin: 0px 40px;
+        "
+      >
+        <h3>Horario de Abertura:</h3>
+        <input type="time" />
       </div>
+      <div
+        style="
+          display: flex;
+          align-items: flex-start;
+          flex-direction: column;
+          justify-content: flex-start;
+          margin: 0px 40px;
+        "
+      >
+        <h3>Horario de Fechamento:</h3>
+        <input type="time" />
       </div>
-      <div style="padding: 10px; display: flex; flex-direction: column;">
-        <div style="display: flex; align-items:flex-start; flex-direction: column; justify-content: flex-start; margin: 0px 40px;">
-          <button (click)="toggleInput()" class="btnFazerpergunta">Fazer uma Pergunta Frequente</button>
-            
-          <form id="pergunta" (ngSubmit)="Pergunta()">
-          <div *ngIf="showInput" class="showInput">
+    </div>
+    <div style="padding: 10px; display: flex; flex-direction: column">
+      <div
+        style="
+          display: flex;
+          align-items: flex-start;
+          flex-direction: column;
+          justify-content: flex-start;
+          margin: 0px 40px;
+        "
+      >
+        <button (click)="toggleInput()" class="btnFazerpergunta">
+          Fazer uma Pergunta Frequente
+        </button>
 
-            <div style="display: flex; flex-direction: column;">
+        <form id="pergunta" (ngSubmit)="Pergunta()">
+          <div *ngIf="showInput" class="showInput">
+            <div style="display: flex; flex-direction: column">
               <h3>Titulo</h3>
-              <input type="text" style="width: 300px !important;border: none;" formControlName="titulo">
+              <input
+                type="text"
+                style="width: 300px !important; border: none"
+                formControlName="titulo"
+              />
             </div>
-            <div style="display: flex; flex-direction: column; width: 100%; ">
+            <div style="display: flex; flex-direction: column; width: 100%">
               <h3>Pergunta</h3>
-              <input type="text" style="width: 98% !important; border: none;" formControlName="pergunta">
+              <input
+                type="text"
+                style="width: 98% !important; border: none"
+                formControlName="pergunta"
+              />
             </div>
-            <div style="display: flex; margin: 10px 0px; column-gap: 20px;">
-              <button class="btnCriarPergunta" type="submit" >Criar pergunta</button>
-              <button class="btnCancelar" *ngIf="showInput" (click)="toggleInput()">Cancelar</button>
+            <div style="display: flex; margin: 10px 0px; column-gap: 20px">
+              <button class="btnCriarPergunta" type="submit">
+                Criar pergunta
+              </button>
+              <button
+                class="btnCancelar"
+                *ngIf="showInput"
+                (click)="toggleInput()"
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </form>
-        </div>
-        <div class="selectPerguntas">
-          <div class="divPerguntas">
-            <h3 style="margin: 0px;">Titulo da pergunta</h3>
+      </div>
+      <div class="selectPerguntas">
+        <div class="divPerguntas">
+          <h3 style="margin: 0px">Titulo da pergunta</h3>
 
-            aqui vai estar as perguntas
-          </div>
+          aqui vai estar as perguntas
         </div>
       </div>
     </div>
+  </div>
 </div>
