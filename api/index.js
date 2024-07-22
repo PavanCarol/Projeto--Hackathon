@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 const port = 3301;
 
-app.use(body.json());
+app.use(body.json({ limit: "10mb" }));
 app.use(cors());
 
 // Função para obter o token de autenticação
@@ -167,8 +167,14 @@ app.post("/api/login", async (req, res) => {
 
 app.post("/api/clinica", async (req, res) => {
   try {
-    const { nome, tempoAtuacao, faculdade, posGratuacao, imagem, date } =
-      req.body; // Obtém os dados do corpo da solicitação
+    const {
+      nome,
+      tempoAtuacao,
+      faculdade,
+      posGratuacao,
+      imagemBase64: imagem,
+      date,
+    } = req.body; // Obtém os dados do corpo da solicitação
     const token = await getAuthToken(); // Obtém o token de autenticação
 
     // URL para criar um novo registro

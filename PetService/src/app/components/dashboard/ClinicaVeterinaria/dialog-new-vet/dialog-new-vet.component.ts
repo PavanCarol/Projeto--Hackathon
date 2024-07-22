@@ -41,6 +41,7 @@ export class DialogNewVetComponent {
     faculdade: ['', [Validators.required]],
     posGratuacao: [''],
     imagem: [''],
+    imagemBase64: [''], // Adicione esta linha
   });
   constructor(
     private formBuilder: FormBuilder,
@@ -66,7 +67,7 @@ export class DialogNewVetComponent {
       reader.onload = () => {
         this.imageBase64 = reader.result as string;
         console.log('Base64 da imagem:', this.imageBase64); // Log para verificar o conteúdo da imagem
-        this.clinica.patchValue({ imagem: this.imageBase64 });
+        this.clinica.patchValue({ imagemBase64: this.imageBase64 });
       };
       reader.onerror = (error) => {
         console.error('Erro ao ler o arquivo:', error);
@@ -76,9 +77,11 @@ export class DialogNewVetComponent {
       console.error('Nenhum arquivo foi selecionado.');
     }
   }
+
   cadastrarVeterinario() {
     if (this.clinica.valid) {
       const formData = this.clinica.value;
+      console.table(formData);
       this.httpService.clinica(formData).subscribe(
         (response) => {
           if (response.sucesso) {

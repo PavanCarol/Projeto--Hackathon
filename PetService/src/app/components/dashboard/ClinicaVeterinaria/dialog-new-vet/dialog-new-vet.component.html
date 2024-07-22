@@ -3,7 +3,7 @@
   <form id="clinica" [formGroup]="clinica" (ngSubmit)="cadastrarVeterinario()">
     <div class="formulario__campo" style="width: 100%">
       <div style="margin: 10px 0px; margin-bottom: 5px">
-        Imagem do Veterinario
+        Imagem do Veterinário
       </div>
       <input
         formControlName="imagem"
@@ -12,6 +12,7 @@
         (change)="onFileChange($event)"
       />
     </div>
+    <input formControlName="imagemBase64" type="hidden" />
 
     <div class="formulario__campo">
       <div style="margin: 10px 0px; margin-bottom: 5px">Nome Completo*</div>
