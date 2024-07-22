@@ -72,10 +72,10 @@
 }
 
 .carousel {
-      margin: 0px 52px;
-    display: flex;
-    flex-direction: row;
-    transition: transform 0.5s ease-in-out;
+  margin: 0px 60px;
+  display: flex;
+  flex-direction: row;
+  transition: transform 0.5s ease-in-out;
   }
   
   .carousel-track {
@@ -84,7 +84,7 @@
   }
   
   .carousel-item{
-    min-width: 53%;
+    min-width: 47%;
     box-sizing: border-box;
 }
   
@@ -101,8 +101,10 @@
   
   .prev {
     left: 10px;
+    margin: 5px;
   }
   
   .next {
     right: 10px;
+    margin: 5px;
   }

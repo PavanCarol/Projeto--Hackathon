@@ -31,7 +31,12 @@
       <div *ngIf="clinicas.length > 0" class="carousel-container">
         <div class="carousel">
           <div class="carousel-track" [style.transform]="transformStyle">
-            <div class="carousel-item" *ngFor="let clinica of clinicas">
+            <div
+              class="carousel-item"
+              *ngFor="let clinica of clinicas; let i = index"
+              [attr.data-index]="i"
+              (click)="scrollToElement(i)"
+            >
               <a href="InformacaoVet">
                 <img
                   [src]="

@@ -28,6 +28,7 @@ export class ClinicaComponent implements OnInit {
       exitAnimationDuration,
     });
   }
+
   ngOnInit(): void {
     this.httpService.getClinicas().subscribe(
       (data) => {
@@ -38,9 +39,18 @@ export class ClinicaComponent implements OnInit {
       }
     );
   }
+
+  scrollToElement(index: number) {
+    const targetElement = document.querySelector(`[data-index='${index}']`);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   get transformStyle() {
     return `translateX(-${this.currentIndex * 100}%)`;
   }
+
   nextSlide() {
     if (this.currentIndex < this.clinicas.length - 1) {
       this.currentIndex++;
