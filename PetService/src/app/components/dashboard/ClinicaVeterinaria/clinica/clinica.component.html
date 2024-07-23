@@ -1,7 +1,6 @@
 <div class="conteiner">
   <div class="menu">
     <img src="img/logo_brancoFundo.png" class="logo_brancoFundo" />
-
     <div class="menu-a">
       <a href="home" style="height: 25px">CALENDÁRIO</a>
       <a
@@ -15,17 +14,28 @@
           justify-content: center;
           color: black;
         "
-        >CLÍNICA</a
       >
+        CLÍNICA
+      </a>
       <a href="mensagem">MENSAGENS</a>
       <a href="configuracao">CONFIGURAÇÃO</a>
     </div>
   </div>
   <div class="body">
-    <div class="hearder-vet">
-      <a (click)="openDialog('300ms', '300ms')" class="btnCreateVet"
-        ><img src="img/icon/mais.png"
+    <div class="header">
+      <div class="headerMenu">
+        <div class="name">Olá, Name</div>
+      </div>
+      <a href="home" style="display: flex; align-items: center">
+        <img src="img/icon/home.svg"
       /></a>
+      <a href="clinica" class="AClinica">Clínica</a> -
+      <a href="InformacaoVet" class="AInformacao">Informações do Veterinário</a>
+    </div>
+    <div class="hearder-vet">
+      <a (click)="openDialog('300ms', '300ms')" class="btnCreateVet">
+        + Criar novo Veterinário
+      </a>
     </div>
     <div class="allVet">
       <div *ngIf="clinicas.length > 0" class="carousel-container">
@@ -33,11 +43,11 @@
           <div class="carousel-track" [style.transform]="transformStyle">
             <div
               class="carousel-item"
-              *ngFor="let clinica of clinicas; let i = index"
-              [attr.data-index]="i"
-              (click)="scrollToElement(i)"
+              *ngFor="let clinica of clinicas"
+              [attr.data-id]="clinica.cra6a_clinicaid"
+              (click)="goToInformationVet(clinica.cra6a_clinicaid)"
             >
-              <a href="InformacaoVet">
+              <a>
                 <img
                   [src]="
                     'data:image/png;base64,' + clinica.cra6a_imagemveterinario
@@ -68,7 +78,7 @@
           <td>Alberto</td>
           <td>15:55</td>
           <td>03/06/2024</td>
-          <td>Dr(a).Leticia</td>
+          <td>Dr(a). Leticia</td>
           <td><button></button></td>
         </tr>
       </table>

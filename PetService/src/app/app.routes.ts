@@ -33,7 +33,7 @@ export const routes: Routes = [
     component: ConfiguracaoComponent,
   },
   {
-    path: 'InformacaoVet',
+    path: 'InformacaoVet/:id',
     component: InformationVetComponent,
   },
 ];

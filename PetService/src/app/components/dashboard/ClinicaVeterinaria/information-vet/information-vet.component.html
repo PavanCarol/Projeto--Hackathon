@@ -33,5 +33,13 @@
       <a href="clinica" class="AClinica">Clínica</a> -
       <a href="InformacaoVet" class="AInformacao">Informações do Veterinário</a>
     </div>
+    <div *ngIf="clinica">
+      <h2>{{ clinica.cra6a_nomeveterinario }}</h2>
+      <p>{{ clinica.cra6a_anoatuacao }}</p>
+      <!-- Adicione mais informações conforme necessário -->
+    </div>
+    <div *ngIf="!clinica">
+      <p>Carregando informações da clínica...</p>
+    </div>
   </div>
 </div>

@@ -4,6 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { HttpRequestService } from '../../../../services/http-request.service';
 import { CommonModule } from '@angular/common';
 import { DialogNewVetComponent } from '../dialog-new-vet/dialog-new-vet.component';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-clinica',
   standalone: true,
@@ -14,9 +15,11 @@ import { DialogNewVetComponent } from '../dialog-new-vet/dialog-new-vet.componen
 export class ClinicaComponent implements OnInit {
   clinicas: any[] = [];
   currentIndex = 0;
+
   constructor(
     public dialog: MatDialog,
-    private httpService: HttpRequestService
+    private httpService: HttpRequestService,
+    private router: Router // Adiciona o Router ao construtor
   ) {}
 
   openDialog(
@@ -32,7 +35,7 @@ export class ClinicaComponent implements OnInit {
   ngOnInit(): void {
     this.httpService.getClinicas().subscribe(
       (data) => {
-        this.clinicas = data.value; // Verifique se os dados retornados têm essa estrutura
+        this.clinicas = data.value;
       },
       (error) => {
         console.error('Erro ao buscar dados das clínicas', error);
@@ -40,10 +43,12 @@ export class ClinicaComponent implements OnInit {
     );
   }
 
-  scrollToElement(index: number) {
-    const targetElement = document.querySelector(`[data-index='${index}']`);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  goToInformationVet(clinicaId: string) {
+    console.log('Navigating to InformacaoVet with clinicaId:', clinicaId);
+    if (clinicaId) {
+      this.router.navigate(['/InformacaoVet', clinicaId]);
+    } else {
+      console.error('Invalid clinicaId:', clinicaId);
     }
   }
 
