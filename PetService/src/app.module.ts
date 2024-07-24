@@ -15,12 +15,17 @@ import {
 
 import { MatIconModule } from '@angular/material/icon';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
+import { MenuComponent } from './app/menu/menu.component';
+import { ClinicaComponent } from './app/components/dashboard/ClinicaVeterinaria/clinica/clinica.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+  ],
   imports: [
     BrowserModule,
+    ClinicaComponent,
     RouterModule.forRoot(routes),
     FormsModule,
     ReactiveFormsModule,
@@ -32,6 +37,6 @@ import { CommonModule } from '@angular/common';
     CommonModule,
   ],
   bootstrap: [AppComponent],
-  providers: [provideHttpClient(withInterceptorsFromDi())],
+  providers: [provideHttpClient(withInterceptorsFromDi()), DatePipe],
 })
 export class AppModule {}

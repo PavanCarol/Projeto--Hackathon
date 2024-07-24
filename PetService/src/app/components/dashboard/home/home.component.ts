@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { MenuComponent } from '../../../menu/menu.component';
 document.addEventListener('DOMContentLoaded', function () {
   let calendarEl: HTMLElement = document.getElementById('calendar')!;
 
@@ -14,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [MenuComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

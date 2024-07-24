@@ -1,36 +1,11 @@
-<div class="conteiner">
-  <div class="menu">
-    <img src="img/logo_brancoFundo.png" class="logo_brancoFundo" />
-    <div class="menu-a">
-      <a href="home" style="height: 25px">CALENDÁRIO</a>
-      <a
-        href="clinica"
-        style="
-          background-color: white;
-          font-weight: 600;
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: black;
-        "
-      >
-        CLÍNICA
-      </a>
-      <a href="mensagem">MENSAGENS</a>
-      <a href="configuracao">CONFIGURAÇÃO</a>
-    </div>
-  </div>
+
+<app-menu></app-menu>
   <div class="body">
     <div class="header">
-      <div class="headerMenu">
-        <div class="name">Olá, Name</div>
-      </div>
       <a href="home" style="display: flex; align-items: center">
         <img src="img/icon/home.svg"
       /></a>
-      <a href="clinica" class="AClinica">Clínica</a> -
-      <a href="InformacaoVet" class="AInformacao">Informações do Veterinário</a>
+      <a href="clinica" class="AClinica">Clínica</a> 
     </div>
     <div class="hearder-vet">
       <a (click)="openDialog('300ms', '300ms')" class="btnCreateVet">
@@ -83,5 +58,5 @@
         </tr>
       </table>
     </div>
-  </div>
+  
 </div>

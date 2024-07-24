@@ -1,30 +1,5 @@
-<div class="conteiner">
-  <div class="menu">
-    <img src="img/logo_brancoFundo.png" class="logo_brancoFundo" />
-
-    <div class="menu-a">
-      <a href="home" style="height: 25px">CALENDÁRIO</a>
-      <a
-        href="clinica"
-        style="
-          background-color: white;
-          font-weight: 600;
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: black;
-        "
-        >CLÍNICA</a
-      >
-      <a href="mensagem"> MENSAGENS </a>
-      <a>CONFIGURAÇÃO</a>
-    </div>
-  </div>
+<app-menu></app-menu>
   <div class="body">
-    <div class="headerMenu">
-      <div class="name">Olá, Name</div>
-    </div>
     <h2 style="margin: 10px 5px">Informações do Veterinário</h2>
     <div class="header">
       <a href="home" style="display: flex; align-items: center">
@@ -33,13 +8,62 @@
       <a href="clinica" class="AClinica">Clínica</a> -
       <a href="InformacaoVet" class="AInformacao">Informações do Veterinário</a>
     </div>
-    <div *ngIf="clinica">
-      <h2>{{ clinica.cra6a_nomeveterinario }}</h2>
-      <p>{{ clinica.cra6a_anoatuacao }}</p>
+    <div *ngIf="clinica" class="allInformation"> 
+      <img
+      [src]="
+        'data:image/png;base64,' + clinica.cra6a_imagemveterinario
+      "
+      alt="Imagem do Veterinário"
+    />
+    <div class="informationVeterinario">
+      <h2 style="margin: 0px;">Dr<span  style="font-size: 15px;">
+        (a)
+      </span >
+      :{{ clinica.cra6a_nomeveterinario }}</h2>
+      <p style="margin: 0px;"><span  style="font-weight: 600;">
+        Atuação no mercado: 
+      </span>
+      {{ clinica.cra6a_anoatuacao }} anos</p>
+      <p style="margin: 0px;">
+        <span  style="font-weight: 600;">
+
+          Data de Nascimento: 
+        </span>
+        {{clinica.cra6a_datanascimento| date: 'dd/MM/yyyy'}}</p>
+      <p style="margin: 0px;">
+        <span  style="font-weight: 600;">
+          Faculdade:
+        </span>
+         {{clinica.cra6a_faculdade}}</p>
+      <p style="margin: 0px;"> <span  style="font-weight: 600;">
+
+        Pós-Graduação:
+      </span> 
+       {{clinica.cra6a_posgraduacao}}</p>
+    </div>
       <!-- Adicione mais informações conforme necessário -->
     </div>
     <div *ngIf="!clinica">
       <p>Carregando informações da clínica...</p>
     </div>
+
+    <div style="display: flex; align-items: center; justify-content: center">
+      <table class="consultas">
+        <tr>
+          <td>Nome do Pet</td>
+          <td>Horário</td>
+          <td>Data</td>
+          <td>Dr(a).</td>
+          <td>Status</td>
+        </tr>
+        <tr>
+          <td>Alberto</td>
+          <td>15:55</td>
+          <td>03/06/2024</td>
+          <td>Dr(a). Leticia</td>
+          <td><button></button></td>
+        </tr>
+      </table>
+    </div>
+  
   </div>
-</div>

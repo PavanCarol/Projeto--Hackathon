@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { OpenaiService } from '../../../openai.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MenuComponent } from '../../../menu/menu.component';
 
 @Component({
   selector: 'app-mensagem',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MenuComponent],
   templateUrl: './mensagem.component.html',
   styleUrls: ['./mensagem.component.scss'], // Corrigido o nome do campo
 })

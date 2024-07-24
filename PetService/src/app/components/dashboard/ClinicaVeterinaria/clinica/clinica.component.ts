@@ -5,10 +5,13 @@ import { HttpRequestService } from '../../../../services/http-request.service';
 import { CommonModule } from '@angular/common';
 import { DialogNewVetComponent } from '../dialog-new-vet/dialog-new-vet.component';
 import { Router } from '@angular/router';
+import { MenuComponent } from '../../../../menu/menu.component';
 @Component({
   selector: 'app-clinica',
   standalone: true,
-  imports: [MatTableModule, CommonModule],
+  imports: [MatTableModule, 
+    CommonModule,
+    MenuComponent],
   templateUrl: './clinica.component.html',
   styleUrl: './clinica.component.scss',
 })
