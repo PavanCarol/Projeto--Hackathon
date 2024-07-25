@@ -15,7 +15,7 @@ import {
 
 import { MatIconModule } from '@angular/material/icon';
 
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MenuComponent } from './app/menu/menu.component';
 import { ClinicaComponent } from './app/components/dashboard/ClinicaVeterinaria/clinica/clinica.component';
 
@@ -37,6 +37,6 @@ import { ClinicaComponent } from './app/components/dashboard/ClinicaVeterinaria/
     CommonModule,
   ],
   bootstrap: [AppComponent],
-  providers: [provideHttpClient(withInterceptorsFromDi()), DatePipe],
+  providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class AppModule {}
