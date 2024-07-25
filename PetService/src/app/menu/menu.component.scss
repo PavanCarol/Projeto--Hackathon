@@ -1,41 +1,20 @@
-:host {
-    display: flex;
-    height: 100%;
-  }
-.logo_brancoFundo{
-    width: 224px;
-}
+
+
 .menu{
     background-color: rgba(244, 94, 19, 0.6784313725);
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 250px;
-}
-.menu-a{
-    flex-direction: column;
-    margin-top: 50px;
-    row-gap: 20px;
-    width: 100%;
-    align-items: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    a{
-        font-size: 18px;
-        height: 40px;
-        text-decoration: none;
-        color: black;
-    }
+    height: 100%;
 }
 
-.headerMenu{
-  position: fixed;
-  right: 0px;
-  padding: 20px;
-  
-  .name{
-      margin-right: 25px;
-  }
+img{
+    object-fit: cover;
+    margin-bottom: 10px;
 }
+// .headerMenu{
+//   position: fixed;
+//   right: 0px;
+//   padding: 20px;
+  
+//   .name{
+//       margin-right: 25px;
+//   }
+// }

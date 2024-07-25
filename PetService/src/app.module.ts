@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './app/app.component';
@@ -13,19 +14,18 @@ import {
   withInterceptorsFromDi,
 } from '@angular/common/http';
 
-import { MatIconModule } from '@angular/material/icon';
 
 import { CommonModule } from '@angular/common';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MenuComponent } from './app/menu/menu.component';
-import { ClinicaComponent } from './app/components/dashboard/ClinicaVeterinaria/clinica/clinica.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
-    ClinicaComponent,
     RouterModule.forRoot(routes),
     FormsModule,
     ReactiveFormsModule,
@@ -35,8 +35,13 @@ import { ClinicaComponent } from './app/components/dashboard/ClinicaVeterinaria/
     MatInputModule,
     MatIconModule,
     CommonModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatSidenavModule,
+
+    MenuComponent
   ],
+  providers: [provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync()],
   bootstrap: [AppComponent],
-  providers: [provideHttpClient(withInterceptorsFromDi())],
 })
 export class AppModule {}

@@ -1,14 +1,14 @@
 
 
 <div class="menu">
-    <img src="img/logo_brancoFundo.png" class="logo_brancoFundo" />
-    <div class="menu-a">
-      <a class="menuHome" href="home">CALENDÁRIO</a>
-      <a class="menuClinica" href="clinica">CLÍNICA</a>
-      <a class="menuMensagem" href="mensagem">MENSAGENS</a>
-      <a class="menuConfiguracao" href="configuracao">CONFIGURAÇÃO</a>
-    </div>
-    <div class="headerMenu">
+    <img [width]="profilePicSize()" [height]="profilePicSize()" src="img/logo_brancoFundo.png" class="toggleableImage" /> 
+<mat-nav-list>
+  <a mat-list-item *ngFor="let item of menuItems()">
+    <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
+    <span matListItemTitle>{{item.label}}</span>
+  </a>
+</mat-nav-list>
+    <!-- <div class="headerMenu">
       <div class="name">Olá, Name</div>
-    </div>
+    </div> -->
   </div>
