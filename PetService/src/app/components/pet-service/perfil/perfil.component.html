@@ -1,1 +1,37 @@
-<p>perfil works!</p>
+<div class="conteiner">
+  <h2>Configuração no Perfil</h2>
+
+  <div class="body">
+    <div class="text">
+      <div class="title">Nome da conta</div>
+      <input type="text" [(ngModel)]="profile.name" [disabled]="isDisabled" />
+    </div>
+    <div class="text">
+      <div class="title">E-mail</div>
+      <input type="text" [(ngModel)]="profile.email" [disabled]="isDisabled" />
+    </div>
+    <div class="text">
+      <div class="title">Senha</div>
+      <input
+        type="text"
+        [(ngModel)]="profile.password"
+        [disabled]="isDisabled"
+      />
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="alteracao" *ngIf="isDisabled" (click)="toggleEdit()">
+      <mat-icon>edit</mat-icon>
+      Alterar
+    </button>
+    <button class="cancel" *ngIf="!isDisabled" (click)="toggleEdit()">
+      <mat-icon>save</mat-icon>
+      Cancelar
+    </button>
+    <button class="save" *ngIf="!isDisabled" (click)="saveChanges()">
+      <mat-icon>save</mat-icon>
+      Salvar
+    </button>
+  </div>
+</div>
