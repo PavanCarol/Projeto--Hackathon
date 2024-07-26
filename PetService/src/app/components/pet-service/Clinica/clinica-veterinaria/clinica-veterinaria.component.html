@@ -1,0 +1,56 @@
+<div class="body">
+  <div class="header">
+    <a href="clinic" class="AClinica">Clínica</a>
+  </div>
+  <div class="hearder-vet">
+    <a (click)="openDialog('300ms', '300ms')" class="btnCreateVet">
+      <mat-icon>add_circle</mat-icon>Criar novo registro
+    </a>
+  </div>
+  <div class="allVet">
+    <div *ngIf="clinicas.length > 0" class="carousel-container">
+      <div class="carousel">
+        <div class="carousel-track" [style.transform]="transformStyle">
+          <div
+            class="carousel-item"
+            *ngFor="let clinica of clinicas"
+            [attr.data-id]="clinica.cra6a_clinicaid"
+            (click)="goToInformationVet(clinica.cra6a_clinicaid)"
+          >
+            <a>
+              <img
+                [src]="
+                  'data:image/png;base64,' + clinica.cra6a_imagemveterinario
+                "
+                alt="Imagem do Veterinário"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+      <button (click)="prevSlide()" class="carousel-control prev">‹</button>
+      <button (click)="nextSlide()" class="carousel-control next">›</button>
+    </div>
+    <div *ngIf="clinicas.length === 0">
+      <p>Nenhuma clínica encontrada.</p>
+    </div>
+  </div>
+  <div style="display: flex; align-items: center; justify-content: center">
+    <table class="consultas">
+      <tr>
+        <td>Nome do Pet</td>
+        <td>Horário</td>
+        <td>Data</td>
+        <td>Dr(a).</td>
+        <td>Status</td>
+      </tr>
+      <tr>
+        <td>Alberto</td>
+        <td>15:55</td>
+        <td>03/06/2024</td>
+        <td>Dr(a). Leticia</td>
+        <td><button></button></td>
+      </tr>
+    </table>
+  </div>
+</div>

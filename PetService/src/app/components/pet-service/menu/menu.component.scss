@@ -1,0 +1,85 @@
+.menu {
+    background-color: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+img {
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.collapsed-margin{
+    margin-top: 40px;    
+}
+
+.textTollBar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mat-mdc-nav-list .mat-mdc-list-item.mdc-list-item--activated {
+    background-color: #f45e13;
+}
+.mat-mdc-list-base {
+    display: block;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px !important;
+    padding: 0px 10px;
+}
+
+
+// .menu-item:hover mat-icon,
+// .menu-item:hover span{
+//     color: white;
+// }
+
+.active-menu-item mat-icon,
+.active-menu-item span {
+    color: white !important; /* Define a cor branca para os itens do menu no estado ativo e hover */
+}
+.active-menu-item {
+    background-color: #f45e13 !important; /* Define a cor de fundo para o item ativo */
+}
+.logout-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto; /* Empurra o ícone de logout para a parte inferior */
+    margin: 30px 0; /* Adiciona algum espaçamento ao redor do ícone de logout */
+    column-gap: 10px;
+
+  }
+/* Adiciona a transição de cor à linha quando o logout-container estiver em hover */
+.logout-container:hover .line {
+  transition: background-color 0.8s;
+  background-color: #f45e13 !important;
+}
+  .logout-container:hover,
+  .logout-icon:hover, .logout-Link:hover{
+    transition: color 0.8s;
+    color: #f45e13 !important; 
+  }
+
+.logout{
+    display: flex;
+
+    .logout-Link{
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--mdc-list-list-item-label-text-color);
+    }
+}
+  .line{
+    margin-bottom: 10px;
+    height: 1px;
+    background-color: var(--mdc-list-list-item-label-text-color);
+    width: 80%;
+  }

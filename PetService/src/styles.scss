@@ -117,3 +117,15 @@ input:-internal-autofill-selected {
   background-color: var(--mdc-filled-text-field-container-color) !important;
   color: fieldtext !important;
 }
+
+.mat-drawer-container {
+  position: relative;
+  z-index: 1;
+  color: var(--mat-sidenav-content-text-color);
+  background-color: var(--mat-sidenav-content-background-color);
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  display: block;
+  overflow: hidden;
+  background: #f6f6f6 !important;
+}

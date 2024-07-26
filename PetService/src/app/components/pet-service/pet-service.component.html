@@ -1,0 +1,17 @@
+<mat-toolbar class="mat-elevation-z3">
+  <div class="textTollBar">
+    <button mat-icon-button (click)="collapsed.set(!collapsed())">
+      <mat-icon>menu </mat-icon>
+    </button>
+
+    <div style="margin-right: 30px">Olá,Nome</div>
+  </div>
+</mat-toolbar>
+<mat-sidenav-container>
+  <mat-sidenav opened mode="side" [style.width]="sidenavWidth()">
+    <app-menu [collapsed]="collapsed()" />
+  </mat-sidenav>
+  <mat-sidenav-content class="content" [style.margin-left]="sidenavWidth()">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

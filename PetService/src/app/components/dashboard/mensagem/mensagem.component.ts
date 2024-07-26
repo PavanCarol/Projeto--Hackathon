@@ -2,19 +2,20 @@ import { Component } from '@angular/core';
 import { OpenaiService } from '../../../openai.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MenuComponent } from '../../../menu/menu.component';
 
 @Component({
   selector: 'app-mensagem',
   standalone: true,
-  imports: [CommonModule, FormsModule, MenuComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './mensagem.component.html',
   styleUrls: ['./mensagem.component.scss'], // Corrigido o nome do campo
 })
 export class MensagemComponent {
   chatResponses: { userMessage: string; reply: string }[] = [];
 
-  constructor(private openaiService: OpenaiService) {}
+  constructor(private openaiService: OpenaiService) {
+    alert('OII');
+  }
 
   sendMessage() {
     const messageInputElement = document.getElementById(

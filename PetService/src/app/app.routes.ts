@@ -1,17 +1,16 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './components/dashboard/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { MensagemComponent } from './components/dashboard/mensagem/mensagem.component';
-import { ConfiguracaoComponent } from './components/dashboard/configuracao/configuracao.component';
-import { ClinicaComponent } from './components/dashboard/ClinicaVeterinaria/clinica/clinica.component';
-import { InformationVetComponent } from './components/dashboard/ClinicaVeterinaria/information-vet/information-vet.component';
+import { CalendarioComponent } from './components/pet-service/calendario/calendario.component';
+import { PetServiceComponent } from './components/pet-service/pet-service.component';
+import { ClinicaVeterinariaComponent } from './components/pet-service/Clinica/clinica-veterinaria/clinica-veterinaria.component';
+import { InformacaoVeterinarioComponent } from './components/pet-service/Clinica/informacao-veterinario/informacao-veterinario.component';
+import { ConfiguracaoComponent } from './components/pet-service/configuracao/configuracao.component';
+import { DashboardComponent } from './components/pet-service/dashboard/dashboard.component';
+import { PerfilComponent } from './components/pet-service/perfil/perfil.component';
 
 export const routes: Routes = [
-  {
-    path: 'home',
-    component: HomeComponent,
-  },
   {
     path: '',
     component: LoginComponent,
@@ -20,20 +19,39 @@ export const routes: Routes = [
     path: 'cadastro',
     component: RegisterComponent,
   },
+
+  // {
+  //   path: 'mensagem',
+  //   component: MensagemComponent,
+  // },
   {
-    path: 'clinica',
-    component: ClinicaComponent,
-  },
-  {
-    path: 'mensagem',
-    component: MensagemComponent,
-  },
-  {
-    path: 'configuracao',
-    component: ConfiguracaoComponent,
-  },
-  {
-    path: 'InformacaoVet/:id',
-    component: InformationVetComponent,
+    path: '',
+    component: PetServiceComponent,
+    children: [
+      {
+        path: 'home',
+        component: DashboardComponent,
+      },
+      {
+        path: 'calendar',
+        component: CalendarioComponent,
+      },
+      {
+        path: 'clinic',
+        component: ClinicaVeterinariaComponent,
+      },
+      {
+        path: 'information/:id',
+        component: InformacaoVeterinarioComponent,
+      },
+      {
+        path: 'settings',
+        component: ConfiguracaoComponent,
+      },
+      {
+        path: 'perfil',
+        component: PerfilComponent,
+      },
+    ],
   },
 ];

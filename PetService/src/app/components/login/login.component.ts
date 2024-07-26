@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { merge } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogForgotComponent } from '../dialog-forgot/dialog-forgot.component';
@@ -30,22 +37,20 @@ import { DialogErrorComponent } from '../../dialog/dialog-error/dialog-error.com
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
   loginForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
-    senha: ['', Validators.required]
+    senha: ['', Validators.required],
   });
   hide = true;
-  errorMessage:string = '';
+  errorMessage: string = '';
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private http: HttpClient,
     private httpService: HttpRequestService,
     private dialog: MatDialog
-  ) {
-   
-  }
+  ) {}
   ngOnInit(): void {}
   clickEvent(event: MouseEvent) {
     this.hide = !this.hide;
@@ -65,14 +70,15 @@ export class LoginComponent implements OnInit{
       const loginData = this.loginForm.value;
       this.httpService.login(loginData).subscribe(
         (response) => {
-          if (response.sucesso) {  // Acesse 'sucesso' conforme a estrutura da resposta do servidor
+          if (response.sucesso) {
+            // Acesse 'sucesso' conforme a estrutura da resposta do servidor
             console.log('foi');
-            this.router.navigate(['/home']); // Navega para a página inicial ou outra rota
+            this.router.navigate(['./calendar']); // Navega para a página inicial ou outra rota
           } else {
             console.error('Credenciais inválidas');
             this.dialog.open(DialogErrorComponent);
           }
-        }, 
+        },
         (error) => {
           console.error('Erro ao fazer login', error);
         }

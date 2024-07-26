@@ -1,0 +1,37 @@
+<div class="menu">
+  <div class="separete-menu">
+    <div style="display: flex; align-items: center; justify-content: center">
+      <img
+        [width]="profilePicSize()"
+        [height]="profilePicSize()"
+        src="img/logo_brancoFundo.png"
+        [ngClass]="{ 'collapsed-margin': profilePicSize() === '60' }"
+        class="toggleableImage"
+      />
+    </div>
+    <div [ngClass]="{ 'center-content': !sideNavCollapsed() }">
+      <mat-nav-list>
+        <a
+          mat-list-item
+          class="menu-item"
+          *ngFor="let item of menuItems()"
+          [routerLink]="item.router"
+          routerLinkActive="active-menu-item"
+          #rla="routerLinkActive"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      </mat-nav-list>
+    </div>
+  </div>
+  <div class="logout-container">
+    <div class="line"></div>
+    <div class="logout">
+      <a class="logout-Link" href="">
+        <mat-icon class="logout-icon">logout</mat-icon>
+        <span *ngIf="!sideNavCollapsed()"> Sair </span>
+      </a>
+    </div>
+  </div>
+</div>
