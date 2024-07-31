@@ -1,47 +1,15 @@
-:host {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    position: relative;
-  }
-.logo_brancoFundo{
-    width: 224px;
-}
-.conteiner{
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
-.menu{
-    background-color: rgba(244, 94, 19, 0.6784313725);
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.menu-a{
-    display: flex;
-    flex-direction: column;
-    margin-top: 50px;
-    row-gap: 20px;
-    width: 100%;
-    align-items: center;
+// :host {
+//     display: flex;
+//     width: 100%;
+//     height: 100%;
+//     overflow-y: auto;
+//     position: relative;
+//   }
 
-    a{
-        font-size: 18px;
-        height: 40px;
-        text-decoration: none;
-        color: black;
-    }
-}
 .body{
-    width: 100%;
-    height: 100%;
-}
-.all-body{
     display: flex;
     flex-direction: column;
+    height: 90vh;
 }
 .header-body{
     background-color: white;
@@ -60,9 +28,10 @@
 }
 .header-chat{
     display: flex;
-    background-color: #0A8989;
+    column-gap: 20px;
     align-items: center;
     padding: 15px 0px;
+    background-color: #3E8FF5;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
@@ -77,7 +46,6 @@
 .informacoesUser{
     display: flex; 
     flex-direction: column; 
-    align-items: center;
 
     p{
         margin: 0px;
@@ -97,15 +65,39 @@
     width: 90%;
     padding: 10px;
 }
-.btnEnviar{
+.input-Enviar:focus-visible{
+    border: 1px solid black;
+}
+.btnSend{
     display: flex;
     align-items: center;
     border: none;
     background-color: #6BDA4E;
-    border-radius: 172px;
+    border-radius: 50%;
     padding: 10px;
-
-    img{
-        width: 33px;
-    }
+}
+#status{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#historic{
+    display: flex;
+    flex-direction: column;
+    height: 54vh;
+    overflow-y: auto;
+}
+.conversationVoce{
+    background-color: rgba(118, 176, 247, 0.753);
+    display: flex;
+    padding: 10px;
+    border-radius: 10px;
+    justify-content: flex-end;
+}
+.conversationBot{
+    background-color: rgba(118, 176, 247, 0.753);
+    display: flex;
+    padding: 10px;
+    border-radius: 10px;
+    justify-content: flex-start;
 }

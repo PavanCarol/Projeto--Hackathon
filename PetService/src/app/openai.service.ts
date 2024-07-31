@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 })
 export class OpenaiService {
   private apiUrl = 'https://api.openai.com/v1/chat/completions';
-  private apiKey = 'sk-proj-YNMzG6LN2LBe8aPFMEEqT3BlbkFJ6Mcl45uKcE0MZWYKaKab';
+  private apiKey = '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';
 
   constructor(private http: HttpClient) {}
 
@@ -17,10 +17,11 @@ export class OpenaiService {
     });
 
     const body = JSON.stringify({
-      model: 'gpt-4', // ou use 'gpt-3.5-turbo'
+      model: "gpt-3.5-turbo-0613",
       messages: messages,
-    });
+    }); 
 
-    return this.http.post(this.apiUrl, body, { headers: headers });
+    return this.http.post(this.apiUrl, body, { headers: headers },
+    );
   }
 }

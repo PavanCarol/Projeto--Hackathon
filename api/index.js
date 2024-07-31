@@ -1,11 +1,31 @@
 const express = require("express");
 const body = require("body-parser");
 const cors = require("cors");
+const fs = require('fs');
 const app = express();
 const port = 3301;
 
 app.use(body.json({ limit: "10mb" }));
 app.use(cors());
+
+const Bot = require("./chatBot")
+
+// Função para carregar configurações do arquivo
+function carregarConfiguracao() {
+  if (fs.existsSync('configuracaoBot.json')) {
+    const data = fs.readFileSync('configuracaoBot.json');
+    return JSON.parse(data);
+  }
+  return {};
+}
+
+// Função para salvar configurações no arquivo
+function salvarConfiguracao(config) {
+  fs.writeFileSync('configuracaoBot.json', JSON.stringify(config, null, 2));
+}
+
+// Variável para armazenar configurações do bot
+let configuracaoBot = carregarConfiguracao();
 
 // Função para obter o token de autenticação
 async function getAuthToken() {
@@ -45,6 +65,24 @@ app.post("/api/getToken", async (req, res) => {
   } catch (error) {
     console.error("Error getting token:", error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Rota para configurar o bot
+app.post("/api/configurarBot", (req, res) => {
+  configuracaoBot = req.body;
+  salvarConfiguracao(configuracaoBot);
+  console.log("Configuração do bot recebida:", configuracaoBot);
+
+  res.json({ sucesso: true, mensagem: "Configuração salva com sucesso" });
+});
+
+app.post("/api/chat", async (req, res) => {
+  try {
+    const resposta = await new Bot().main(req.body.question);
+    res.json({ erro: false, resposta });
+  } catch (error) {
+    res.status(500).json({ erro: true, resposta: "Desculpa, mas o bot não funcionlu" });
   }
 });
 

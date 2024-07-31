@@ -1,0 +1,32 @@
+
+
+    <div class="body">
+        <div class="header-chat">
+         <mat-icon style="padding-left: 20px;">person</mat-icon>
+          <div class="informacoesUser">
+            <p>Teste Cliente
+            </p>
+            <p>telefone</p>
+          </div>
+        </div>  
+        <p id="status"></p>
+
+        <div id="historic">
+          <div *ngFor="let response of chatResponses">
+            <div style="display: flex; align-items: end; justify-content: end; width: 100%;">
+              <p class="conversationVoce"> 
+                <strong>Você:</strong> {{ response.userMessage }}</p>
+            </div>
+            <div style="display: flex; align-items: start; justify-content: start; width: 100%;">
+              <p class="conversationBot"><strong>Bot:</strong> {{ response.reply }}</p>
+            </div>
+
+          </div>
+        </div>
+        <div class="footer">
+          <input type="text" class="input-Enviar" id="message-input" />
+          <button class="btnSend" id="btn-submit" (click)="sendMessage()">
+            <mat-icon style="padding-left: 2px;">send</mat-icon>
+          </button>
+        </div>
+    </div>

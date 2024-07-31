@@ -52,16 +52,16 @@ export class MenuComponent {
       label: 'Clínica',
       router: 'clinic',
     },
-    // {
-    //   icon: 'chat_bubble',
-    //   label: 'Mensagem',
-    //   router: 'mensagem',
-    // },
     {
-      icon: 'psychology',
-      label: 'Configuração do Bot',
-      router: 'settings',
+      icon: 'chat_bubble',
+      label: 'Mensagem',
+      router: 'mensagem',
     },
+    // {
+    //   icon: 'psychology',
+    //   label: 'Configuração do Bot',
+    //   router: 'settings',
+    // },
     {
       icon: 'person',
       label: 'Perfil',
