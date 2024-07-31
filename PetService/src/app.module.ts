@@ -25,9 +25,14 @@ import { MenuComponent } from './app/components/pet-service/menu/menu.component'
 import { AuthInterceptor } from './app/auth.interceptor';
 import { AuthGuard } from './app/guards/auth.guard';
 import { AuthService } from './app/services/auth.service';
+import { RegisterComponent } from './app/components/register/register.component';
+import { LoginComponent } from './app/components/login/login.component';
 
 @NgModule({
-  declarations: [AppComponent, PetServiceComponent],
+  declarations: [
+    AppComponent, 
+    PetServiceComponent,
+  ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -47,7 +52,8 @@ import { AuthService } from './app/services/auth.service';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    AuthService, AuthGuard
+    AuthService,
+    AuthGuard
   ],
   bootstrap: [AppComponent],
 })

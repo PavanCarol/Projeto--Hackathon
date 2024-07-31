@@ -70,8 +70,9 @@ export class LoginComponent implements OnInit {
       this.httpService.login(loginData).subscribe(
         (response) => {
           if (response.sucesso) {
-            localStorage.setItem('token', 'fake-jwt-token');  // Ajuste conforme a resposta real do servidor
-            this.router.navigate(['/home']);  // Navega para a página inicial ou outra rota
+          // Ajuste para salvar o token real da resposta
+localStorage.setItem('token', response.token); // Supondo que a resposta contenha um token
+this.router.navigate(['/home']);  // Navega para a página inicial ou outra rota
           } else {
             console.error('Credenciais inválidas');
             this.dialog.open(DialogErrorComponent);

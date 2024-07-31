@@ -5,8 +5,9 @@ const fs = require('fs');
 const app = express();
 const jwt = require("jsonwebtoken");
 const port = 3301;
-app.use(body.json({ limit: "10mb" }));
+
 app.use(cors());
+app.use(body.json({ limit: "10mb" }));
 
 const JWT_SECRET = "qOf_N6{4z9,v8g{";
 const Bot = require("./chatBot")
