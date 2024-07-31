@@ -9,11 +9,16 @@ import { InformacaoVeterinarioComponent } from './components/pet-service/Clinica
 import { ConfiguracaoComponent } from './components/pet-service/configuracao/configuracao.component';
 import { DashboardComponent } from './components/pet-service/dashboard/dashboard.component';
 import { PerfilComponent } from './components/pet-service/perfil/perfil.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     component: LoginComponent,
+  },
+  {
+    path: 'login',
+    component: LoginComponent, // Rota específica para login
   },
   {
     path: 'cadastro',
@@ -27,6 +32,7 @@ export const routes: Routes = [
   {
     path: '',
     component: PetServiceComponent,
+    canActivate: [AuthGuard], // Adicione o guard aqui
     children: [
       {
         path: 'home',

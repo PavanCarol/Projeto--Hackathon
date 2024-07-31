@@ -3,13 +3,16 @@ const body = require("body-parser");
 const cors = require("cors");
 const fs = require('fs');
 const app = express();
+const jwt = require("jsonwebtoken");
 const port = 3301;
-
 app.use(body.json({ limit: "10mb" }));
 app.use(cors());
 
+const JWT_SECRET = "qOf_N6{4z9,v8g{";
 const Bot = require("./chatBot")
+const loggerMiddleware = require('./middleware');
 
+app.use(loggerMiddleware);
 // Função para carregar configurações do arquivo
 function carregarConfiguracao() {
   if (fs.existsSync('configuracaoBot.json')) {
@@ -178,9 +181,16 @@ app.post("/api/login", async (req, res) => {
 
       if (data.value.length > 0) {
         // Se há registros encontrados, as credenciais são válidas
+        const user = data.value[0];
+        const jwtToken = jwt.sign(
+          { id: user.accountid, email: user.emailaddress1 },
+          JWT_SECRET,  // Use a variável de ambiente
+          { expiresIn: '1h' }
+        );
         res.status(200).json({
           sucesso: true,
           mensagem: "Login bem-sucedido!",
+          token: jwtToken,
         });
       } else {
         // Se não há registros encontrados, as credenciais são inválidas

@@ -47,7 +47,6 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private http: HttpClient,
     private httpService: HttpRequestService,
     private dialog: MatDialog
   ) {}
@@ -71,9 +70,8 @@ export class LoginComponent implements OnInit {
       this.httpService.login(loginData).subscribe(
         (response) => {
           if (response.sucesso) {
-            // Acesse 'sucesso' conforme a estrutura da resposta do servidor
-            console.log('foi');
-            this.router.navigate(['./calendar']); // Navega para a página inicial ou outra rota
+            localStorage.setItem('token', 'fake-jwt-token');  // Ajuste conforme a resposta real do servidor
+            this.router.navigate(['/home']);  // Navega para a página inicial ou outra rota
           } else {
             console.error('Credenciais inválidas');
             this.dialog.open(DialogErrorComponent);

@@ -1,20 +1,20 @@
 const { OpenAI } = require("openai");
-const fs = require('fs');
 const openai = new OpenAI({
   apiKey: "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",
 });
 
+const faqs = {
+  "Qual é o horário de funcionamento?": "Nosso horário de funcionamento é das 8h às 18:30 de segunda a sábado.",
+  "Como faço um pedido?": "Você pode fazer um pedido através do nosso WhatsApp.",
+  "Quais são as formas de pagamento aceitas?": "Aceitamos cartões de crédito, débito e pagamentos via Pix."
+};
 class Bot{
-  constructor(config) {
-    this.config = config;
-  }
+
 
   async main(message) {
-    if (this.config && this.config.perguntasFrequentes) {
-      const perguntaFrequente = this.config.perguntasFrequentes.find(p => message.toLowerCase().includes(p.titulo.toLowerCase()));
-      if (perguntaFrequente) {
-        return perguntaFrequente.pergunta;
-      }
+    const normalizedMessage = message.toLowerCase().replace(/[?]/g, '');
+    if (faqs[normalizedMessage]) {
+      return faqs[normalizedMessage];
     }
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -26,8 +26,7 @@ class Bot{
         // },
         {
           role: "user",
-          content:
-            message,
+          content:message,
         },
       ],
     });

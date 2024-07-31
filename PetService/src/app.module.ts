@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { AppComponent } from './app/app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,13 +9,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {
+  HTTP_INTERCEPTORS,
   HttpClientModule,
-  provideHttpClient,
-  withInterceptorsFromDi,
 } from '@angular/common/http';
 
 import { CommonModule } from '@angular/common';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -24,6 +22,9 @@ import { PetServiceComponent } from './app/components/pet-service/pet-service.co
 
 import { routes } from './app/app.routes';
 import { MenuComponent } from './app/components/pet-service/menu/menu.component';
+import { AuthInterceptor } from './app/auth.interceptor';
+import { AuthGuard } from './app/guards/auth.guard';
+import { AuthService } from './app/services/auth.service';
 
 @NgModule({
   declarations: [AppComponent, PetServiceComponent],
@@ -42,12 +43,11 @@ import { MenuComponent } from './app/components/pet-service/menu/menu.component'
     MatButtonModule,
     MatToolbarModule,
     MatSidenavModule,
-    MatIconModule,
-    MenuComponent,
+    MenuComponent
   ],
   providers: [
-    provideHttpClient(withInterceptorsFromDi()),
-    provideAnimationsAsync(),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    AuthService, AuthGuard
   ],
   bootstrap: [AppComponent],
 })

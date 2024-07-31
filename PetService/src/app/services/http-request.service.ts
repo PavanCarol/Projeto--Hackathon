@@ -39,4 +39,10 @@ export class HttpRequestService {
   configurarBot(config: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/configurarBot`, config);
   }
+
+  getProtectedData(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.apiUrl}/protected`, { headers });
+  }
 }
