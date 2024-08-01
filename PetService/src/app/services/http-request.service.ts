@@ -34,4 +34,12 @@ export class HttpRequestService {
   configurarBot(config: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/configurarBot`, config);
   }
+  updateProfile(profile: any): Observable<any> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.put(`${this.apiUrl}/updateProfile`, profile, { headers });
+  }
 }
