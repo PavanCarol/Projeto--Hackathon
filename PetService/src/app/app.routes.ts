@@ -12,10 +12,7 @@ import { PerfilComponent } from './components/pet-service/perfil/perfil.componen
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: LoginComponent,
-  },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
     component: LoginComponent, // Rota específica para login

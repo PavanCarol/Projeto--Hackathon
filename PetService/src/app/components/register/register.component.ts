@@ -23,17 +23,7 @@ import { DialogSucessComponent } from '../../dialog/dialog-sucess/dialog-sucess.
 import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-register',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    CommonModule,
-  ],
+  standalone: false,
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })

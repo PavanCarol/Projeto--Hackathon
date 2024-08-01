@@ -155,6 +155,7 @@ app.post("/api/cadastro", async (req, res) => {
 });
 
 // Rota de login que usa o token de autenticação
+// No seu arquivo de login (index.js)
 app.post("/api/login", async (req, res) => {
   try {
     const { email, senha } = req.body; // Obtém os dados do corpo da solicitação
@@ -184,8 +185,12 @@ app.post("/api/login", async (req, res) => {
         // Se há registros encontrados, as credenciais são válidas
         const user = data.value[0];
         const jwtToken = jwt.sign(
-          { id: user.accountid, email: user.emailaddress1 },
-          JWT_SECRET,  // Use a variável de ambiente
+          {
+            id: user.accountid,
+            email: user.emailaddress1,
+            name: user.name // Inclua o nome do usuário no payload
+          },
+          JWT_SECRET,
           { expiresIn: '1h' }
         );
         res.status(200).json({
@@ -201,7 +206,6 @@ app.post("/api/login", async (req, res) => {
         });
       }
     } else {
-      // Para outras respostas, lance um erro
       throw new Error("Network response was not ok " + response.statusText);
     }
   } catch (error) {
@@ -213,6 +217,8 @@ app.post("/api/login", async (req, res) => {
     });
   }
 });
+
+
 
 app.post("/api/clinica", async (req, res) => {
   try {

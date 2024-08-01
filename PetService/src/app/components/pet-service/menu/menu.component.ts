@@ -7,6 +7,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 export type MenuItem = {
   icon: string;
@@ -32,10 +33,12 @@ export type MenuItem = {
 })
 export class MenuComponent {
   sideNavCollapsed = signal(false);
+  userName = computed(() => this.authService.getUserName() || 'Usuário'); // Obtém o nome do usuário
 
   @Input() set collapsed(val: boolean) {
     this.sideNavCollapsed.set(val);
   }
+
   menuItems = signal<MenuItem[]>([
     {
       icon: 'home',
@@ -57,11 +60,6 @@ export class MenuComponent {
       label: 'Mensagem',
       router: 'mensagem',
     },
-    // {
-    //   icon: 'psychology',
-    //   label: 'Configuração do Bot',
-    //   router: 'settings',
-    // },
     {
       icon: 'person',
       label: 'Perfil',
@@ -70,4 +68,10 @@ export class MenuComponent {
   ]);
 
   profilePicSize = computed(() => (this.sideNavCollapsed() ? '60' : '200'));
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  logout(): void {
+    this.authService.logout();  // Faz o logout e redireciona para a página de login
+  }
 }

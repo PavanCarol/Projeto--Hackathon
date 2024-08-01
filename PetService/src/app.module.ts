@@ -30,30 +30,30 @@ import { LoginComponent } from './app/components/login/login.component';
 
 @NgModule({
   declarations: [
-    AppComponent, 
+    AppComponent,
+    LoginComponent,
+    RegisterComponent,
     PetServiceComponent,
   ],
   imports: [
+    MenuComponent,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(routes),
+    HttpClientModule,
     MatSlideToggleModule,
     MatFormFieldModule,
     MatInputModule,
-    HttpClientModule,
-    CommonModule,
     MatIconModule,
     MatButtonModule,
     MatToolbarModule,
     MatSidenavModule,
-    MenuComponent
   ],
+  exports: [RouterModule],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    AuthService,
-    AuthGuard
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent],
 })

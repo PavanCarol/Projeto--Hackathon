@@ -9,11 +9,6 @@ export class HttpRequestService {
   private apiUrl = 'http://localhost:3301/api'; // URL base do backend
   constructor(private http: HttpClient) {}
 
-// não fi, faz na api do0 js
-//mas tem que mandar alguma coisa no chatBot.js
-
-// só a pergunta, não precisa mandar a API
-
 
   register(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/cadastro`, data); // Envia os dados para a rota /cadastro
@@ -38,11 +33,5 @@ export class HttpRequestService {
   }
   configurarBot(config: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/configurarBot`, config);
-  }
-
-  getProtectedData(): Observable<any> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${this.apiUrl}/protected`, { headers });
   }
 }

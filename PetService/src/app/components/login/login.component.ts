@@ -21,19 +21,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { DialogErrorComponent } from '../../dialog/dialog-error/dialog-error.component';
+import { jwtDecode } from "jwt-decode";
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    CommonModule,
-  ],
+  standalone: false,
+
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -64,18 +56,24 @@ export class LoginComponent implements OnInit {
       exitAnimationDuration,
     });
   }
+  
   onSubmit(): void {
     if (this.loginForm.valid) {
       const loginData = this.loginForm.value;
       this.httpService.login(loginData).subscribe(
         (response) => {
           if (response.sucesso) {
-          // Ajuste para salvar o token real da resposta
-localStorage.setItem('token', response.token); // Supondo que a resposta contenha um token
-this.router.navigate(['/home']);  // Navega para a página inicial ou outra rota
+            localStorage.setItem('token', response.token);
+  
+            try {
+              const decodedToken: any = jwtDecode(response.token);
+              localStorage.setItem('userName', decodedToken.name);
+            } catch (error) {
+              console.error('Erro ao decodificar o token', error);
+            }
+            this.router.navigate(['/home']);
           } else {
             console.error('Credenciais inválidas');
-            this.dialog.open(DialogErrorComponent);
           }
         },
         (error) => {

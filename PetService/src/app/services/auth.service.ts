@@ -1,41 +1,27 @@
-// src/app/services/auth.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { catchError, of, tap } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  private loggedIn = false;
-  private apiUrl = 'http://localhost:3301/api/login'; // URL da sua API
+  constructor(private router: Router) {}
 
-  constructor(private http: HttpClient, private router: Router) {}
-
-  login(username: string, password: string) {
-    return this.http.post<any>(this.apiUrl, { email: username, senha: password }).pipe(
-      tap(response => {
-        if (response.sucesso) {
-          localStorage.setItem('token', response.token);
-          this.loggedIn = true;
-          this.router.navigate(['/home']);
-        }
-      }),
-      catchError(error => {
-        console.error('Erro ao fazer login', error);
-        return of(null);
-      })
-    );
+  getUserName(): string | null {
+    const userName = localStorage.getItem('userName');
+    console.log('Nome do usuário obtido:', userName); // Adicione um log para depuração
+    return userName;
   }
 
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
-  }
-
-  logout() {
+  logout(): void {
     localStorage.removeItem('token');
-    this.loggedIn = false;
+    localStorage.removeItem('userName');
     this.router.navigate(['/login']);
+  }
+
+  isAuthenticated(): boolean {
+    const token = localStorage.getItem('token');
+    console.log(token)
+    return !!token;
   }
 }
