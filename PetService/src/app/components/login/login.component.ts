@@ -21,7 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { DialogErrorComponent } from '../../dialog/dialog-error/dialog-error.component';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 @Component({
   selector: 'app-login',
   standalone: false,
@@ -36,17 +36,21 @@ export class LoginComponent implements OnInit {
   });
   hide = true;
   errorMessage: string = '';
+
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
     private httpService: HttpRequestService,
     private dialog: MatDialog
   ) {}
+
   ngOnInit(): void {}
+
   clickEvent(event: MouseEvent) {
     this.hide = !this.hide;
     event.stopPropagation();
   }
+
   openDialog(
     enterAnimationDuration: string,
     exitAnimationDuration: string
@@ -56,28 +60,32 @@ export class LoginComponent implements OnInit {
       exitAnimationDuration,
     });
   }
-  
+
   onSubmit(): void {
     if (this.loginForm.valid) {
       const loginData = this.loginForm.value;
       this.httpService.login(loginData).subscribe(
         (response) => {
           if (response.sucesso) {
-            localStorage.setItem('token', response.token);
-  
+            localStorage.setItem('authToken', response.token); // Armazene o token com um nome consistente
+
             try {
               const decodedToken: any = jwtDecode(response.token);
               localStorage.setItem('userName', decodedToken.name);
+              localStorage.setItem('accountId', decodedToken.id); // Armazene o ID da conta também
             } catch (error) {
               console.error('Erro ao decodificar o token', error);
             }
             this.router.navigate(['/home']);
           } else {
             console.error('Credenciais inválidas');
+            this.errorMessage = 'Credenciais inválidas';
           }
         },
         (error) => {
           console.error('Erro ao fazer login', error);
+          this.errorMessage =
+            'Erro ao fazer login. Tente novamente mais tarde.';
         }
       );
     }

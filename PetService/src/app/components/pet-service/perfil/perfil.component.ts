@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 import { HttpRequestService } from '../../../services/http-request.service';
+import { DialogConfirmComponent } from '../../../dialog/dialog-confirm/dialog-confirm.component';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-perfil',
   standalone: true,
@@ -17,21 +19,38 @@ export class PerfilComponent implements OnInit {
     id: '',
     name: '',
     email: '',
-    password: ''
+    password: '',
   };
 
-  constructor(private httpRequestService: HttpRequestService) {}
+  constructor(
+    private httpRequestService: HttpRequestService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit() {
-    // Obtém o token JWT do localStorage e decodifica
     const token = localStorage.getItem('authToken');
+    console.log('Token obtido do localStorage:', token);
+
     if (token) {
       const decodedToken: any = jwtDecode(token);
+      console.log('Token decodificado:', decodedToken);
       this.profile.id = decodedToken.id;
       this.profile.name = decodedToken.name;
       this.profile.email = decodedToken.email;
-      // Não é recomendado armazenar senhas no token JWT, então omitimos a senha aqui
     }
+  }
+
+  getProfile() {
+    this.httpRequestService.getProfile(this.profile.id).subscribe(
+      (response: any) => {
+        console.log('Dados do perfil obtidos:', response);
+        this.profile.name = response.name;
+        this.profile.email = response.email;
+      },
+      (error) => {
+        console.error('Erro ao obter perfil:', error);
+      }
+    );
   }
 
   toggleEdit() {
@@ -40,13 +59,23 @@ export class PerfilComponent implements OnInit {
 
   saveChanges() {
     this.httpRequestService.updateProfile(this.profile).subscribe(
-      response => {
+      (response) => {
         console.log('Perfil atualizado com sucesso', response);
         this.toggleEdit();
+        this.openDialog();
       },
-      error => {
+      (error) => {
         console.error('Erro ao atualizar perfil:', error);
       }
     );
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogConfirmComponent);
+
+    dialogRef.afterClosed().subscribe(() => {
+      // Após fechar o diálogo, atualize o perfil novamente para refletir as mudanças
+      this.getProfile();
+    });
   }
 }

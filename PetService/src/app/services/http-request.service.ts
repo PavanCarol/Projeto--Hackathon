@@ -9,7 +9,6 @@ export class HttpRequestService {
   private apiUrl = 'http://localhost:3301/api'; // URL base do backend
   constructor(private http: HttpClient) {}
 
-
   register(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/cadastro`, data); // Envia os dados para a rota /cadastro
   }
@@ -29,16 +28,23 @@ export class HttpRequestService {
     return this.http.post<any>(`${this.apiUrl}/login`, loginData);
   }
   bot(question: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/chat`, {question});
+    return this.http.post<any>(`${this.apiUrl}/chat`, { question });
   }
   configurarBot(config: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/configurarBot`, config);
   }
-  updateProfile(profile: any): Observable<any> {
-    const token = localStorage.getItem('authToken');
+  getProfile(id: string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+    });
+    return this.http.get(`${this.apiUrl}/getProfile/${id}`, { headers });
+  }
+
+  updateProfile(profile: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('authToken')}`,
     });
     return this.http.put(`${this.apiUrl}/updateProfile`, profile, { headers });
   }

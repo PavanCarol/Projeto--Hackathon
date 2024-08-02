@@ -1,7 +1,7 @@
 const express = require("express");
 const body = require("body-parser");
 const cors = require("cors");
-const fs = require('fs');
+const fs = require("fs");
 const app = express();
 const jwt = require("jsonwebtoken");
 const port = 3301;
@@ -10,14 +10,14 @@ app.use(cors());
 app.use(body.json({ limit: "10mb" }));
 
 const JWT_SECRET = "qOf_N6{4z9,v8g{";
-const Bot = require("./chatBot")
-const loggerMiddleware = require('./middleware');
+const Bot = require("./chatBot");
+const loggerMiddleware = require("./middleware");
 
 app.use(loggerMiddleware);
 // Função para carregar configurações do arquivo
 function carregarConfiguracao() {
-  if (fs.existsSync('configuracaoBot.json')) {
-    const data = fs.readFileSync('configuracaoBot.json');
+  if (fs.existsSync("configuracaoBot.json")) {
+    const data = fs.readFileSync("configuracaoBot.json");
     return JSON.parse(data);
   }
   return {};
@@ -25,7 +25,7 @@ function carregarConfiguracao() {
 
 // Função para salvar configurações no arquivo
 function salvarConfiguracao(config) {
-  fs.writeFileSync('configuracaoBot.json', JSON.stringify(config, null, 2));
+  fs.writeFileSync("configuracaoBot.json", JSON.stringify(config, null, 2));
 }
 
 // Variável para armazenar configurações do bot
@@ -86,7 +86,9 @@ app.post("/api/chat", async (req, res) => {
     const resposta = await new Bot().main(req.body.question);
     res.json({ erro: false, resposta });
   } catch (error) {
-    res.status(500).json({ erro: true, resposta: "Desculpa, mas o bot não funcionlu" });
+    res
+      .status(500)
+      .json({ erro: true, resposta: "Desculpa, mas o bot não funcionlu" });
   }
 });
 
@@ -188,10 +190,10 @@ app.post("/api/login", async (req, res) => {
           {
             id: user.accountid,
             email: user.emailaddress1,
-            name: user.name // Inclua o nome do usuário no payload
+            name: user.name, // Inclua o nome do usuário no payload
           },
           JWT_SECRET,
-          { expiresIn: '1h' }
+          { expiresIn: "1h" }
         );
         res.status(200).json({
           sucesso: true,
@@ -218,11 +220,45 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+// Rota para obter o perfil do usuário
+app.get("/api/getProfile/:id", async (req, res) => {
+  try {
+    const token = await getAuthToken(); // Obtém o token de autenticação
+    const id = req.params.id;
+
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/accounts(${id})`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      res.status(200).json(data);
+    } else {
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Erro:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao obter perfil.",
+      error: error.message,
+    });
+  }
+});
+
 // Rota para atualizar o perfil do usuário
 app.put("/api/updateProfile", async (req, res) => {
   try {
-    const { id, name, email, password } = req.body; // Obtém os dados do corpo da solicitação
- 
+    const { id, name, email, password } = req.body;
     const token = await getAuthToken(); // Obtém o token de autenticação
 
     // URL para atualizar um registro existente
@@ -246,37 +282,38 @@ app.put("/api/updateProfile", async (req, res) => {
         Accept: "application/json",
         Authorization: `Bearer ${token}`, // Inclui o token de autenticação
       },
-      body: JSON.stringify(data), // Envia os dados no corpo da solicitação
+      body: JSON.stringify(data),
     });
 
-    console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
-
-    if (response.status == 204) {
-      // Resposta 204 não tem corpo, então apenas confirme o sucesso
-      res.status(200).json({
-        sucesso: true,
-        mensagem: "Perfil atualizado com sucesso!",
+    if (response.status === 204) {
+      // Após uma atualização bem-sucedida, obtenha os dados atualizados
+      const updatedResponse = await fetch(url, {
+        method: "GET",
+        headers: {
+          "OData-MaxVersion": "4.0",
+          "OData-Version": "4.0",
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
-    } else {
-      // Para outras respostas, tente processar o corpo como JSON
-      const responseBody = await response.text(); // Obtém o corpo da resposta como texto
-      console.log(`Corpo da Resposta: ${responseBody}`); // Adiciona log para o corpo da resposta
 
-      if (response.ok) {
-        // Se a resposta for bem-sucedida, mas não for 204, faz o parse do corpo como JSON
-        const responseData = JSON.parse(responseBody); // Faz o parse do corpo da resposta
-        res.status(200).json({
-          sucesso: true,
-          mensagem: "Perfil atualizado com sucesso!",
-          data: responseData, // Inclui os dados retornados na resposta
-        });
+      if (updatedResponse.ok) {
+        const updatedData = await updatedResponse.json();
+        res.status(200).json(updatedData);
       } else {
-        // Se a resposta não for bem-sucedida, lance um erro
+        throw new Error("Failed to retrieve updated profile");
+      }
+    } else {
+      const responseBody = await response.text();
+      if (response.ok) {
+        const responseData = JSON.parse(responseBody);
+        res.status(200).json(responseData);
+      } else {
         throw new Error("Network response was not ok " + response.statusText);
       }
     }
   } catch (error) {
-    console.error("Erro:", error);
     res.status(500).json({
       sucesso: false,
       mensagem: "Erro ao atualizar perfil.",
@@ -284,8 +321,6 @@ app.put("/api/updateProfile", async (req, res) => {
     });
   }
 });
-
-
 
 app.post("/api/clinica", async (req, res) => {
   try {
