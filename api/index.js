@@ -1,36 +1,20 @@
 const express = require("express");
 const body = require("body-parser");
 const cors = require("cors");
-const fs = require("fs");
 const app = express();
 const jwt = require("jsonwebtoken");
-const port = 3301;
-
-app.use(cors());
-app.use(body.json({ limit: "10mb" }));
-
-const JWT_SECRET = "qOf_N6{4z9,v8g{";
 const Bot = require("./chatBot");
 const loggerMiddleware = require("./middleware");
 
+const port = 3301;
+const JWT_SECRET = "qOf_N6{4z9,v8g{";
+
+app.use(cors());
+app.use(body.json({ limit: "10mb" }));
 app.use(loggerMiddleware);
-// Função para carregar configurações do arquivo
-function carregarConfiguracao() {
-  if (fs.existsSync("configuracaoBot.json")) {
-    const data = fs.readFileSync("configuracaoBot.json");
-    return JSON.parse(data);
-  }
-  return {};
-}
 
-// Função para salvar configurações no arquivo
-function salvarConfiguracao(config) {
-  fs.writeFileSync("configuracaoBot.json", JSON.stringify(config, null, 2));
-}
-
-// Variável para armazenar configurações do bot
-let configuracaoBot = carregarConfiguracao();
-
+// Criar um mapa para armazenar o estado do bot para cada usuário
+const botInstances = new Map();
 // Função para obter o token de autenticação
 async function getAuthToken() {
   const url =
@@ -71,24 +55,22 @@ app.post("/api/getToken", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-// Rota para configurar o bot
-app.post("/api/configurarBot", (req, res) => {
-  configuracaoBot = req.body;
-  salvarConfiguracao(configuracaoBot);
-  console.log("Configuração do bot recebida:", configuracaoBot);
-
-  res.json({ sucesso: true, mensagem: "Configuração salva com sucesso" });
-});
-
+// Rota para interação com o bot
 app.post("/api/chat", async (req, res) => {
   try {
-    const resposta = await new Bot().main(req.body.question);
+    const { question, userId } = req.body;
+    let bot = botInstances.get(userId);
+    if (!bot) {
+      bot = new Bot(getAuthToken); // Passe a função getAuthToken ao construtor do Bot
+      botInstances.set(userId, bot);
+    }
+    const resposta = await bot.main(question);
     res.json({ erro: false, resposta });
   } catch (error) {
+    console.error("Erro ao processar a solicitação do bot:", error);
     res
       .status(500)
-      .json({ erro: true, resposta: "Desculpa, mas o bot não funcionlu" });
+      .json({ erro: true, resposta: "Desculpa, mas o bot não funcionou" });
   }
 });
 
@@ -157,7 +139,6 @@ app.post("/api/cadastro", async (req, res) => {
 });
 
 // Rota de login que usa o token de autenticação
-// No seu arquivo de login (index.js)
 app.post("/api/login", async (req, res) => {
   try {
     const { email, senha } = req.body; // Obtém os dados do corpo da solicitação
