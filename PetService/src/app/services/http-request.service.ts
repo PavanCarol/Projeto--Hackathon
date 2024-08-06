@@ -48,4 +48,16 @@ export class HttpRequestService {
     });
     return this.http.put(`${this.apiUrl}/updateProfile`, profile, { headers });
   }
+
+  getAgendamentos(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getBanhoTosa`);
+  }
+
+  getAgendamentoById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getBanhoTosa/${id}`);
+  }
+
+  getClienteById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getCliente/${id}`);
+  }
 }

@@ -24,6 +24,7 @@ import { AuthGuard } from './app/guards/auth.guard';
 import { AuthService } from './app/services/auth.service';
 import { RegisterComponent } from './app/components/register/register.component';
 import { LoginComponent } from './app/components/login/login.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { LoginComponent } from './app/components/login/login.component';
     MatButtonModule,
     MatToolbarModule,
     MatSidenavModule,
+    MatDialogModule,
   ],
   exports: [RouterModule],
   providers: [

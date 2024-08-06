@@ -199,7 +199,135 @@ app.post("/api/login", async (req, res) => {
     });
   }
 });
+// Função para obter detalhes do dono do pet
+async function getDonoPetDetails(token, donoPetId) {
+  const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clienteses(${donoPetId})`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "OData-MaxVersion": "4.0",
+      "OData-Version": "4.0",
+      "Content-Type": "application/json; charset=utf-8",
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao buscar detalhes do dono do pet: ${response.statusText}`
+    );
+  }
+
+  return await response.json();
+}
+// Rota para obter os agendamentos
+app.get("/api/getBanhoTosa", async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const url =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas";
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro ao buscar agendamentos: ${response.statusText}`);
+    }
+
+    const agendamentos = await response.json();
+    const agendamentosComDetalhes = await Promise.all(
+      agendamentos.value.map(async (agendamento) => {
+        const donoPetDetails = await getDonoPetDetails(
+          token,
+          agendamento["_cra6a_donopet_value"]
+        );
+        agendamento.donoPetNome = donoPetDetails.cra6a_nome_pet; // Ajuste conforme o nome do campo
+        return agendamento;
+      })
+    );
+
+    res.status(200).json({ value: agendamentosComDetalhes });
+  } catch (error) {
+    console.error("Erro ao buscar agendamentos:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+// Rota para obter um agendamento específico por ID
+app.get("/api/getBanhoTosa/:id", async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const id = req.params.id;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas(${id})`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      res.status(200).json(data);
+    } else {
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Erro ao buscar agendamento:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao buscar agendamento.",
+      error: error.message,
+    });
+  }
+});
+
+// Rota para obter um cliente específico por ID
+app.get("/api/getCliente/:id", async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const id = req.params.id;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clienteses(${id})`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      res.status(200).json(data);
+    } else {
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Erro ao buscar cliente:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao buscar cliente.",
+      error: error.message,
+    });
+  }
+});
 // Rota para obter o perfil do usuário
 app.get("/api/getProfile/:id", async (req, res) => {
   try {

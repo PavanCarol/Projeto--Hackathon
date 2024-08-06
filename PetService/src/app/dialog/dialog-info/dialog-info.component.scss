@@ -1,0 +1,29 @@
+.borda{
+    background-color: #f45e13 !important;
+    padding: 32px;
+}
+.conteiner{
+    padding: 20px 31px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h3{
+    margin: 0px;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.btnFechar{
+    border: none !important;
+    border-radius: 5px;
+    padding: 8px 16px;
+    background-color: #f45e13;
+    color: white;
+    font-size: 16px;
+}

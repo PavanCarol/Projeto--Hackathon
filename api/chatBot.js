@@ -7,7 +7,7 @@ const openai = new OpenAI({
 
 function parseDateTime(input) {
   const datePattern = /(\d{2})\/(\d{2})(?:\/(\d{4}))?/;
-  const timePattern = /(\d{2}):(\d{2})/;
+  const timePattern = /(\d{1,2}):(\d{2})/;
 
   const dateMatch = input.match(datePattern);
   const timeMatch = input.match(timePattern);
@@ -17,7 +17,14 @@ function parseDateTime(input) {
     const [__, hour, minute] = timeMatch;
     const currentYear = new Date().getFullYear();
     const finalYear = year || currentYear;
-    return new Date(`${finalYear}-${month}-${day}T${hour}:${minute}:00`);
+    const dateStr = `${finalYear}-${month}-${day}T${hour.padStart(
+      2,
+      "0"
+    )}:${minute.padStart(2, "0")}:00`;
+    const date = new Date(dateStr);
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
   }
 
   return null;
@@ -32,36 +39,47 @@ class Bot {
       "Qual é o nome do seu pet?",
       "Qual é a raça do seu pet?",
       "Qual é o porte do seu pet?",
-      "Seu pet é bravo?",
     ];
     this.stepsAgendamento = [
       "Qual é o horário desejado para o banho do seu pet?",
-      "Podemos enfeitar o seu pet?",
+      "Podemos colocar acessório o seu pet?",
       "Podemos passar perfume no seu pet?",
+      "Escolha uma opção para o tipo de serviço: 1 para Banho, 2 para Tosa, 3 para Banho e Tosa, 4 para Tosa Completa, 5 para Tosa Higienica",
     ];
     this.responsesCadastro = [];
     this.responsesAgendamento = [];
     this.currentStep = 0;
     this.informandoCadastro = false;
     this.informandoAgendamento = false;
+    this.verificandoCadastro = true;
+    this.telefoneVerificado = false; // Inicializar telefoneVerificado
     console.log("Role do Bot: atendimento");
   }
 
   async main(message) {
-    if (
-      this.isAppointmentRequest(message) ||
-      this.informandoCadastro ||
-      this.informandoAgendamento
-    ) {
-      if (!this.informandoCadastro && !this.informandoAgendamento) {
+    if (this.verificandoCadastro) {
+      if (message.toLowerCase() === "sim") {
+        this.verificandoCadastro = false;
+        this.telefoneVerificado = true; // Habilitar a verificação de telefone
+        this.currentStep = 0;
+        return "Por favor, informe o seu número de telefone para verificarmos o cadastro.";
+      } else if (message.toLowerCase() === "não") {
+        this.verificandoCadastro = false;
         this.informandoCadastro = true;
         this.currentStep = 0;
         return (
-          "Para marcar um horário, preciso de algumas informações. Vamos começar. " +
+          "sem problemas,vamos começar o seu cadastro. " +
           this.stepsCadastro[this.currentStep++]
         );
+      } else {
+        return "Olá, para agendar um horario de banho ou tosa precisamos verificar seu cadastro antes. Você já possui cadastro? (Responda 'sim' ou 'não')";
       }
+    } else if (this.telefoneVerificado) {
+      this.telefoneVerificado = false; // Resetar a verificação de telefone após verificar
+      return await this.verificarTelefone(message);
+    }
 
+    if (this.informandoCadastro || this.informandoAgendamento) {
       if (this.informandoCadastro) {
         this.responsesCadastro[this.currentStep - 1] = message;
         if (this.currentStep < this.stepsCadastro.length) {
@@ -93,14 +111,14 @@ class Bot {
               return "Não consegui entender a data e o horário. Por favor, repita a data e horário desejado no formato DD/MM/AAAA às HH:MM.";
             }
             const token = await this.getAuthToken();
-            const disponibilidade = await this.verificarDisponibilidade(
-              token,
-              horario.toISOString()
-            );
-            if (!disponibilidade) {
-              this.reset();
-              return "Infelizmente já temos um agendamento nesse horário. Por favor, escolha outro horário.";
-            }
+            // const disponibilidade = await this.verificarDisponibilidade(
+            //   token,
+            //   horario.toISOString()
+            // );
+            // if (!disponibilidade) {
+            //   this.reset();
+            //   return "Infelizmente já temos um agendamento nesse horário. Por favor, escolha outro horário.";
+            // }
           }
           return this.stepsAgendamento[this.currentStep++];
         } else {
@@ -130,6 +148,65 @@ class Bot {
     ];
     return keywords.some((keyword) => message.toLowerCase().includes(keyword));
   }
+  // async verificarDisponibilidade(token, horario) {
+  //   const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=cra6a_databanhotosa eq ${horario}`;
+
+  //   const response = await fetch(url, {
+  //     method: "GET",
+  //     headers: {
+  //       "OData-MaxVersion": "4.0",
+  //       "OData-Version": "4.0",
+  //       "Content-Type": "application/json; charset=utf-8",
+  //       Accept: "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
+
+  //   if (!response.ok) {
+  //     throw new Error(
+  //       `Erro ao verificar disponibilidade: ${response.statusText}`
+  //     );
+  //   }
+
+  //   const data = await response.json();
+  //   return data.value.length === 0; // Se não houver agendamentos no horário, retorna true
+  // }
+
+  async verificarTelefone(message) {
+    const token = await this.getAuthToken();
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clienteses?$filter=cra6a_numero_donopet eq '${message}'`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+    if (data.value.length > 0) {
+      this.entityId = data.value[0].cra6a_clientesid;
+      this.telefoneVerificado = false; // Resetar verificação de telefone
+      this.informandoAgendamento = true;
+      this.currentStep = 0;
+      return (
+        "Cadastro encontrado! Vamos agendar o banho. " +
+        this.stepsAgendamento[this.currentStep++]
+      );
+    } else {
+      this.telefoneVerificado = false; // Resetar verificação de telefone
+      this.informandoCadastro = true;
+      this.currentStep = 0;
+      return (
+        "Cadastro não encontrado. Vamos começar o seu cadastro. " +
+        this.stepsCadastro[this.currentStep++]
+      );
+    }
+  }
 
   async enviarParaPowerApps() {
     try {
@@ -137,12 +214,11 @@ class Bot {
       const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clienteses`;
 
       const data = {
-        cra6a_nome_pet: this.responsesCadastro[0],
+        cra6a_nome_donopet: this.responsesCadastro[0],
         cra6a_numero_donopet: this.responsesCadastro[1],
-        cra6a_nome_donopet: this.responsesCadastro[2],
+        cra6a_nome_pet: this.responsesCadastro[2],
         cra6a_raca_pet: this.responsesCadastro[3],
         cra6a_porte_pet: this.responsesCadastro[4],
-        cra6a_petebravo: this.responsesCadastro[5].toLowerCase() === "sim",
       };
 
       const response = await fetch(url, {
@@ -188,22 +264,13 @@ class Bot {
         throw new Error("Não consegui entender a data e o horário.");
       }
       const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas`;
-      // const data = {
-      //   cra6a_databanhotosa: horario.toISOString(),
-      //   "cra6a_donopet@odata.bind": `/cra6a_clienteses(${this.entityId})`,
-      //   cra6a_enfeite: this.responsesAgendamento[1].toLowerCase() === "sim",
-      //   cra6a_perfume: this.responsesAgendamento[2].toLowerCase() === "sim",
-      // };
-      var record = {};
-      record[
-        "cra6a_donoPet@odata.bind"
-      ] = `/cra6a_clienteses(${this.entityId})`; // Lookup
-      record.cra6a_databanhotosa = horario.toISOString(); // Date Time
-      record.cra6a_perfume =
-        this.responsesAgendamento[2].toLowerCase() === "sim";
-      record.cra6a_enfeite =
-        this.responsesAgendamento[1].toLowerCase() === "sim";
-      // console.log("Data payload:", JSON.stringify(data));
+      const record = {
+        "cra6a_donoPet@odata.bind": `/cra6a_clienteses(${this.entityId})`,
+        cra6a_databanhotosa: horario.toISOString(),
+        cra6a_perfume: this.responsesAgendamento[2].toLowerCase() === "sim",
+        cra6a_enfeite: this.responsesAgendamento[1].toLowerCase() === "sim",
+        cra6a_banhooutosa: parseInt(this.responsesAgendamento[3]),
+      };
 
       const response = await fetch(url, {
         method: "POST",
@@ -248,6 +315,7 @@ class Bot {
     this.currentStep = 0;
     this.informandoCadastro = false;
     this.informandoAgendamento = false;
+    this.verificandoCadastro = false; // Resetar verificação de cadastro
   }
 }
 
