@@ -158,20 +158,19 @@ app.post("/api/login", async (req, res) => {
       },
     });
 
-    console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
+    console.log(`Status da Resposta: ${response.status}`);
 
     if (response.status === 200) {
       const data = await response.json();
-      console.log(`Corpo da Resposta: ${JSON.stringify(data)}`); // Adiciona log para o corpo da resposta
+      console.log(`Corpo da Resposta: ${JSON.stringify(data)}`);
 
       if (data.value.length > 0) {
-        // Se há registros encontrados, as credenciais são válidas
         const user = data.value[0];
         const jwtToken = jwt.sign(
           {
             id: user.accountid,
             email: user.emailaddress1,
-            name: user.name, // Inclua o nome do usuário no payload
+            name: user.name,
           },
           JWT_SECRET,
           { expiresIn: "1h" }

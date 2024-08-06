@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   constructor(private router: Router) {}
@@ -14,14 +13,16 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    localStorage.removeItem('authToken'); // Ensure consistency with token key
     localStorage.removeItem('userName');
+    localStorage.removeItem('accountId'); // Also remove accountId if stored
+    console.log('Logged out'); // Log for debugging
     this.router.navigate(['/login']);
   }
 
   isAuthenticated(): boolean {
-    const token = localStorage.getItem('token');
-    console.log(token)
+    const token = localStorage.getItem('authToken'); // Ensure consistency with token key
+    console.log('Token:', token); // Detailed log for debugging
     return !!token;
   }
 }

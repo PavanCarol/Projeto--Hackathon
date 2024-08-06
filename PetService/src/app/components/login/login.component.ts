@@ -67,12 +67,12 @@ export class LoginComponent implements OnInit {
       this.httpService.login(loginData).subscribe(
         (response) => {
           if (response.sucesso) {
-            localStorage.setItem('authToken', response.token); // Armazene o token com um nome consistente
+            localStorage.setItem('authToken', response.token); // Ensure consistency with token key
 
             try {
               const decodedToken: any = jwtDecode(response.token);
               localStorage.setItem('userName', decodedToken.name);
-              localStorage.setItem('accountId', decodedToken.id); // Armazene o ID da conta também
+              localStorage.setItem('accountId', decodedToken.id); // Store account ID as well
             } catch (error) {
               console.error('Erro ao decodificar o token', error);
             }

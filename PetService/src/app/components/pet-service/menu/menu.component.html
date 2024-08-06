@@ -28,7 +28,7 @@
   <div class="logout-container">
     <div class="line"></div>
     <div class="logout">
-      <a class="logout-Link" href="">
+      <a class="logout-Link" (click)="logout()">
         <mat-icon class="logout-icon">logout</mat-icon>
         <span *ngIf="!sideNavCollapsed()"> Sair </span>
       </a>

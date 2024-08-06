@@ -72,6 +72,6 @@ export class MenuComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   logout(): void {
-    this.authService.logout();  // Faz o logout e redireciona para a página de login
+    this.authService.logout(); // Faz o logout e redireciona para a página de login
   }
 }
