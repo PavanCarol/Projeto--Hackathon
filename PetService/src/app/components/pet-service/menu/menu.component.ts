@@ -56,11 +56,6 @@ export class MenuComponent {
       router: 'clinic',
     },
     {
-      icon: 'chat_bubble',
-      label: 'Mensagem',
-      router: 'mensagem',
-    },
-    {
       icon: 'person',
       label: 'Perfil',
       router: 'perfil',

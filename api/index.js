@@ -572,7 +572,50 @@ app.get("/api/getClinica/:id", async (req, res) => {
     });
   }
 });
+app.get(
+  "/api/getAgendamentosByVeterinario/:veterinarioId",
+  async (req, res) => {
+    try {
+      const token = await getAuthToken();
+      const veterinarioId = req.params.veterinarioId;
+      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=_cra6a_veterinario_value eq ${veterinarioId}`;
 
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "OData-MaxVersion": "4.0",
+          "OData-Version": "4.0",
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar agendamentos: ${response.statusText}`);
+      }
+
+      const agendamentos = await response.json();
+      const agendamentosComDetalhes = await Promise.all(
+        agendamentos.value.map(async (agendamento) => {
+          const donoPetDetails = await getNomePetDetails(
+            token,
+            agendamento["_cra6a_nomedopet_value"]
+          );
+          agendamento.nomePet = donoPetDetails.cra6a_nome_pet;
+          return agendamento;
+        })
+      );
+
+      res.status(200).json({ value: agendamentosComDetalhes });
+    } catch (error) {
+      console.error("Erro ao buscar agendamentos:", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+// Rota para obter agendamentos da clínica
 // Rota para obter agendamentos da clínica
 app.get("/api/getAgendamentosClinica", async (req, res) => {
   try {
@@ -761,6 +804,91 @@ app.put("/api/atualizarStatusAgendamento", async (req, res) => {
       mensagem: "Erro ao atualizar status do agendamento",
       error: error.message,
     });
+  }
+});
+
+app.get("/api/getAllAgendamentos", async (req, res) => {
+  try {
+    const token = await getAuthToken();
+
+    // Fetch BanhoTosa Agendamentos
+    const urlBanhoTosa =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas";
+    const responseBanhoTosa = await fetch(urlBanhoTosa, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!responseBanhoTosa.ok) {
+      throw new Error(
+        `Erro ao buscar agendamentos de banho/tosa: ${responseBanhoTosa.statusText}`
+      );
+    }
+
+    const agendamentosBanhoTosa = await responseBanhoTosa.json();
+    const agendamentosBanhoTosaComDetalhes = await Promise.all(
+      agendamentosBanhoTosa.value.map(async (agendamento) => {
+        const donoPetDetails = await getDonoPetDetails(
+          token,
+          agendamento["_cra6a_donopet_value"]
+        );
+        agendamento.donoPetNome = donoPetDetails.cra6a_nome_pet;
+        return agendamento;
+      })
+    );
+
+    // Fetch Clinica Agendamentos
+    const urlClinica =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas";
+    const responseClinica = await fetch(urlClinica, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!responseClinica.ok) {
+      throw new Error(
+        `Erro ao buscar agendamentos da clínica: ${responseClinica.statusText}`
+      );
+    }
+
+    const agendamentosClinica = await responseClinica.json();
+    const agendamentosClinicaComDetalhes = await Promise.all(
+      agendamentosClinica.value.map(async (agendamento) => {
+        const petDetails = await getNomePetDetails(
+          token,
+          agendamento["_cra6a_nomedopet_value"]
+        );
+        const veterinarioDetails = await getVeterinarioDetails(
+          token,
+          agendamento["_cra6a_veterinario_value"]
+        );
+
+        agendamento.nomePet = petDetails.cra6a_nome_pet;
+        agendamento.nomeVeterinario = veterinarioDetails.cra6a_nomeveterinario;
+        return agendamento;
+      })
+    );
+
+    // Combine both agendamentos
+    const allAgendamentos = agendamentosBanhoTosaComDetalhes.concat(
+      agendamentosClinicaComDetalhes
+    );
+    res.status(200).json({ value: allAgendamentos });
+  } catch (error) {
+    console.error("Erro ao buscar agendamentos:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 

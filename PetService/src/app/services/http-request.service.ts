@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class HttpRequestService {
   private apiUrl = 'http://localhost:3301/api'; // URL base do backend
+
   constructor(private http: HttpClient) {}
 
   register(data: any): Observable<any> {
@@ -49,20 +50,18 @@ export class HttpRequestService {
     return this.http.put(`${this.apiUrl}/updateProfile`, profile, { headers });
   }
 
-  getAgendamentos(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/getBanhoTosa`);
+  getAllAgendamentos(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getAllAgendamentos`);
   }
-
+  getAgendamentosClinica(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getAgendamentosClinica`);
+  }
   getAgendamentoById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/getBanhoTosa/${id}`);
   }
 
   getClienteById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/getCliente/${id}`);
-  }
-
-  getAgendamentosClinica(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/getAgendamentosClinica`); // Faz uma solicitação GET para a rota /getAgendamentosClinica
   }
 
   // Novo método para atualizar o status do agendamento
@@ -75,5 +74,18 @@ export class HttpRequestService {
       cra6a_status: status,
     };
     return this.http.put(`${this.apiUrl}/atualizarStatusAgendamento`, data);
+  }
+
+  getAgendamentosByVeterinario(veterinarioId: string): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/getAgendamentosByVeterinario/${veterinarioId}`
+    );
+  }
+
+  getAgendamentoClinicaById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getAgendamentoClinica/${id}`);
+  }
+  getBanhoTosaAgendamentos(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getBanhoTosa`);
   }
 }

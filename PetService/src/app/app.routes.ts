@@ -47,10 +47,10 @@ export const routes: Routes = [
         path: 'information/:id',
         component: InformacaoVeterinarioComponent,
       },
-      {
-        path:'mensagem',
-        component:MensagemComponent
-      },
+      // {
+      //   path:'mensagem',
+      //   component:MensagemComponent
+      // },
       // {
       //   path: 'settings',
       //   component: ConfiguracaoComponent,

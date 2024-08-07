@@ -33,28 +33,39 @@
         {{ clinica.cra6a_posgraduacao }}
       </p>
     </div>
-    <!-- Adicione mais informações conforme necessário -->
   </div>
   <div *ngIf="!clinica">
     <p>Carregando informações da clínica...</p>
   </div>
 
-  <div style="display: flex; align-items: center; justify-content: center">
-    <table class="consultas">
-      <tr>
-        <td>Nome do Pet</td>
-        <td>Horário</td>
-        <td>Data</td>
-        <td>Dr(a).</td>
-        <td>Status</td>
-      </tr>
-      <tr>
-        <td>Alberto</td>
-        <td>15:55</td>
-        <td>03/06/2024</td>
-        <td>Dr(a). Leticia</td>
-        <td><button></button></td>
-      </tr>
+  <div
+    *ngIf="agendamentos.length > 0"
+    style="
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      row-gap: 20px;
+    "
+  >
+    <h2>Agendamentos</h2>
+    <table class="consultas" *ngFor="let agendamento of agendamentos">
+      <tbody>
+        <tr>
+          <td style="font-weight: 600; width: 200px">Nome do Pet</td>
+          <td style="font-weight: 600; width: 200px">Data</td>
+          <td style="font-weight: 600; width: 200px">Horário</td>
+          <td style="font-weight: 600; width: 200px">Status</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr>
+          <td>{{ agendamento.nomePet }}</td>
+          <td>{{ formatarData(agendamento.cra6a_horariodaconsulta) }}</td>
+          <td>{{ formatarHora(agendamento.cra6a_horariodaconsulta) }}</td>
+          <td>{{ getStatusNome(agendamento.cra6a_status) }}</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
