@@ -97,3 +97,57 @@
       right: 10px;
       margin: 5px;
     }
+
+    .buttonStatus{
+      display: flex; 
+      align-items: center;
+      column-gap: 20px;
+    }
+
+    .buttonConfirmar{
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: rgb(243, 243, 67);
+      font-weight: 500;
+    }
+
+    .buttonConfirmar:hover{
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: rgb(243, 243, 67);
+      font-weight: 600;
+    }
+
+    .buttonCancelar{
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: rgb(247, 52, 52);
+      font-weight: 500;
+    }
+
+    .buttonCancelar:hover{
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: rgb(247, 52, 52);
+      font-weight: 500;
+    }
+
+    .buttonConcluido{
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: rgb(86, 238, 86);
+      font-weight: 500;
+    }
+
+    .buttonConcluido:hover{
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: rgb(86, 238, 86);
+      font-weight: 600;
+    }

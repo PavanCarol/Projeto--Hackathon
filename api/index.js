@@ -221,6 +221,7 @@ async function getDonoPetDetails(token, donoPetId) {
 
   return await response.json();
 }
+
 // Rota para obter os agendamentos
 app.get("/api/getBanhoTosa", async (req, res) => {
   try {
@@ -567,6 +568,197 @@ app.get("/api/getClinica/:id", async (req, res) => {
     res.status(500).json({
       sucesso: false,
       mensagem: "Erro ao buscar dados da clínica.",
+      error: error.message,
+    });
+  }
+});
+
+// Rota para obter agendamentos da clínica
+app.get("/api/getAgendamentosClinica", async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const url =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas";
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Erro ao buscar agendamentos da clínica: ${response.statusText}`
+      );
+    }
+
+    const agendamentos = await response.json();
+    const agendamentosComDetalhes = await Promise.all(
+      agendamentos.value.map(async (agendamento) => {
+        const petDetails = await getNomePetDetails(
+          token,
+          agendamento["_cra6a_nomedopet_value"]
+        );
+        const veterinarioDetails = await getVeterinarioDetails(
+          token,
+          agendamento["_cra6a_veterinario_value"]
+        );
+
+        agendamento.nomePet = petDetails.cra6a_nome_pet;
+        agendamento.nomeVeterinario = veterinarioDetails.cra6a_nomeveterinario;
+        return agendamento;
+      })
+    );
+
+    res.status(200).json({ value: agendamentosComDetalhes });
+  } catch (error) {
+    console.error("Erro ao buscar agendamentos da clínica:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put("/api/atualizarStatusAgendamento", async (req, res) => {
+  try {
+    const { cra6a_agendamentoclinicaid, cra6a_status } = req.body; // Obtém os dados do corpo da solicitação
+    const token = await getAuthToken(); // Obtém o token de autenticação
+
+    // URL para atualizar um registro existente
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas(${cra6a_agendamentoclinicaid})`;
+
+    // Dados a serem enviados
+    const data = {
+      cra6a_status: cra6a_status,
+    };
+
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    const responseBody = await response.text();
+    console.log(`Status da Resposta: ${response.status}`);
+    console.log(`Corpo da Resposta: ${responseBody}`);
+
+    if (!response.ok) {
+      throw new Error(
+        `Erro ao atualizar status do agendamento: ${response.statusText}`
+      );
+    }
+
+    // Se o status for 204, apenas retorne uma resposta de sucesso sem tentar fazer parse do corpo
+    if (response.status === 204) {
+      return res.status(200).json({ message: "Status atualizado com sucesso" });
+    }
+
+    // Caso contrário, faça o parse do corpo da resposta
+    res.status(200).json(JSON.parse(responseBody));
+  } catch (error) {
+    console.error("Erro ao atualizar status do agendamento:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Função para obter detalhes do nome do pet
+async function getNomePetDetails(token, petId) {
+  const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clienteses(${petId})`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "OData-MaxVersion": "4.0",
+      "OData-Version": "4.0",
+      "Content-Type": "application/json; charset=utf-8",
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao buscar detalhes do nome do pet: ${response.statusText}`
+    );
+  }
+
+  return await response.json();
+}
+
+// Função para obter detalhes do veterinário
+async function getVeterinarioDetails(token, veterinarioId) {
+  const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas(${veterinarioId})`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "OData-MaxVersion": "4.0",
+      "OData-Version": "4.0",
+      "Content-Type": "application/json; charset=utf-8",
+      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Erro ao buscar detalhes do veterinário: ${response.statusText}`
+    );
+  }
+
+  return await response.json();
+}
+app.put("/api/atualizarStatusAgendamento", async (req, res) => {
+  try {
+    const { cra6a_agendamentoid, cra6a_status } = req.body; // Obtém os dados do corpo da solicitação
+
+    // Adicione logs para depuração
+    console.log("Corpo da solicitação:", req.body);
+    console.log("cra6a_agendamentoid:", cra6a_agendamentoid);
+    console.log("cra6a_status:", cra6a_status);
+
+    const token = await getAuthToken(); // Obtém o token de autenticação
+
+    // URL para atualizar um registro existente
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas(${cra6a_agendamentoid})`;
+
+    // Dados a serem enviados
+    const data = {
+      cra6a_status: cra6a_status,
+    };
+
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`, // Inclui o token de autenticação
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.status === 204) {
+      res
+        .status(200)
+        .json({ sucesso: true, mensagem: "Status atualizado com sucesso" });
+    } else {
+      const responseBody = await response.text();
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Erro ao atualizar status do agendamento:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao atualizar status do agendamento",
       error: error.message,
     });
   }

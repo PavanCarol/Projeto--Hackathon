@@ -60,4 +60,20 @@ export class HttpRequestService {
   getClienteById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/getCliente/${id}`);
   }
+
+  getAgendamentosClinica(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getAgendamentosClinica`); // Faz uma solicitação GET para a rota /getAgendamentosClinica
+  }
+
+  // Novo método para atualizar o status do agendamento
+  updateStatusAgendamento(
+    agendamentoId: string,
+    status: number
+  ): Observable<any> {
+    const data = {
+      cra6a_agendamentoclinicaid: agendamentoId,
+      cra6a_status: status,
+    };
+    return this.http.put(`${this.apiUrl}/atualizarStatusAgendamento`, data);
+  }
 }

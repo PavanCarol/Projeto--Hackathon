@@ -35,22 +35,73 @@
       <p>Nenhuma clínica encontrada.</p>
     </div>
   </div>
-  <div style="display: flex; align-items: center; justify-content: center">
-    <table class="consultas">
-      <tr>
-        <td>Nome do Pet</td>
-        <td>Horário</td>
-        <td>Data</td>
-        <td>Dr(a).</td>
-        <td>Status</td>
-      </tr>
-      <tr>
-        <td>Alberto</td>
-        <td>15:55</td>
-        <td>03/06/2024</td>
-        <td>Dr(a). Leticia</td>
-        <td><button></button></td>
-      </tr>
+  <div
+    style="
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      row-gap: 20px;
+    "
+  >
+    <table class="consultas" *ngFor="let agendamento of agendamentosClinica">
+      <tbody>
+        <tr>
+          <td style="font-weight: 600; width: 200px">Nome do Pet</td>
+          <td style="font-weight: 600; width: 200px">Data</td>
+          <td style="font-weight: 600; width: 200px">Horário</td>
+          <td style="font-weight: 600; width: 200px">Dr(a).</td>
+          <td style="font-weight: 600; width: 200px">Status</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr>
+          <td>{{ agendamento.nomePet }}</td>
+          <td>{{ formatarData(agendamento.cra6a_horariodaconsulta) }}</td>
+          <td>{{ formatarHora(agendamento.cra6a_horariodaconsulta) }}</td>
+          <td>{{ agendamento.nomeVeterinario }}</td>
+          <td>
+            <ng-container [ngSwitch]="agendamento.cra6a_status">
+              <div *ngSwitchDefault class="buttonStatus">
+                <button
+                  *ngIf="agendamento.cra6a_status !== 1"
+                  (click)="
+                    updateStatus(agendamento.cra6a_agendamentoclinicaid, 0)
+                  "
+                  class="buttonConfirmar"
+                >
+                  Confirmar
+                </button>
+                <button
+                  *ngIf="agendamento.cra6a_status !== 1"
+                  (click)="
+                    updateStatus(agendamento.cra6a_agendamentoclinicaid, 2)
+                  "
+                  class="buttonCancelar"
+                >
+                  Cancelar
+                </button>
+              </div>
+              <div *ngSwitchCase="0">
+                <button
+                  (click)="
+                    updateStatus(agendamento.cra6a_agendamentoclinicaid, 1)
+                  "
+                  class="buttonConcluido"
+                >
+                  Concluir
+                </button>
+              </div>
+              <div *ngSwitchCase="2" style="color: rgb(247, 52, 52)">
+                Cancelado
+              </div>
+              <div *ngSwitchCase="1" style="color: rgb(86, 238, 86)">
+                Concluído
+              </div>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>
