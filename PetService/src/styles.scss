@@ -61,7 +61,7 @@ button{ font-family: "Poppins", sans-serif; }
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
   background-color: var(--mdc-filled-text-field-container-color);
   border-radius: 10px !important;
-  height: 74px !important;
+  height: 60px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -128,4 +128,18 @@ input:-internal-autofill-selected {
   display: block;
   overflow: hidden;
   background: #f6f6f6 !important;
+}
+
+.mat-horizontal-stepper-header-container {
+  white-space: nowrap;
+  display: none !important;
+  align-items: center;
+}
+
+.mat-horizontal-stepper-content:not(.mat-horizontal-stepper-content-inactive) {
+  visibility: inherit !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
 }

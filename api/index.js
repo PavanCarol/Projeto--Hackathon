@@ -616,7 +616,6 @@ app.get(
 );
 
 // Rota para obter agendamentos da clínica
-// Rota para obter agendamentos da clínica
 app.get("/api/getAgendamentosClinica", async (req, res) => {
   try {
     const token = await getAuthToken();
@@ -889,6 +888,92 @@ app.get("/api/getAllAgendamentos", async (req, res) => {
   } catch (error) {
     console.error("Erro ao buscar agendamentos:", error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Rota para verificar o email
+app.post("/api/verifyEmail", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const token = await getAuthToken();
+
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/accounts?$filter=emailaddress1 eq '${email}'`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.value.length > 0) {
+        const user = data.value[0];
+        res.json({
+          sucesso: true,
+          userId: user.accountid,
+        });
+      } else {
+        res.json({
+          sucesso: false,
+          mensagem: "Email não encontrado",
+        });
+      }
+    } else {
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Erro ao verificar email:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: error.message,
+    });
+  }
+});
+
+// Rota para resetar a senha
+app.put("/api/resetPassword", async (req, res) => {
+  try {
+    const { userId, newPassword } = req.body;
+    const token = await getAuthToken();
+
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/accounts(${userId})`;
+
+    const data = {
+      cra6a_senha: newPassword,
+    };
+
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      res.json({
+        sucesso: true,
+        mensagem: "Senha alterada com sucesso",
+      });
+    } else {
+      throw new Error("Network response was not ok " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Erro ao alterar senha:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: error.message,
+    });
   }
 });
 

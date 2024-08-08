@@ -90,4 +90,19 @@ export class LoginComponent implements OnInit {
       );
     }
   }
+
+  animateElement(event: MouseEvent) {
+    event.preventDefault();
+    const element = document.getElementById('myElement');
+    if (element) {
+      element.classList.add('animate');
+      element.addEventListener(
+        'animationend',
+        () => {
+          element.classList.remove('animate');
+        },
+        { once: true }
+      );
+    }
+  }
 }

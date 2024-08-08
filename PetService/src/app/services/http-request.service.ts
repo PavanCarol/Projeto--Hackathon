@@ -88,4 +88,15 @@ export class HttpRequestService {
   getBanhoTosaAgendamentos(): Observable<any> {
     return this.http.get(`${this.apiUrl}/getBanhoTosa`);
   }
+
+  verifyEmail(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/verifyEmail`, { email });
+  }
+
+  resetPassword(userId: string, newPassword: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/resetPassword`, {
+      userId,
+      newPassword,
+    });
+  }
 }

@@ -1,57 +1,55 @@
 <div class="forms">
-  <h1>Esqueci Senha</h1>
-  <mat-form-field style="width: 527px">
-    <mat-label>Nome Completo</mat-label>
-    <input matInput />
-  </mat-form-field>
-  <div class="example-container">
-    <mat-form-field style="width: 527px">
-      <mat-label>Enter your email</mat-label>
-      <input
-        matInput
-        placeholder="pat@example.com"
-        [formControl]="email"
-        (blur)="updateErrorMessage()"
-        required
-      />
-      @if (email.invalid) {
-      <mat-error>{{ errorMessage }}</mat-error>
-      }
-    </mat-form-field>
-  </div>
-  <div class="password">
-    <div class="container">
-      <mat-form-field>
-        <mat-label>Enter your password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" />
-        <button
-          mat-icon-button
-          matSuffix
-          (click)="clickEvent($event)"
-          [attr.aria-label]="'Hide password'"
-          [attr.aria-pressed]="hide"
-        >
-          <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
-        </button>
-      </mat-form-field>
-    </div>
-    <div class="container">
-      <mat-form-field>
-        <mat-label>Enter your password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" />
-        <button
-          mat-icon-button
-          matSuffix
-          (click)="clickEvent($event)"
-          [attr.aria-label]="'Hide password'"
-          [attr.aria-pressed]="hide"
-        >
-          <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
-        </button>
-      </mat-form-field>
-    </div>
-  </div>
-  <div class="content-btn">
-    <button type="submit" class="login">Cadastrar-se</button>
-  </div>
+  <h2>Esqueci Senha</h2>
+
+  <mat-stepper [linear]="true" #stepper>
+    <mat-step [stepControl]="firstFormGroup">
+      <form
+        [formGroup]="firstFormGroup"
+        style="display: flex; flex-direction: column; align-items: center"
+      >
+        <div style="font-size: 18px; font-weight: 500; margin-bottom: 20px">
+          Por favor, coloque seu email:
+        </div>
+        <mat-form-field>
+          <mat-label>E-mail</mat-label>
+          <input matInput formControlName="email" required />
+        </mat-form-field>
+        <div>
+          <button mat-button (click)="verifyEmail()" matStepperNext>
+            Verificar
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup">
+      <form
+        [formGroup]="secondFormGroup"
+        style="display: flex; flex-direction: column; align-items: center"
+      >
+        <div style="font-size: 18px; font-weight: 500; margin-bottom: 20px">
+          Coloque sua nova senha:
+        </div>
+        <mat-form-field>
+          <mat-label>Senha</mat-label>
+          <input
+            matInput
+            formControlName="newPassword"
+            type="password"
+            required
+          />
+        </mat-form-field>
+        <div>
+          <button mat-button matStepperPrevious>Voltar</button>
+          <button mat-button (click)="resetPassword()" matStepperNext>
+            Alterar Senha
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Concluído</ng-template>
+      <p style="margin: 0px">Sua senha foi alterada com sucesso.</p>
+      <p>Por favor faça login novamente.</p>
+    </mat-step>
+  </mat-stepper>
 </div>

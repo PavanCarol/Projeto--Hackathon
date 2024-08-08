@@ -31,10 +31,38 @@
   z-index: 1; /* Certifique-se de que o conteúdo está acima do overlay */
   display: flex;
 }
+
+.animate {
+  animation: slideBack 1s !important;
+}
+
+@keyframes slide {
+  0%{
+    transform: translateX(-100%);
+  }  
+  100%{
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slideBack {
+  0%{
+    transform: translateX(100%);
+  }  
+  100%{
+    transform: translateX(0%);
+  }
+}
+
 .body{
-  background-color: #3E8FF5;
-  height: 100vh;
-  width: 712px;
+  background-color: hsla(213, 90%, 60%, 0.5);
+  backdrop-filter: blur(7px);
+    height: 100vh;
+    width: 732px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  animation: slide 1s;
 }
 .container-body{
   display: flex;
@@ -58,41 +86,34 @@
   height: 100% !important;
 }
 .login{
-  width: 422px;
+  width: 400px;
   color: white;
   background-color: #6BDA4E;
-  height: 68px;
+  height: 57px;
   border: none;
   border-radius: 10px;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
-  column-gap: 10px;
+  column-gap: 18px;
 }
 .login:hover{
-  width: 455px;
-  color: white;
-  background-color: #6BDA4E;
-  height: 68px;
-  border: none;
-  border-radius: 10px;
-  font-size: 30px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  column-gap: 10px;
+  font-size: 25px;
+
+  .mat-icon:hover{
+    height: 25px !important;
+    width: 35px !important;
+  }
 }
 .links{
   margin-top: 30px;
   display: flex;
-  width: 80% !important; 
-  justify-content: center;
+  width: 399px;
+  justify-content: space-between;
   align-items: center;
-  column-gap: 170px;
-  height: 20px;
+   height: 13px;
   a{
     color: white;
     font-size: 18px;
