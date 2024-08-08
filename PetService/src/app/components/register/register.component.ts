@@ -73,4 +73,20 @@ export class RegisterComponent implements OnInit {
       );
     }
   }
+  onVoltarClick(event: Event): void {
+    event.preventDefault(); // Impede o redirecionamento imediato
+
+    const formsElement = document.querySelector('.forms');
+    const imageContainerElement = document.querySelector('.image-container');
+
+    if (formsElement && imageContainerElement) {
+      formsElement.classList.add('slide-out');
+      imageContainerElement.classList.add('slide-out');
+
+      // Aguarde a animação antes de redirecionar
+      setTimeout(() => {
+        this.router.navigate(['/']);
+      }, 1000); // Duração da animação
+    }
+  }
 }

@@ -50,7 +50,19 @@ export class LoginComponent implements OnInit {
     this.hide = !this.hide;
     event.stopPropagation();
   }
+  onCadastreSeClick(): void {
+    // Adiciona a classe de animação ao <body>
+    const bodyElement = document.querySelector('.body');
+    if (bodyElement) {
+      bodyElement.classList.add('slide');
 
+      // Após a animação, navegue para a página de cadastro
+      setTimeout(() => {
+        this.router.navigate(['/cadastro']); // Redireciona para a página de cadastro
+      }, 1000); // Duração da animação
+    }
+  }
+  
   openDialog(
     enterAnimationDuration: string,
     exitAnimationDuration: string
@@ -78,6 +90,7 @@ export class LoginComponent implements OnInit {
             }
             this.router.navigate(['/home']);
           } else {
+            this.dialog.open(DialogErrorComponent);
             console.error('Credenciais inválidas');
             this.errorMessage = 'Credenciais inválidas';
           }
@@ -87,21 +100,6 @@ export class LoginComponent implements OnInit {
           this.errorMessage =
             'Erro ao fazer login. Tente novamente mais tarde.';
         }
-      );
-    }
-  }
-
-  animateElement(event: MouseEvent) {
-    event.preventDefault();
-    const element = document.getElementById('myElement');
-    if (element) {
-      element.classList.add('animate');
-      element.addEventListener(
-        'animationend',
-        () => {
-          element.classList.remove('animate');
-        },
-        { once: true }
       );
     }
   }

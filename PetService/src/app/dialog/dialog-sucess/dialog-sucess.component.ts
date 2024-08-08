@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [],
   template: `
+  <div class="decoration"></div>
+  <div style=" padding: 16px;">
+
 <p class="title" mat-dialog-title>Sucesso no cadastrastro!!</p>
 <div mat-dialog-content class="divP">
   <p>Por favor, realize o login</p>
@@ -14,6 +17,7 @@ import { Router } from '@angular/router';
 <div mat-dialog-actions class="btn">
   <button mat-button (click)="onClose()">OK</button>
 </div>
+  </div>
 `,
   styleUrl: './dialog-sucess.component.scss'
 })

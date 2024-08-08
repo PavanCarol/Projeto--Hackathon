@@ -1,107 +1,155 @@
 <div class="background-overlay"></div>
 <img src="img/clinica-veterinaria.svg" class="background-img" />
 <div class="conteiner">
-  <div class="image-container">
-    <img src="img/vet.png" class="veterinaria" />
-  </div>
+  
   <div class="forms" *ngIf="register">
-    <div style="display: flex; align-items: flex-start; width: 100%">
-      <a href="/" class="btn-voltar" style="text-decoration: none">
-        <mat-icon>arrow_back_ios</mat-icon> Voltar
-      </a>
+    <div style="display: flex;
+    width: 422px !important">
+     <a href="/" class="btn-voltar" (click)="onVoltarClick($event)" style="text-decoration: none">
+      <mat-icon>arrow_back_ios</mat-icon> Voltar
+    </a>
     </div>
     <img src="img/logo_brancoFundo.png" class="logo_brancoFundo" />
     <form id="cadastro" [formGroup]="register" (ngSubmit)="cadastrar()">
-      <div
-        style="
-          display: flex;
-          font-size: 40px;
-          font-weight: 600;
-          margin-bottom: 20px;
-          color: white;
-        "
-      >
-        Criar Conta
-      </div>
-      <div class="formulario__campo">
-        <div>Nome Completo*</div>
-        <input formControlName="nome" class="campo__escrita" />
+      <div style="
+      display: flex; 
+      flex-direction: column;
+      align-items: center;
+      row-gap: 20px;
+      ">
         <div
-          *ngIf="
-            register.get('nome')?.invalid &&
-            (register.get('nome')?.touched || register.get('nome')?.dirty)
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white;
           "
         >
-          <span
-            class="erro_texto"
-            *ngIf="register.get('nome')?.errors?.['required']"
-            >*Campo Obrigatorio.</span
-          >
+          Criar Conta
         </div>
-      </div>
-      <div class="formulario__campo">
-        <div>Email*</div>
-        <input formControlName="email" class="campo__escrita" />
-        <div
-          *ngIf="
-            register.get('email')?.invalid &&
-            (register.get('email')?.touched || register.get('email')?.dirty)
-          "
-        >
-          <span
-            class="erro_texto"
-            *ngIf="register.get('email')?.errors?.['required']"
-            >*Campo Obrigatorio.</span
-          >
-        </div>
-      </div>
-      <div
-        style="
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          column-gap: 10px;
-          width: 377px;
-        "
-      >
-        <div class="formulario__campo">
-          <div>Senha*</div>
-          <input
-            formControlName="senha"
-            type="password"
-            style="border: none; padding: 10px; border-radius: 5px"
-          />
-
+        
+        <div class="input">
+          <mat-form-field style="width: 422px !important">
+            <mat-label>Nome Completo</mat-label>
+            <input matInput type="text" formControlName="nome" />
+          </mat-form-field>
           <div
             *ngIf="
-              register.get('senha')?.invalid &&
-              (register.get('senha')?.touched || register.get('senha')?.dirty)
+              register.get('nome')?.invalid &&
+              (register.get('nome')?.touched ||
+                register.get('nome')?.dirty)
             "
           >
             <span
               class="erro_texto"
-              *ngIf="register.get('senha')?.errors?.['required']"
+              *ngIf="register.get('nome')?.errors?.['required']"
               >*Campo Obrigatorio.</span
             >
           </div>
         </div>
-        <div class="formulario__campo">
-          <div>Confirme sua senha*</div>
-          <input
-            formControlName="confirmSenha"
-            type="password"
-            style="border: none; padding: 10px; border-radius: 5px"
-          />
+        <div class="input">
+          <mat-form-field style="width: 422px !important">
+            <mat-label>Email</mat-label>
+            <input matInput type="text" formControlName="email" />
+          </mat-form-field>
           <div
+            *ngIf="
+              register.get('email')?.invalid &&
+              (register.get('email')?.touched ||
+                register.get('email')?.dirty)
+            "
+          >
+            <span
+              class="erro_texto"
+              *ngIf="register.get('email')?.errors?.['required']"
+              >*Campo Obrigatorio.</span
+            >
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            column-gap: 20px;
+          "
+        >
+          <!-- <div class="formulario__campo">
+            <div>Senha*</div>
+            <input
+              formControlName="senha"
+              type="password"
+              style="border: none; padding: 10px; border-radius: 5px"
+            />
+  
+            <div
+              *ngIf="
+                register.get('senha')?.invalid &&
+                (register.get('senha')?.touched || register.get('senha')?.dirty)
+              "
+            >
+              <span
+                class="erro_texto"
+                *ngIf="register.get('senha')?.errors?.['required']"
+                >*Campo Obrigatorio.</span
+              >
+            </div>
+          </div> -->
+          <div class="input">
+            <mat-form-field style="width: 200px !important">
+              <mat-label>Senha</mat-label>
+              <input matInput type="password" formControlName="senha" />
+            </mat-form-field>
+            <div
+              *ngIf="
+                register.get('senha')?.invalid &&
+                (register.get('senha')?.touched ||
+                  register.get('senha')?.dirty)
+              "
+            >
+              <span
+                class="erro_texto"
+                *ngIf="register.get('senha')?.errors?.['required']"
+                >*Campo Obrigatorio.</span
+              >
+            </div>
+          </div>
+          <!-- <div class="formulario__campo">
+            <div>Confirme sua senha*</div>
+            <input
+              formControlName="confirmSenha"
+              type="password"
+              style="border: none; padding: 10px; border-radius: 5px"
+            />
+            <div
+              *ngIf="register.errors?.['passwordsMismatch'] && (register.get('confirmSenha')?.touched || register.get('confirmSenha')?.dirty)"
+            >
+              <span class="erro_texto">As senhas não correspondem.</span>
+            </div>
+          </div> -->
+          <div class="input">
+            <mat-form-field style="width: 200px !important">
+              <mat-label>Confirmação senha</mat-label>
+              <input matInput type="text" formControlName="confirmSenha" />
+            </mat-form-field>
+            <div
             *ngIf="register.errors?.['passwordsMismatch'] && (register.get('confirmSenha')?.touched || register.get('confirmSenha')?.dirty)"
           >
             <span class="erro_texto">As senhas não correspondem.</span>
           </div>
+          </div>
         </div>
       </div>
       <div class="content-btn" style="margin-top: 20px">
-        <button type="submit" class="cadastro">Cadastrar-se</button>
+        <button type="submit" class="cadastro">Cadastro <mat-icon>how_to_reg</mat-icon></button>
+       
       </div>
     </form>
+  </div>
+  <div class="image-container">
+    <img src="img/vet.png" class="veterinaria" />
   </div>
 </div>

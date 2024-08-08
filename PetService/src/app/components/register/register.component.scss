@@ -26,41 +26,64 @@
   }
 
   .conteiner{
-    display: flex;
-    z-index: 10;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-}
-.vet-image {
-    width: 100%; /* Ajuste conforme necessário */
-    max-width: 300px; /* Ajuste conforme necessário */
-    height: auto;
-    border-radius: 10px; /* Para cantos arredondados */
+    position: relative;
+    z-index: 1; /* Certifique-se de que o conteúdo está acima do overlay */
+    display: inline-flex;
+    animation: slideBack 1s;
+  }
+  .animate {
+    animation: slideBack 1s !important;
+  }
   
+@keyframes slideBack {
+  0%{
+    transform: translateX(-100%);
+  }  
+  100%{
+    transform: translateX(0%);
   }
-  .image-container {
-    display: flex;
-    align-items: flex-end;
-    z-index: 4;
-    width: 600px;
-    height: 100vh;
+}
+@keyframes slideToLeft {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
 
-    img{
-        height: 82%;
-    }
+.forms.slide-out {
+  animation: slideToLeft 1s forwards;
+}
+.image-container {
+  animation: slideBack 2s;
+  display: flex;
+  align-items: flex-end;
+  z-index: 4;
+  position: absolute;
+  left: 519px;
+  top: 0px;
+  bottom: 0px;
+  
+  img{
+    height: 80%;
   }
-  .forms{
-    padding: 15px;
+}
+.image-container.slide-out {
+  animation: slideToLeft 2s forwards;
+  left: 500px;
+}
+.forms{
+    background-color: hsla(213, 90%, 60%, 0.5);
+  backdrop-filter: blur(7px);
+    height: 100vh;
+    width: 732px;
     display: flex;
     flex-direction: column;
-    background-color: #3E8FF5;
-    width: 65vh;
-    height: 90%;
     align-items: center;
-    border-radius: 5px;
-}
+    justify-content: center;
 
+}
 .password{
   display: flex;
   justify-content: center;
@@ -69,10 +92,11 @@
   width: 100%;
   }
   .cadastro{
-    width: 45%;
+    width: 240px;
+    margin-top: 20px;
     color: white;
     background-color: #6BDA4E;
-    height: 68px;
+    height: 57px;
     border: none;
     border-radius: 10px;
     font-size: 20px;
@@ -80,7 +104,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: 10px;
+    column-gap: 18px;
   }
   .content-btn{
     width: 100%;
@@ -108,5 +132,5 @@
   border: none;
   padding: 10px;
   border-radius: 5px;
-  width: 358px;
+  width: 400px !important
 }

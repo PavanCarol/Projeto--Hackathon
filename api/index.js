@@ -186,6 +186,7 @@ app.post("/api/login", async (req, res) => {
           sucesso: false,
           mensagem: "Credenciais inválidas",
         });
+        
       }
     } else {
       throw new Error("Network response was not ok " + response.statusText);

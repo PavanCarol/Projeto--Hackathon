@@ -53,7 +53,18 @@
     transform: translateX(0%);
   }
 }
+@keyframes slideToLeft {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
 
+.body.slide {
+  animation: slideToLeft 1s forwards;
+}
 .body{
   background-color: hsla(213, 90%, 60%, 0.5);
   backdrop-filter: blur(7px);
@@ -99,14 +110,14 @@
   justify-content: center;
   column-gap: 18px;
 }
-.login:hover{
-  font-size: 25px;
+// .login:hover{
+//   font-size: 25px;
 
-  .mat-icon:hover{
-    height: 25px !important;
-    width: 35px !important;
-  }
-}
+//   .mat-icon:hover{
+//     height: 25px !important;
+//     width: 35px !important;
+//   }
+// }
 .links{
   margin-top: 30px;
   display: flex;

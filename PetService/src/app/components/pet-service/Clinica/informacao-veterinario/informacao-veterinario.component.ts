@@ -55,13 +55,13 @@ export class InformacaoVeterinarioComponent implements OnInit {
     );
   }
 
-  getStatusNome(valor: number): string {
-    const statusNomes: { [key: number]: string } = {
-      0: 'Confirmado',
-      1: 'Concluído',
-      2: 'Cancelado',
+  getStatusNome(valor: number): { nome: string; classe: string } {
+    const statusNomes: { [key: number]: { nome: string; classe: string } } = {
+      0: { nome: 'Confirmado', classe: 'status-confirmado' },
+      1: { nome: 'Concluído', classe: 'status-concluido' },
+      2: { nome: 'Cancelado', classe: 'status-cancelado' },
     };
-    return statusNomes[valor] || 'Desconhecido';
+    return statusNomes[valor] || { nome: 'Desconhecido', classe: 'status-desconhecido' };
   }
 
   formatarData(dataHora: string): string {

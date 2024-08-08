@@ -23,6 +23,7 @@
                   'data:image/png;base64,' + clinica.cra6a_imagemveterinario
                 "
                 alt="Imagem do Veterinário"
+                style="border-radius: 50%;"
               />
             </a>
           </div>
@@ -44,18 +45,18 @@
       row-gap: 20px;
     "
   >
-    <table class="consultas" *ngFor="let agendamento of agendamentosClinica">
-      <tbody>
-        <tr>
-          <td style="font-weight: 600; width: 200px">Nome do Pet</td>
-          <td style="font-weight: 600; width: 200px">Data</td>
-          <td style="font-weight: 600; width: 200px">Horário</td>
-          <td style="font-weight: 600; width: 200px">Dr(a).</td>
-          <td style="font-weight: 600; width: 200px">Status</td>
+    <table>
+      <thead>
+        <tr class="title">
+          <th width="10%">Nome do Pet </th>
+          <th width="10%">Data</th>
+          <th width="10%">Horário</th>
+          <th width="10%">Dr(a).</th>
+          <th width="10%">Status</th>
         </tr>
-      </tbody>
+      </thead>
       <tbody>
-        <tr>
+        <tr *ngFor="let agendamento of agendamentosClinica">
           <td>{{ agendamento.nomePet }}</td>
           <td>{{ formatarData(agendamento.cra6a_horariodaconsulta) }}</td>
           <td>{{ formatarHora(agendamento.cra6a_horariodaconsulta) }}</td>

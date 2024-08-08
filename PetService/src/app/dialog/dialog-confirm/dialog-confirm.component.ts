@@ -5,13 +5,20 @@ import { MatDialogRef } from '@angular/material/dialog';
   selector: 'app-dialog-confirm',
   standalone: true,
   imports: [],
-  template: ` <h1 mat-dialog-title>Alterações Salvas</h1>
-    <div mat-dialog-content>
+  template: ` 
+ <div class="decoration"></div>
+ <div class="body">
+
+ <p class="title" mat-dialog-title>Alterações Salvas</p>
+    <div mat-dialog-content class="p">
       <p>As alterações foram salvas com sucesso.</p>
+      <p>Por favor faça login novamente.</p>
     </div>
     <div mat-dialog-actions>
       <button mat-button (click)="onClose()">OK</button>
-    </div>`,
+    </div>
+</div>
+    `,
   styleUrl: './dialog-confirm.component.scss',
 })
 export class DialogConfirmComponent {

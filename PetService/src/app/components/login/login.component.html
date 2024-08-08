@@ -11,39 +11,39 @@
             <mat-form-field style="width: 400px !important">
               <mat-label>Email</mat-label>
               <input matInput type="email" formControlName="email" />
-              <div
-                *ngIf="
-                  loginForm.get('email')?.invalid &&
-                  (loginForm.get('email')?.touched ||
-                    loginForm.get('email')?.dirty)
-                "
-              >
-                <span
-                  class="erro_texto"
-                  *ngIf="loginForm.get('email')?.errors?.['required']"
-                  >*Campo Obrigatorio.</span
-                >
-              </div>
             </mat-form-field>
+            <div
+              *ngIf="
+                loginForm.get('email')?.invalid &&
+                (loginForm.get('email')?.touched ||
+                  loginForm.get('email')?.dirty)
+              "
+            >
+              <span
+                class="erro_texto"
+                *ngIf="loginForm.get('email')?.errors?.['required']"
+                >*Campo Obrigatorio.</span
+              >
+            </div>
           </div>
           <div class="input">
             <mat-form-field style="width: 400px !important">
               <mat-label>Senha</mat-label>
               <input matInput type="password" formControlName="senha" />
-              <div
-                *ngIf="
-                  loginForm.get('senha')?.invalid &&
-                  (loginForm.get('senha')?.touched ||
-                    loginForm.get('senha')?.dirty)
-                "
-              >
-                <span
-                  class="erro_texto"
-                  *ngIf="loginForm.get('senha')?.errors?.['required']"
-                  >*Campo Obrigatorio.</span
-                >
-              </div>
             </mat-form-field>
+            <div
+              *ngIf="
+                loginForm.get('senha')?.invalid &&
+                (loginForm.get('senha')?.touched ||
+                  loginForm.get('senha')?.dirty)
+              "
+            >
+              <span
+                class="erro_texto"
+                *ngIf="loginForm.get('senha')?.errors?.['required']"
+                >*Campo Obrigatorio.</span
+              >
+            </div>
           </div>
           <button type="submit" class="login">
             Entrar
@@ -54,7 +54,7 @@
         </div>
       </form>
       <div class="links">
-        <a href="#" (click)="animateElement($event)">Cadastre-se</a>
+        <a (click)="onCadastreSeClick()">Cadastre-se</a>
         <a (click)="openDialog('300ms', '300ms')">Esqueci Senha</a>
       </div>
     </div>

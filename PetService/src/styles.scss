@@ -143,3 +143,27 @@ input:-internal-autofill-selected {
   align-items: center !important;
   justify-content: center !important;
 }
+.mat-mdc-form-field-subscript-wrapper, .mat-mdc-form-field-bottom-align::before {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--mat-form-field-subscript-text-font);
+  line-height: var(--mat-form-field-subscript-text-line-height);
+  font-size: var(--mat-form-field-subscript-text-size);
+  letter-spacing: var(--mat-form-field-subscript-text-tracking);
+  font-weight: var(--mat-form-field-subscript-text-weight);
+  display: none !important;
+}
+
+.erro_texto{
+  color:  var(--mdc-filled-text-field-error-label-text-color);
+  font-weight: 500;
+}
+
+.mdc-list-item.mdc-list-item--with-one-line .mdc-list-item__start {
+  align-self: center;
+  margin-top: 0;
+  color: black;
+}
+.mdc-list-item__primary-text {
+  color: black;
+}
