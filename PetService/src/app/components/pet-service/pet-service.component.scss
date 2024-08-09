@@ -1,14 +1,9 @@
 :host *{
   transition: all 500ms ease-in-out;
-    border-radius: 0px;
-    border-top-right-radius: 10px;
+  border-radius: 0px;
+  padding-left: 0px;
 }
-.textTollBar {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+
   mat-toolbar {
     position: relative;
     z-index: 5;
@@ -23,3 +18,25 @@
   mat-sidenav,mat-sidenav-content{
     transition: all 500ms ease-in-out;
   }
+  .user{
+    font-size: 36px !important;
+  }
+  .mat-icon {
+    -webkit-user-select: none;
+    user-select: none;
+    background-repeat: no-repeat;
+    display: inline-block;
+    fill: currentColor;
+    height: 37px !important;
+    width: 37px !important;
+    overflow: hidden;
+}
+
+.textTollBar {
+  width: calc(100% - 0px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: margin-left 500ms ease-in-out;
+}
+

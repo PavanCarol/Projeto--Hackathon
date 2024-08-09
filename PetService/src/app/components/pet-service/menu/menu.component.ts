@@ -56,9 +56,9 @@ export class MenuComponent {
       router: 'clinic',
     },
     {
-      icon: 'person',
-      label: 'Perfil',
-      router: 'perfil',
+      icon: 'settings',
+      label: 'Configuração',
+      router: 'settings',
     },
   ]);
 

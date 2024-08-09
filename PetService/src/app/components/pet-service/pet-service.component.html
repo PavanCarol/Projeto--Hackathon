@@ -1,16 +1,30 @@
 <mat-toolbar class="mat-elevation-z3">
-  <div class="textTollBar">
+  <mat-sidenav
+    opened
+    mode="side"
+    [style.width]="sidenavWidth()"
+    style="height: 100vh"
+  >
+    <app-menu [collapsed]="collapsed()" />
+  </mat-sidenav>
+  <div class="textTollBar" [ngStyle]="{ 'margin-left': sidenavWidth() }">
     <button mat-icon-button (click)="collapsed.set(!collapsed())">
       <mat-icon>menu</mat-icon>
     </button>
-
-    <div >Olá, {{ userName }}</div>
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+        font-weight: 500;
+      "
+    >
+      <mat-icon class="user" style="margin-right: 5px">account_circle</mat-icon
+      >{{ userName }}
+    </div>
   </div>
 </mat-toolbar>
-<mat-sidenav-container >
-  <mat-sidenav opened mode="side" [style.width]="sidenavWidth()" style="height: 100vh;">
-    <app-menu [collapsed]="collapsed()" />
-  </mat-sidenav>
+<mat-sidenav-container>
   <mat-sidenav-content class="content" [style.margin-left]="sidenavWidth()">
     <router-outlet></router-outlet>
   </mat-sidenav-content>

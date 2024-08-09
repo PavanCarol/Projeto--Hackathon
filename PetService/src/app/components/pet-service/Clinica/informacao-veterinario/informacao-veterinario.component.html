@@ -5,84 +5,120 @@
     <mat-icon>arrow_forward_ios</mat-icon>
     <a href="informacao" class="AInformacao">Informações do Veterinário</a>
   </div>
-  <div style="display: flex;">
+  <div style="display: flex">
     <div *ngIf="clinica" class="allInformation">
-      <div style="display: flex;
-      align-items: center;
-      justify-content: space-around;">
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+        "
+      >
         <img
-        [src]="'data:image/png;base64,' + clinica.cra6a_imagemveterinario"
-        alt="Imagem do Veterinário" 
-        style="border-radius: 50%;
-      width: 157px;"
-      />
-      <h2 style="margin: 0px; display: flex; align-items: center;">
-        Dr<span style="font-size: 15px"> (a) </span> :{{
-          clinica.cra6a_nomeveterinario
-        }}
-      </h2>
+          [src]="'data:image/png;base64,' + clinica.cra6a_imagemveterinario"
+          alt="Imagem do Veterinário"
+          style="border-radius: 50%; width: 157px"
+        />
+        <h2 style="margin: 0px; display: flex; align-items: center">
+          Dr<span style="font-size: 15px"> (a) </span> :{{
+            clinica.cra6a_nomeveterinario
+          }}
+        </h2>
       </div>
-    <div class="informationVeterinario">
-      <p style="margin: 0px; display: flex; align-items: center;">
-        <img src="img/equipamento-medico.png" width="24">
-        <span style="font-weight: 600;margin: 0px 5px;"> Atuação no mercado: </span>
-        {{ clinica.cra6a_anoatuacao }} anos
-      </p>
-      <p style="margin: 0px; display: flex; align-items: center;">
-        <mat-icon>event</mat-icon>
-        <span style="font-weight: 600;margin: 0px 5px;"> Data de Nascimento: </span>
-        {{ clinica.cra6a_datanascimento | date : "dd/MM/yyyy" }}
-      </p>
-      <p style="margin: 0px; display: flex; align-items: center;">
-        <mat-icon>school</mat-icon>
-        <span style="font-weight: 600;margin: 0px 5px;"> Faculdade: </span>
-        {{ clinica.cra6a_faculdade }}
-      </p>
-      <p style="margin: 0px; display: flex; align-items: center;">
-        <mat-icon>workspace_premium</mat-icon>
-        <span style="font-weight: 600;margin: 0px 5px;"> Pós-Graduação: </span>
-        {{ clinica.cra6a_posgraduacao }}
-      </p>
+      <div class="informationVeterinario">
+        <p
+          style="
+            margin: 0px;
+            display: flex;
+            align-items: center;
+            margin-left: 40px;
+          "
+        >
+          <img src="img/equipamento-medico.png" width="24" />
+          <span style="font-weight: 600; margin: 0px 5px">
+            Atuação no mercado:
+          </span>
+          {{ clinica.cra6a_anoatuacao }} anos
+        </p>
+        <p
+          style="
+            margin: 0px;
+            display: flex;
+            align-items: center;
+            margin-left: 40px;
+          "
+        >
+          <mat-icon>event</mat-icon>
+          <span style="font-weight: 600; margin: 0px 5px">
+            Data de Nascimento:
+          </span>
+          {{ clinica.cra6a_datanascimento | date : "dd/MM/yyyy" }}
+        </p>
+        <p
+          style="
+            margin: 0px;
+            display: flex;
+            align-items: center;
+            margin-left: 40px;
+          "
+        >
+          <mat-icon>school</mat-icon>
+          <span style="font-weight: 600; margin: 0px 5px"> Faculdade: </span>
+          {{ clinica.cra6a_faculdade }}
+        </p>
+        <p
+          style="
+            margin: 0px;
+            display: flex;
+            align-items: center;
+            margin-left: 40px;
+          "
+        >
+          <mat-icon>workspace_premium</mat-icon>
+          <span style="font-weight: 600; margin: 0px 5px">
+            Pós-Graduação:
+          </span>
+          {{ clinica.cra6a_posgraduacao }}
+        </p>
+      </div>
     </div>
-  </div>
-  
-  <div *ngIf="!clinica">
-    <p>Carregando informações da clínica...</p>
-  </div>
+    <div></div>
 
- 
+    <div *ngIf="!clinica">
+      <p>Carregando informações da clínica...</p>
+    </div>
   </div>
 </div>
 
 <div
-*ngIf="agendamentos.length > 0"
-style="
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  row-gap: 20px;
-"
+  *ngIf="agendamentos.length > 0"
+  style="
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 20px;
+  "
 >
-<h2>Agendamentos do Veterinário</h2>
-<table >
-  <thead>
-   <tr class="title">
-    <th width="10%">Nome do Pet</th>
-    <th width="10%">Data</th>
-    <th width="10%">Horário</th>
-    <th width=" 10%">Status</th>
- </tr>
-</thead>
-<tbody>
-  <tr *ngFor="let agendamento of agendamentos">
-    <td>{{ agendamento.nomePet }}</td>
-          <td>{{ formatarData(agendamento.cra6a_horariodaconsulta) }}</td>
-          <td>{{ formatarHora(agendamento.cra6a_horariodaconsulta) }}</td>
-          <td [ngClass]="getStatusNome(agendamento.cra6a_status).classe">
-            {{ getStatusNome(agendamento.cra6a_status).nome }}
-          </td>
-  </tr>
-</tbody>
-</table>
+  <h2>Agendamentos do Veterinário</h2>
+  <table>
+    <thead>
+      <tr class="title">
+        <th width="10%">Nome do Pet</th>
+        <th width="10%">Data</th>
+        <th width="10%">Horário</th>
+        <th width=" 10%">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let agendamento of agendamentos">
+        <td>{{ agendamento.nomePet }}</td>
+        <td>{{ formatarData(agendamento.cra6a_horariodaconsulta) }}</td>
+        <td>{{ formatarHora(agendamento.cra6a_horariodaconsulta) }}</td>
+        <td [ngClass]="getStatusNome(agendamento.cra6a_status).classe">
+          {{ getStatusNome(agendamento.cra6a_status).nome }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

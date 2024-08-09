@@ -61,7 +61,7 @@ button{ font-family: "Poppins", sans-serif; }
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
   background-color: var(--mdc-filled-text-field-container-color);
   border-radius: 10px !important;
-  height: 60px !important;
+  height: auto !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -167,3 +167,4 @@ input:-internal-autofill-selected {
 .mdc-list-item__primary-text {
   color: black;
 }
+

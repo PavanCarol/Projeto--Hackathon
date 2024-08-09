@@ -6,7 +6,6 @@ import { CalendarioComponent } from './components/pet-service/calendario/calenda
 import { PetServiceComponent } from './components/pet-service/pet-service.component';
 import { ClinicaVeterinariaComponent } from './components/pet-service/Clinica/clinica-veterinaria/clinica-veterinaria.component';
 import { InformacaoVeterinarioComponent } from './components/pet-service/Clinica/informacao-veterinario/informacao-veterinario.component';
-import { ConfiguracaoComponent } from './components/pet-service/configuracao/configuracao.component';
 import { DashboardComponent } from './components/pet-service/dashboard/dashboard.component';
 import { PerfilComponent } from './components/pet-service/perfil/perfil.component';
 import { AuthGuard } from './guards/auth.guard';
@@ -47,16 +46,9 @@ export const routes: Routes = [
         path: 'information/:id',
         component: InformacaoVeterinarioComponent,
       },
-      // {
-      //   path:'mensagem',
-      //   component:MensagemComponent
-      // },
-      // {
-      //   path: 'settings',
-      //   component: ConfiguracaoComponent,
-      // },
+
       {
-        path: 'perfil',
+        path: 'settings',
         component: PerfilComponent,
       },
     ],

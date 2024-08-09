@@ -1,0 +1,65 @@
+<div class="borda"></div>
+<div class="conteiner">
+  <h1 mat-dialog-title>Editar Categoria</h1>
+  <div mat-dialog-content>
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        column-gap: 32px;
+      "
+    >
+      <mat-form-field>
+        <mat-label>Tipo de Banho</mat-label>
+        <input
+          matInput
+          [(ngModel)]="data.categoria.cra6a_tipodebanho"
+          disabled="true"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Porte</mat-label>
+        <input
+          matInput
+          [(ngModel)]="data.categoria.cra6a_porte"
+          disabled="true"
+        />
+      </mat-form-field>
+    </div>
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        column-gap: 32px;
+        margin: 20px 0px;
+      "
+    >
+      <mat-form-field>
+        <mat-label>Pelagem</mat-label>
+        <input
+          matInput
+          [(ngModel)]="data.categoria.cra6a_pelagem"
+          disabled="true"
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Valor</mat-label>
+        <input
+          matInput
+          [(ngModel)]="data.categoria.cra6a_valor"
+          type="number"
+        />
+      </mat-form-field>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onSave()">Salvar</button>
+    <button mat-button (click)="onNoClick()">Cancelar</button>
+  </div>
+</div>

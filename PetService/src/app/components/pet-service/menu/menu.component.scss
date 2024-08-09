@@ -1,9 +1,11 @@
 .menu {
-    background-color: rgba(244, 94, 19, 0.8352941176);
-  height: 94vh;
+  // background-color: rgb(239 117 55 / 84%);
+  background-color: rgb(247, 148, 97);
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
   }
 
 img {
@@ -83,3 +85,18 @@ img {
     background-color: var(--mdc-list-list-item-label-text-color);
     width: 80%;
   }
+
+  .menu-item:hover{
+    background-color: #ff8549;
+  }
+
+  .mdc-list-item--with-leading-icon:hover .mdc-list-item__start {
+    color: white !important;
+}
+.mdc-list-item:hover .mdc-list-item__primary-text {
+  color: white !important;
+}
+
+span{
+  font-weight: 500;
+}

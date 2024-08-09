@@ -137,6 +137,114 @@ app.post("/api/cadastro", async (req, res) => {
     });
   }
 });
+// Função para mapear os valores de texto para os valores numéricos esperados pelo Dataverse
+function mapToChoiceValue(field, value) {
+  const mappings = {
+    cra6a_tipodebanho: {
+      Banho: 1,
+      "Banho e Tosa na máquina": 2,
+      "Banho e Tosa na tesoura": 3,
+      "Banho e Tosa higiênica": 4,
+      "Banho e Tosa completa": 5,
+    },
+    cra6a_porte: {
+      Mini: 1,
+      Pegueno: 2,
+      Médio: 3,
+      Grande: 4,
+    },
+    cra6a_pelagem: {
+      Médio: 1,
+      Curto: 2,
+      Longo: 3,
+    },
+  };
+
+  return mappings[field] ? mappings[field][value] : null;
+}
+// Rota para tratar a categoriaBanho
+app.post("/api/categoriaBanho", async (req, res) => {
+  try {
+    const { tipoBanho, porte, pelagem, valor } = req.body; // Captura os dados do corpo da requisição
+    const token = await getAuthToken(); // Obtém o token de autenticação
+
+    // URL para o endpoint da API do Dataverse ou outro serviço
+    const url =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos";
+
+    // Mapear os valores de texto para os valores numéricos de Choice
+    const record = {
+      cra6a_tipodebanho: mapToChoiceValue("cra6a_tipodebanho", tipoBanho),
+      cra6a_porte: mapToChoiceValue("cra6a_porte", porte),
+      cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", pelagem),
+      cra6a_valor: Number(parseFloat(valor).toFixed(4)), // Formata o valor como Currency
+    };
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(record),
+    });
+
+    console.log(`Status da Resposta: ${response.status}`);
+    if (response.ok) {
+      res
+        .status(201)
+        .json({ sucesso: true, mensagem: "Registro criado com sucesso!" });
+    } else {
+      const errorResponse = await response.text();
+      res
+        .status(response.status)
+        .json({ sucesso: false, mensagem: errorResponse });
+    }
+  } catch (error) {
+    console.error("Erro ao criar registro:", error.message);
+    res
+      .status(500)
+      .json({ sucesso: false, mensagem: "Erro ao criar registro." });
+  }
+});
+app.get("/api/getcategoriaBanho", async (req, res) => {
+  try {
+    const token = await getAuthToken(); // Obtém o token de autenticação
+
+    // URL para o endpoint da API do Dataverse ou outro serviço
+    const url =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos";
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      res.status(200).json(data.value); // Presume que os dados estão em `value`
+    } else {
+      const errorResponse = await response.text();
+      res
+        .status(response.status)
+        .json({ sucesso: false, mensagem: errorResponse });
+    }
+  } catch (error) {
+    console.error("Erro ao buscar registros:", error.message);
+    res
+      .status(500)
+      .json({ sucesso: false, mensagem: "Erro ao buscar registros." });
+  }
+});
 
 // Rota de login que usa o token de autenticação
 app.post("/api/login", async (req, res) => {
@@ -186,7 +294,6 @@ app.post("/api/login", async (req, res) => {
           sucesso: false,
           mensagem: "Credenciais inválidas",
         });
-        
       }
     } else {
       throw new Error("Network response was not ok " + response.statusText);

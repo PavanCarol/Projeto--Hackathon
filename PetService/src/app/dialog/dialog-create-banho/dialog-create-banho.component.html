@@ -1,0 +1,112 @@
+<div class="borda"></div>
+<div class="conteiner">
+  <h2>Criar tabela de banho</h2>
+
+  <form (ngSubmit)="cadastrar()">
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        column-gap: 32px;
+      "
+    >
+      <div class="input">
+        <mat-form-field class="example-full-width" style="width: 200px">
+          <mat-label>Tipo de banho</mat-label>
+          <input
+            aria-label="Number"
+            matInput
+            [formControl]="registerTipoBanho"
+            [matAutocomplete]="autoTipoBanho"
+          />
+          <mat-autocomplete
+            #autoTipoBanho="matAutocomplete"
+            style="width: 200px"
+          >
+            <mat-option
+              *ngFor="let tipoBanho of filteredTipoBanho | async"
+              [value]="tipoBanho"
+            >
+              {{ tipoBanho }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+
+      <div class="input">
+        <mat-form-field class="example-full-width">
+          <mat-label>Porte</mat-label>
+          <input
+            aria-label="Number"
+            matInput
+            [formControl]="registerPorte"
+            [matAutocomplete]="autoPorte"
+          />
+          <mat-autocomplete #autoPorte="matAutocomplete">
+            <mat-option
+              *ngFor="let porte of filteredPorte | async"
+              [value]="porte"
+            >
+              {{ porte }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+    </div>
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        column-gap: 32px;
+        margin: 20px 0px;
+      "
+    >
+      <div class="input">
+        <mat-form-field class="example-full-width" style="width: 200px">
+          <mat-label>Pelagem</mat-label>
+          <input
+            aria-label="Number"
+            matInput
+            [formControl]="registerPelagem"
+            [matAutocomplete]="autoPelagem"
+          />
+          <mat-autocomplete #autoPelagem="matAutocomplete">
+            <mat-option
+              *ngFor="let pelagem of filteredPelagem | async"
+              [value]="pelagem"
+            >
+              {{ pelagem }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="input">
+        <mat-form-field
+          class="example-full-width"
+          style="width: 220px !important"
+        >
+          <mat-label>Valor</mat-label>
+          <input matInput placeholder="0" [formControl]="valor" />
+          <span matTextPrefix>R$&nbsp;</span>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div
+      style="
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <button type="submit" class="btnCreateBanho">
+        <mat-icon>save</mat-icon>Criar
+      </button>
+    </div>
+  </form>
+</div>

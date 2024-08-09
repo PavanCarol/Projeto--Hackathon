@@ -1,10 +1,10 @@
 <div class="body">
   <div class="header">
-    <h2>Clínica</h2>
+    <h2 style="margin: 10px 5px">Clínica</h2>
   </div>
   <div class="hearder-vet">
     <a (click)="openDialog('300ms', '300ms')" class="btnCreateVet">
-      <mat-icon>add_circle</mat-icon>Criar novo registro
+      <mat-icon>add_circle</mat-icon>Criar registro
     </a>
   </div>
   <div class="allVet">
@@ -23,7 +23,7 @@
                   'data:image/png;base64,' + clinica.cra6a_imagemveterinario
                 "
                 alt="Imagem do Veterinário"
-                style="border-radius: 50%;"
+                style="border-radius: 50%"
               />
             </a>
           </div>
@@ -38,6 +38,7 @@
   </div>
   <div
     style="
+      margin-top: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -45,10 +46,11 @@
       row-gap: 20px;
     "
   >
+    <h2>Agendamentos dos Veterinários</h2>
     <table>
       <thead>
         <tr class="title">
-          <th width="10%">Nome do Pet </th>
+          <th width="10%">Nome do Pet</th>
           <th width="10%">Data</th>
           <th width="10%">Horário</th>
           <th width="10%">Dr(a).</th>

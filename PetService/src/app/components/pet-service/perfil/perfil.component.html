@@ -1,37 +1,144 @@
 <div class="container">
   <h2>Configuração no Perfil</h2>
 
-  <div class="body">
-    <div class="text">
-      <div class="title">Nome da conta</div>
-      <input type="text" [(ngModel)]="profile.name" [disabled]="isDisabled" />
+  <div
+    style="
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+    "
+  >
+    <div class="body">
+      <div class="input">
+        <mat-form-field
+          style="
+            width: 100% !important
+          ;
+            border-radius: 10px !important;
+          "
+        >
+          <mat-label>Nome da conta</mat-label>
+          <input
+            style="padding: 0px"
+            matInput
+            type="text"
+            [(ngModel)]="profile.name"
+            [disabled]="isDisabled"
+          />
+        </mat-form-field>
+      </div>
+
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div class="input">
+          <mat-form-field
+            style="width: 500px !important; border-radius: 10px !important"
+          >
+            <mat-label>E-mail</mat-label>
+            <input
+              matInput
+              style="padding: 0px"
+              type="email"
+              [(ngModel)]="profile.email"
+              [disabled]="isDisabled"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="input">
+          <mat-form-field
+            style="width: 500px !important; border-radius: 10px !important"
+          >
+            <mat-label>Senha</mat-label>
+            <input
+              matInput
+              type="password"
+              style="padding: 0px"
+              [(ngModel)]="profile.password"
+              [disabled]="isDisabled"
+            />
+          </mat-form-field>
+        </div>
+      </div>
     </div>
-    <div class="text">
-      <div class="title">E-mail</div>
-      <input type="text" [(ngModel)]="profile.email" [disabled]="isDisabled" />
-    </div>
-    <div class="text">
-      <div class="title">Senha</div>
-      <input
-        type="text"
-        [(ngModel)]="profile.password"
-        [disabled]="isDisabled"
-      />
+
+    <div class="buttons">
+      <button class="alteracao" *ngIf="isDisabled" (click)="toggleEdit()">
+        <mat-icon>edit</mat-icon>
+        Alterar
+      </button>
+      <button class="cancel" *ngIf="!isDisabled" (click)="toggleEdit()">
+        <mat-icon>save</mat-icon>
+        Cancelar
+      </button>
+      <button class="save" *ngIf="!isDisabled" (click)="saveChanges()">
+        <mat-icon>save</mat-icon>
+        Salvar
+      </button>
     </div>
   </div>
+  <div
+    style="
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin: 10px 0px;
+    "
+  >
+    <div class="separation"></div>
+  </div>
 
-  <div class="buttons">
-    <button class="alteracao" *ngIf="isDisabled" (click)="toggleEdit()">
-      <mat-icon>edit</mat-icon>
-      Alterar
-    </button>
-    <button class="cancel" *ngIf="!isDisabled" (click)="toggleEdit()">
-      <mat-icon>save</mat-icon>
-      Cancelar
-    </button>
-    <button class="save" *ngIf="!isDisabled" (click)="saveChanges()">
-      <mat-icon>save</mat-icon>
-      Salvar
-    </button>
+  <h2>Configuração Banho e Tosa</h2>
+
+  <button class="btnCreateBanho" (click)="openDialogBanho('300ms', '300ms')">
+    <mat-icon>add_circle</mat-icon>Criar categoria banho
+  </button>
+  <div
+    style="
+      margin: 0px 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    "
+  >
+    <table>
+      <thead>
+        <tr class="title">
+          <th width="25%">Tipo de Banho</th>
+          <th width="25%">Porte</th>
+          <th width="25%">Pelagem</th>
+          <th width="25%">Valor</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          class="Detalhes"
+          *ngFor="let categoria of categoriasBanho"
+          (click)="openDialogTable(categoria)"
+          (mouseenter)="showEditIcon = true"
+          (mouseleave)="showEditIcon = false"
+        >
+          <td>{{ categoria.cra6a_tipodebanho }}</td>
+          <td>{{ categoria.cra6a_porte }}</td>
+          <td>{{ categoria.cra6a_pelagem }}</td>
+          <td>{{ categoria.cra6a_valor | currency : "BRL" }}</td>
+          <td class="edit-icon">
+            <mat-icon
+              *ngIf="showEditIcon"
+              (click)="openDialogTable(categoria); $event.stopPropagation()"
+              >edit</mat-icon
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
