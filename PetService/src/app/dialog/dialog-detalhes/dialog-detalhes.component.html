@@ -58,8 +58,13 @@
       </mat-form-field>
     </div>
   </div>
-  <div mat-dialog-actions>
-    <button mat-button (click)="onSave()">Salvar</button>
+  <div mat-dialog-actions style="display: flex; column-gap: 20px">
     <button mat-button (click)="onNoClick()">Cancelar</button>
+    <button mat-button (click)="onDelete()" style="color: rgb(247, 52, 52)">
+      Excluir
+    </button>
+    <button mat-button (click)="onSave()" style="color: rgb(86, 238, 86)">
+      Salvar
+    </button>
   </div>
 </div>

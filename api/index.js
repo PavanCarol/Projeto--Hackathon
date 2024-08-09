@@ -138,29 +138,34 @@ app.post("/api/cadastro", async (req, res) => {
   }
 });
 // Função para mapear os valores de texto para os valores numéricos esperados pelo Dataverse
-function mapToChoiceValue(field, value) {
-  const mappings = {
-    cra6a_tipodebanho: {
-      Banho: 1,
-      "Banho e Tosa na máquina": 2,
-      "Banho e Tosa na tesoura": 3,
-      "Banho e Tosa higiênica": 4,
-      "Banho e Tosa completa": 5,
-    },
-    cra6a_porte: {
-      Mini: 1,
-      Pegueno: 2,
-      Médio: 3,
-      Grande: 4,
-    },
-    cra6a_pelagem: {
-      Médio: 1,
-      Curto: 2,
-      Longo: 3,
-    },
+function mapTipoBanhoValue(value) {
+  const tipoBanhoMap = {
+    Banho: 1,
+    "Banho e Tosa na máquina": 2,
+    "Banho e Tosa na tesoura": 3,
+    "Banho e Tosa higiênica": 4,
+    "Banho e Tosa completa": 5,
   };
+  return tipoBanhoMap[value] || null;
+}
 
-  return mappings[field] ? mappings[field][value] : null;
+function mapPorteValue(value) {
+  const porteMap = {
+    Mini: 1,
+    Pegueno: 2,
+    Médio: 3,
+    Grande: 4,
+  };
+  return porteMap[value] || null;
+}
+
+function mapPelagemValue(value) {
+  const pelagemMap = {
+    Curto: 1,
+    Médio: 2,
+    Longo: 3,
+  };
+  return pelagemMap[value] || null;
 }
 // Rota para tratar a categoriaBanho
 app.post("/api/categoriaBanho", async (req, res) => {
@@ -174,9 +179,9 @@ app.post("/api/categoriaBanho", async (req, res) => {
 
     // Mapear os valores de texto para os valores numéricos de Choice
     const record = {
-      cra6a_tipodebanho: mapToChoiceValue("cra6a_tipodebanho", tipoBanho),
-      cra6a_porte: mapToChoiceValue("cra6a_porte", porte),
-      cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", pelagem),
+      cra6a_tipodebanho: mapTipoBanhoValue(tipoBanho),
+      cra6a_porte: mapPorteValue(porte),
+      cra6a_pelagem: mapPelagemValue(pelagem),
       cra6a_valor: Number(parseFloat(valor).toFixed(4)), // Formata o valor como Currency
     };
 
@@ -243,6 +248,94 @@ app.get("/api/getcategoriaBanho", async (req, res) => {
     res
       .status(500)
       .json({ sucesso: false, mensagem: "Erro ao buscar registros." });
+  }
+});
+app.delete("/api/categoriaBanho/:id", async (req, res) => {
+  try {
+    const token = await getAuthToken(); // Obtém o token de autenticação
+    const id = req.params.id; // Obtém o ID da categoria a ser deletada
+
+    // URL para deletar a categoria específica com base no ID fornecido
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos(${id})`;
+
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      res
+        .status(204)
+        .json({ sucesso: true, mensagem: "Categoria deletada com sucesso!" });
+    } else {
+      const errorResponse = await response.text();
+      res
+        .status(response.status)
+        .json({ sucesso: false, mensagem: errorResponse });
+    }
+  } catch (error) {
+    console.error("Erro ao deletar a categoria:", error.message);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao deletar a categoria.",
+    });
+  }
+});
+
+app.patch("/api/categoriaBanho/:id", async (req, res) => {
+  try {
+    const token = await getAuthToken(); // Obtém o token de autenticação
+    const id = req.params.id; // Obtém o ID da categoria a ser atualizada
+    const data = req.body; // Dados da categoria a serem atualizados
+
+    // Mapear os valores de texto para os respectivos números
+    const updatedData = {
+      cra6a_tipodebanho: mapToChoiceValue(
+        "cra6a_tipodebanho",
+        data.cra6a_tipodebanho
+      ),
+      cra6a_porte: mapToChoiceValue("cra6a_porte", data.cra6a_porte),
+      cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", data.cra6a_pelagem),
+      cra6a_valor: data.cra6a_valor, // Este não precisa de mapeamento, pois é numérico
+    };
+
+    // URL para atualizar a categoria específica com base no ID fornecido
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos(${id})`;
+
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (response.ok) {
+      res
+        .status(204)
+        .json({ sucesso: true, mensagem: "Categoria atualizada com sucesso!" });
+    } else {
+      const errorResponse = await response.text();
+      res
+        .status(response.status)
+        .json({ sucesso: false, mensagem: errorResponse });
+    }
+  } catch (error) {
+    console.error("Erro ao atualizar a categoria:", error.message);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao atualizar a categoria.",
+    });
   }
 });
 

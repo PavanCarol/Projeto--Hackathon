@@ -107,4 +107,11 @@ export class HttpRequestService {
       newPassword,
     });
   }
+  deleteCategoria(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/categoriaBanho/${id}`);
+  }
+
+  updateCategoria(id: string, categoria: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/categoriaBanho/${id}`, categoria);
+  }
 }
