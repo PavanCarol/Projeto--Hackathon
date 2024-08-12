@@ -137,35 +137,31 @@ app.post("/api/cadastro", async (req, res) => {
     });
   }
 });
+
 // Função para mapear os valores de texto para os valores numéricos esperados pelo Dataverse
-function mapTipoBanhoValue(value) {
-  const tipoBanhoMap = {
-    Banho: 1,
-    "Banho e Tosa na máquina": 2,
-    "Banho e Tosa na tesoura": 3,
-    "Banho e Tosa higiênica": 4,
-    "Banho e Tosa completa": 5,
+function mapToChoiceValue(field, value) {
+  const mappings = {
+    cra6a_tipodebanho: {
+      Banho: 1,
+      "Banho e Tosa na máquina": 2,
+      "Banho e Tosa na tesoura": 3,
+      "Banho e Tosa higiênica": 4,
+      "Banho e Tosa completa": 5,
+    },
+    cra6a_porte: {
+      Mini: 1,
+      Pegueno: 2,
+      Médio: 3,
+      Grande: 4,
+    },
+    cra6a_pelagem: {
+      Médio: 1,
+      Curto: 2,
+      Longo: 3,
+    },
   };
-  return tipoBanhoMap[value] || null;
-}
 
-function mapPorteValue(value) {
-  const porteMap = {
-    Mini: 1,
-    Pegueno: 2,
-    Médio: 3,
-    Grande: 4,
-  };
-  return porteMap[value] || null;
-}
-
-function mapPelagemValue(value) {
-  const pelagemMap = {
-    Curto: 1,
-    Médio: 2,
-    Longo: 3,
-  };
-  return pelagemMap[value] || null;
+  return mappings[field] ? mappings[field][value] : null;
 }
 // Rota para tratar a categoriaBanho
 app.post("/api/categoriaBanho", async (req, res) => {
@@ -179,9 +175,9 @@ app.post("/api/categoriaBanho", async (req, res) => {
 
     // Mapear os valores de texto para os valores numéricos de Choice
     const record = {
-      cra6a_tipodebanho: mapTipoBanhoValue(tipoBanho),
-      cra6a_porte: mapPorteValue(porte),
-      cra6a_pelagem: mapPelagemValue(pelagem),
+      cra6a_tipodebanho: mapToChoiceValue("cra6a_tipodebanho", tipoBanho),
+      cra6a_porte: mapToChoiceValue("cra6a_porte", porte),
+      cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", pelagem),
       cra6a_valor: Number(parseFloat(valor).toFixed(4)), // Formata o valor como Currency
     };
 

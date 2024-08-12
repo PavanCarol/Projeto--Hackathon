@@ -73,7 +73,7 @@ export class PerfilComponent implements OnInit {
 
   toggleEdit() {
     this.isDisabled = !this.isDisabled;
-  }
+  } 
 
   saveChanges() {
     this.httpService.updateProfile(this.profile).subscribe(

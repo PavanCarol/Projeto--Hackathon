@@ -52,7 +52,7 @@ export class DialogCreateBanhoComponent implements OnInit {
     'Banho e Tosa higiênica',
     'Banho e Tosa completa',
   ];
-  pelagem: string[] = ['Pequeno', 'Médio', 'Grande'];
+  pelagem: string[] = ['Médio', 'Curto', 'Longo'];
   porte: string[] = ['Mini', 'Pegueno', 'Médio', 'Grande'];
 
   // Observable para armazenar as opções filtradas
