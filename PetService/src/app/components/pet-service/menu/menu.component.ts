@@ -56,6 +56,11 @@ export class MenuComponent {
       router: 'clinic',
     },
     {
+      icon: 'inventory',
+      label: 'Estoque',
+      router: 'stock',
+    },
+    {
       icon: 'settings',
       label: 'Configuração',
       router: 'settings',

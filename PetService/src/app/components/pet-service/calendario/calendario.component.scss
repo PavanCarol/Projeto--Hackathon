@@ -15,3 +15,9 @@
     height: 100%;
     width: 100%;
 }
+.fc-event.concluido {
+    background-color: green !important;
+    pointer-events: none; /* Desativa o clique */
+    opacity: 0.6; /* Torna o evento meio transparente */
+  }
+  

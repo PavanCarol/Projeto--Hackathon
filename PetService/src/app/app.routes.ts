@@ -9,7 +9,6 @@ import { InformacaoVeterinarioComponent } from './components/pet-service/Clinica
 import { DashboardComponent } from './components/pet-service/dashboard/dashboard.component';
 import { PerfilComponent } from './components/pet-service/perfil/perfil.component';
 import { AuthGuard } from './guards/auth.guard';
-
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
@@ -46,6 +45,10 @@ export const routes: Routes = [
         path: 'information/:id',
         component: InformacaoVeterinarioComponent,
       },
+      // {
+      //   path: 'stock',
+      //   component: ,
+      // },
 
       {
         path: 'settings',
