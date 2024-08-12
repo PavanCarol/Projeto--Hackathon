@@ -166,7 +166,7 @@ function mapToChoiceValue(field, value) {
 // Rota para tratar a categoriaBanho
 app.post("/api/categoriaBanho", async (req, res) => {
   try {
-    const { tipoBanho, porte, pelagem, valor } = req.body; // Captura os dados do corpo da requisição
+    const { tipoBanho, valor } = req.body; // Captura os dados do corpo da requisição
     const token = await getAuthToken(); // Obtém o token de autenticação
 
     // URL para o endpoint da API do Dataverse ou outro serviço
@@ -176,8 +176,8 @@ app.post("/api/categoriaBanho", async (req, res) => {
     // Mapear os valores de texto para os valores numéricos de Choice
     const record = {
       cra6a_tipodebanho: mapToChoiceValue("cra6a_tipodebanho", tipoBanho),
-      cra6a_porte: mapToChoiceValue("cra6a_porte", porte),
-      cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", pelagem),
+      // cra6a_porte: mapToChoiceValue("cra6a_porte", porte),
+      // cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", pelagem),
       cra6a_valor: Number(parseFloat(valor).toFixed(4)), // Formata o valor como Currency
     };
 
@@ -296,8 +296,8 @@ app.patch("/api/categoriaBanho/:id", async (req, res) => {
         "cra6a_tipodebanho",
         data.cra6a_tipodebanho
       ),
-      cra6a_porte: mapToChoiceValue("cra6a_porte", data.cra6a_porte),
-      cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", data.cra6a_pelagem),
+      // cra6a_porte: mapToChoiceValue("cra6a_porte", data.cra6a_porte),
+      // cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", data.cra6a_pelagem),
       cra6a_valor: data.cra6a_valor, // Este não precisa de mapeamento, pois é numérico
     };
 
@@ -464,7 +464,7 @@ app.get("/api/getBanhoTosa/:id", async (req, res) => {
   try {
     const token = await getAuthToken();
     const id = req.params.id;
-    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas(${id})`;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas(${id})?$expand=cra6a_custo`;
 
     const response = await fetch(url, {
       method: "GET",

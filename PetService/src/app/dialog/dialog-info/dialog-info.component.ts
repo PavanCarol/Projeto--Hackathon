@@ -14,6 +14,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
           {{ getBanhoOuTosaNome(data.cra6a_banhooutosa) }}
         </p>
         <p>
+          <strong>Custo:</strong>
+          {{
+            data.cra6a_custo?.cra6a_valor | currency : 'BRL' || 'Indisponível'
+          }}
+        </p>
+
+        <p>
           <strong>Acessório:</strong>
           {{ data.cra6a_enfeite ? 'Sim' : 'Não' }}
         </p>
@@ -27,14 +34,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
       </div>
     </div>
     <div mat-dialog-actions class="fechar">
-      <button
-        mat-button
-        mat-dialog-close
-        (click)="fecharDialog()"
-        class="btnFechar"
-      >
+      <button mat-button mat-dialog-close (click)="fecharDialog()">
         Fechar
       </button>
+      <button mat-button (click)="marcarConcluido()">Concluído</button>
     </div>
   `,
   styleUrls: ['./dialog-info.component.scss'],
@@ -66,5 +69,10 @@ export class DialogInfoComponent {
   }
   fecharDialog(): void {
     this.dialogRef.close();
+  }
+
+  marcarConcluido(): void {
+    // Emitir um evento ou chamar uma função para notificar que o agendamento foi concluído
+    this.dialogRef.close({ concluido: true });
   }
 }

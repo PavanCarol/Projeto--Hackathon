@@ -52,8 +52,8 @@ export class DialogCreateBanhoComponent implements OnInit {
     'Banho e Tosa higiênica',
     'Banho e Tosa completa',
   ];
-  pelagem: string[] = ['Médio', 'Curto', 'Longo'];
-  porte: string[] = ['Mini', 'Pegueno', 'Médio', 'Grande'];
+  // pelagem: string[] = ['Médio', 'Curto', 'Longo'];
+  // porte: string[] = ['Mini', 'Pegueno', 'Médio', 'Grande'];
 
   // Observable para armazenar as opções filtradas
   filteredTipoBanho!: Observable<string[]>;
@@ -74,15 +74,15 @@ export class DialogCreateBanhoComponent implements OnInit {
       map((value) => this._filterTipoBanho(value || ''))
     );
 
-    // Configuração de filtragem para o segundo autocomplete
-    this.filteredPorte = this.registerPorte.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filterPorte(value || ''))
-    );
-    this.filteredPelagem = this.registerPelagem.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filterPelagem(value || ''))
-    );
+    // // Configuração de filtragem para o segundo autocomplete
+    // this.filteredPorte = this.registerPorte.valueChanges.pipe(
+    //   startWith(''),
+    //   map((value) => this._filterPorte(value || ''))
+    // );
+    // this.filteredPelagem = this.registerPelagem.valueChanges.pipe(
+    //   startWith(''),
+    //   map((value) => this._filterPelagem(value || ''))
+    // );
   }
 
   // Função de filtragem para o primeiro campo
@@ -94,18 +94,18 @@ export class DialogCreateBanhoComponent implements OnInit {
   }
 
   // Função de filtragem para o segundo campo
-  private _filterPorte(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.porte.filter((porte) =>
-      porte.toLowerCase().includes(filterValue)
-    );
-  }
-  private _filterPelagem(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.pelagem.filter((pelagem) =>
-      pelagem.toLowerCase().includes(filterValue)
-    );
-  }
+  // private _filterPorte(value: string): string[] {
+  //   const filterValue = value.toLowerCase();
+  //   return this.porte.filter((porte) =>
+  //     porte.toLowerCase().includes(filterValue)
+  //   );
+  // }
+  // private _filterPelagem(value: string): string[] {
+  //   const filterValue = value.toLowerCase();
+  //   return this.pelagem.filter((pelagem) =>
+  //     pelagem.toLowerCase().includes(filterValue)
+  //   );
+  // }
   cadastrar() {
     if (
       this.registerTipoBanho.valid &&
@@ -116,8 +116,8 @@ export class DialogCreateBanhoComponent implements OnInit {
       // Coletar os valores do formulário
       const formData = {
         tipoBanho: this.registerTipoBanho.value,
-        porte: this.registerPorte.value,
-        pelagem: this.registerPelagem.value,
+        // porte: this.registerPorte.value,
+        // pelagem: this.registerPelagem.value,
         valor: this.valor.value,
       };
 

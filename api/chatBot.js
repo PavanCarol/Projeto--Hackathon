@@ -30,22 +30,40 @@ function parseDateTime(input) {
   return null;
 }
 
+function mapearTipoServico(tipoServico) {
+  switch (tipoServico) {
+    case 1:
+      return "Banho";
+    case 2:
+      return "Banho e Tosa na máquina";
+    case 3:
+      return "Banho e Tosa na tesoura";
+    case 4:
+      return "Banho e Tosa higiênica";
+    case 5:
+      return "Banho e Tosa completa";
+    default:
+      return "Tipo desconhecido";
+  }
+}
+
 class Bot {
   constructor(getAuthToken) {
     this.getAuthToken = getAuthToken;
-    this.servicoPrecos = {};  
+    this.servicoPrecos = {};
     this.stepsCadastro = [
       "Qual é o seu nome?",
       "Qual é o seu número de telefone?",
       "Qual é o nome do seu pet?",
       "Qual é a raça do seu pet?",
-      "Qual é o porte do seu pet?",
     ];
     this.stepsAgendamento = [
-      "Qual é o horário desejado para o banho do seu pet, Por favor responda com a tada DD/MM e o horario 00:00?",
+      "Qual é o horário desejado para o banho do seu pet? Por favor responda com a data DD/MM e o horário 00:00.",
       "Podemos colocar acessório no seu pet?",
       "Podemos passar perfume no seu pet?",
-      this.getServicoOpcoes(), // Atualizado para mostrar opções de serviço e preços
+      this.getServicoOpcoes(), // Mostrar opções de serviço
+      // "Por favor, informe o porte do seu pet (Mini, Pequeno, Médio ou Grande):",
+      // "Por favor, informe a pelagem do seu pet (Curto, Médio ou Longo):",
     ];
 
     this.stepsClinica = [
@@ -61,7 +79,8 @@ class Bot {
     this.informandoClinica = false;
     this.verificandoCadastro = true;
     this.telefoneVerificado = false;
-    this.escolhendoServico = false; // Novo estado para escolher entre banho e clínica
+    this.escolhendoServico = false;
+    this.awaitingConfirmation = false;
     this.veterinarios = [];
     console.log("Role do Bot: atendimento");
     this.loadServicoPrecos();
@@ -70,7 +89,7 @@ class Bot {
     try {
       const token = await this.getAuthToken();
       const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$select=cra6a_tipodebanho,cra6a_valor`;
-      
+
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -81,33 +100,102 @@ class Bot {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (!response.ok) {
-        throw new Error(`Erro ao carregar preços de serviços: ${response.statusText}`);
+        throw new Error(
+          `Erro ao carregar preços de serviços: ${response.statusText}`
+        );
       }
-  
+
       const data = await response.json();
       this.servicoPrecos = {};
+
       data.value.forEach((item, index) => {
+        let nomeServico = ""; // Inicialize uma variável para o nome do serviço
+
+        // Use um switch para mapear os números para nomes
+        switch (item.cra6a_tipodebanho) {
+          case 1:
+            nomeServico = "Banho";
+            break;
+          case 2:
+            nomeServico = "Banho e Tosa na maquina";
+            break;
+          case 3:
+            nomeServico = "Banho e Tosa na tesoura";
+            break;
+          case 4:
+            nomeServico = "Banho e Tosa higiênica";
+            break;
+          case 5:
+            nomeServico = "Banho e Tosa completa";
+            break;
+          default:
+            nomeServico = "Tipo desconhecido"; // Caso o tipo não seja reconhecido
+        }
+
         this.servicoPrecos[index + 1] = {
-          tipo: item.cra6a_tipodebanho,
-          preco: item.cra6a_valor
+          tipo: nomeServico, // Armazene o nome em vez do número
+          preco: item.cra6a_valor,
         };
       });
     } catch (error) {
       console.error("Erro ao carregar preços de serviços:", error);
     }
   }
-  
-// Novo método para gerar a mensagem de opções de serviço com preços
-getServicoOpcoes() {
-  let opcoes = "Escolha uma opção para o tipo de serviço: ";
-  for (const [key, servico] of Object.entries(this.servicoPrecos)) {
-    opcoes += `${servico.tipo}:${key}. `;
-  }
-  return opcoes.trim(); // Remove a última quebra de linha extra
-}
+  async calcularValorBanho(tipoBanho) {
+    try {
+      const token = await this.getAuthToken();
 
+      // Construa a URL com os parâmetros corretamente codificados
+      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=(cra6a_tipodebanho eq ${encodeURIComponent(
+        tipoBanho
+      )})`;
+
+      console.log("URL gerada:", url); // Adicione um log para verificar a URL
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "OData-MaxVersion": "4.0",
+          "OData-Version": "4.0",
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro ao carregar valor do serviço: ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      if (data.value.length > 0) {
+        return data.value[0].cra6a_valor; // Retornar o valor encontrado
+      } else {
+        throw new Error(
+          "Nenhum valor encontrado para os critérios fornecidos."
+        );
+      }
+    } catch (error) {
+      console.error("Erro ao calcular o valor do banho:", error);
+      return "Indisponível"; // Retornar uma mensagem de erro caso algo dê errado
+    }
+  }
+
+  async getServicoOpcoes() {
+    if (Object.keys(this.servicoPrecos).length === 0) {
+      await this.loadServicoPrecos();
+    }
+    let opcoes = "Escolha uma opção para o tipo de serviço: ";
+
+    for (const [key, servico] of Object.entries(this.servicoPrecos)) {
+      opcoes += `${servico.tipo}:${key}. `;
+    }
+    return opcoes.trim();
+  }
 
   async main(message) {
     if (this.verificandoCadastro) {
@@ -172,20 +260,9 @@ getServicoOpcoes() {
           }
         }
       }
-
-      if (this.informandoAgendamento) {
-        this.responsesAgendamento[this.currentStep - 1] = message;
-        if (this.currentStep < this.stepsAgendamento.length) {
-          if (this.currentStep === 0) {
-            const horario = parseDateTime(this.responsesAgendamento[0]);
-            if (!horario) {
-              return "Não consegui entender a data e o horário. Por favor, repita a data e horário desejado no formato DD/MM/AAAA às HH:MM.";
-            }
-            const token = await this.getAuthToken();
-          }
-          return this.stepsAgendamento[this.currentStep++];
-        } else {
-          this.responsesAgendamento[this.currentStep - 1] = message;
+      if (this.awaitingConfirmation) {
+        if (message.toLowerCase() === "sim") {
+          console.log("Resposta 'sim' recebida. Tentando agendar o banho...");
           const response = await this.agendarBanho();
           if (response) {
             this.reset();
@@ -194,6 +271,33 @@ getServicoOpcoes() {
             this.reset();
             return "Ocorreu um erro ao agendar o banho.";
           }
+        } else if (message.toLowerCase() === "não") {
+          this.reset();
+          return "Agendamento cancelado.";
+        } else {
+          return "Por favor, responda com 'sim' ou 'não'.";
+        }
+      }
+      if (this.informandoAgendamento) {
+        this.responsesAgendamento[this.currentStep - 1] = message;
+
+        if (this.currentStep < this.stepsAgendamento.length) {
+          return this.stepsAgendamento[this.currentStep++];
+        } else {
+          const tipoServico = parseInt(this.responsesAgendamento[3]);
+          // const porte = this.responsesAgendamento[4];
+          // const pelagem = this.responsesAgendamento[5];
+
+          const valor = await this.calcularValorBanho(
+            tipoServico
+            // porte,
+            // pelagem
+          );
+          this.responsesAgendamento[this.currentStep - 1] = message;
+          const tipoServicoLabel = mapearTipoServico(tipoServico);
+
+          this.awaitingConfirmation = true; // Ativar o estado de confirmação
+          return `Então seu banho seria o ${tipoServicoLabel} o valor R$${valor},00. Deseja confirmar o agendamento? (sim/não)`;
         }
       }
 
@@ -291,7 +395,6 @@ getServicoOpcoes() {
         cra6a_numero_donopet: this.responsesCadastro[1],
         cra6a_nome_pet: this.responsesCadastro[2],
         cra6a_raca_pet: this.responsesCadastro[3],
-        cra6a_porte_pet: this.responsesCadastro[4],
       };
 
       const response = await fetch(url, {
@@ -329,55 +432,81 @@ getServicoOpcoes() {
     }
   }
 
- async agendarBanho() {
+  async agendarBanho() {
     try {
-        const token = await this.getAuthToken();
-        const horario = parseDateTime(this.responsesAgendamento[0]);
-        if (!horario) {
-            throw new Error("Não consegui entender a data e o horário.");
-        }
+      const token = await this.getAuthToken();
+      const horario = parseDateTime(this.responsesAgendamento[0]);
+      if (!horario) {
+        throw new Error("Não consegui entender a data e o horário.");
+      }
 
-        const tipoServico = parseInt(this.responsesAgendamento[3]);
-        const servico = this.servicoPrecos[tipoServico];
+      const tipoServico = parseInt(this.responsesAgendamento[3]);
+      const servico = this.servicoPrecos[tipoServico];
 
+      // Buscar o ID do custo relacionado ao tipo de serviço
+      const urlCusto = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=cra6a_tipodebanho eq ${encodeURIComponent(
+        tipoServico
+      )}`;
+      const responseCusto = await fetch(urlCusto, {
+        method: "GET",
+        headers: {
+          "OData-MaxVersion": "4.0",
+          "OData-Version": "4.0",
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      if (!responseCusto.ok) {
+        throw new Error(
+          "Erro ao buscar o custo relacionado: " + responseCusto.statusText
+        );
+      }
 
-        const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas`;
-        const record = {
-            "cra6a_donoPet@odata.bind": `/cra6a_clienteses(${this.entityId})`,
-            cra6a_databanhotosa: horario.toISOString(),
-            cra6a_perfume: this.responsesAgendamento[2].toLowerCase() === "sim",
-            cra6a_enfeite: this.responsesAgendamento[1].toLowerCase() === "sim",
-            cra6a_banhooutosa: tipoServico, // Número do serviço
-            cra6a_valor: servico.preco, // Preço do serviço
-        };
+      const dataCusto = await responseCusto.json();
+      if (dataCusto.value.length === 0) {
+        throw new Error(
+          "Nenhum custo encontrado para o tipo de serviço fornecido."
+        );
+      }
 
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "OData-MaxVersion": "4.0",
-                "OData-Version": "4.0",
-                "Content-Type": "application/json; charset=utf-8",
-                Accept: "application/json",
-                Prefer: "odata.include-annotations=*",
-                Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(record),
-        });
+      const custoId = dataCusto.value[0].cra6a_custoid; // Supondo que 'cra6a_custoid' é o nome lógico do ID na tabela de custos
 
-        if (!response.ok) {
-            throw new Error("Erro ao agendar banho: " + response.statusText);
-        }
+      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas`;
+      const record = {
+        "cra6a_donoPet@odata.bind": `/cra6a_clienteses(${this.entityId})`,
+        cra6a_databanhotosa: horario.toISOString(),
+        cra6a_perfume: this.responsesAgendamento[2].toLowerCase() === "sim",
+        cra6a_enfeite: this.responsesAgendamento[1].toLowerCase() === "sim",
+        cra6a_banhooutosa: tipoServico, // Número do serviço
+        "cra6a_custo@odata.bind": `/cra6a_custos(${custoId})`, // Associando o custo correto
+        cra6a_valor: servico.preco, // Preço do serviço
+      };
 
-        return response.ok;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "OData-MaxVersion": "4.0",
+          "OData-Version": "4.0",
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+          Prefer: "odata.include-annotations=*",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(record),
+      });
 
-        
+      if (!response.ok) {
+        throw new Error("Erro ao agendar banho: " + response.statusText);
+      }
+
+      return response.ok;
     } catch (error) {
-        console.error("Erro ao agendar banho:", error);
-        return false;
+      console.error("Erro ao agendar banho:", error);
+      return false;
     }
-}
-
+  }
 
   async agendarClinica() {
     try {

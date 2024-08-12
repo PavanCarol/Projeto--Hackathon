@@ -19,7 +19,15 @@
           disabled="true"
         />
       </mat-form-field>
-
+      <mat-form-field>
+        <mat-label>Valor</mat-label>
+        <input
+          matInput
+          [(ngModel)]="data.categoria.cra6a_valor"
+          type="number"
+        />
+      </mat-form-field>
+      <!-- 
       <mat-form-field>
         <mat-label>Porte</mat-label>
         <input
@@ -27,7 +35,7 @@
           [(ngModel)]="data.categoria.cra6a_porte"
           disabled="true"
         />
-      </mat-form-field>
+      </mat-form-field> -->
     </div>
     <div
       style="
@@ -39,23 +47,14 @@
         margin: 20px 0px;
       "
     >
-      <mat-form-field>
+      <!-- <mat-form-field>
         <mat-label>Pelagem</mat-label>
         <input
           matInput
           [(ngModel)]="data.categoria.cra6a_pelagem"
           disabled="true"
         />
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label>Valor</mat-label>
-        <input
-          matInput
-          [(ngModel)]="data.categoria.cra6a_valor"
-          type="number"
-        />
-      </mat-form-field>
+      </mat-form-field> -->
     </div>
   </div>
   <div mat-dialog-actions style="display: flex; column-gap: 20px">

@@ -104,17 +104,17 @@
     style="
       margin: 0px 90px;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      overflow-y: auto;
+      margin-bottom: 50px;
     "
   >
     <table>
       <thead>
         <tr class="title">
-          <th width="25%">Tipo de Banho</th>
-          <th width="25%">Porte</th>
-          <th width="25%">Pelagem</th>
-          <th width="25%">Valor</th>
+          <th width="50%">Tipo de Banho</th>
+          <!--<th width="25%">Porte</th>
+          <th width="25%">Pelagem</th> -->
+          <th width="50%">Valor</th>
           <th></th>
         </tr>
       </thead>
@@ -127,8 +127,8 @@
           (mouseleave)="showEditIcon = false"
         >
           <td>{{ categoria.cra6a_tipodebanho }}</td>
-          <td>{{ categoria.cra6a_porte }}</td>
-          <td>{{ categoria.cra6a_pelagem }}</td>
+          <!-- <td>{{ categoria.cra6a_porte }}</td>
+          <td>{{ categoria.cra6a_pelagem }}</td> -->
           <td>{{ categoria.cra6a_valor | currency : "BRL" }}</td>
           <td class="edit-icon">
             <mat-icon

@@ -25,15 +25,17 @@ import { AuthService } from './app/services/auth.service';
 import { RegisterComponent } from './app/components/register/register.component';
 import { LoginComponent } from './app/components/login/login.component';
 import { MatDialogModule } from '@angular/material/dialog';
-
+import { DialogInfoComponent } from './app/dialog/dialog-info/dialog-info.component';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
     PetServiceComponent,
+    DialogInfoComponent,
   ],
   imports: [
+    CommonModule,
     MenuComponent,
     BrowserModule,
     FormsModule,

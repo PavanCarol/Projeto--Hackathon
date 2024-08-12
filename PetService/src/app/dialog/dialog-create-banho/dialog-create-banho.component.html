@@ -34,8 +34,17 @@
           </mat-autocomplete>
         </mat-form-field>
       </div>
-
       <div class="input">
+        <mat-form-field
+          class="example-full-width"
+          style="width: 220px !important"
+        >
+          <mat-label>Valor</mat-label>
+          <input matInput placeholder="0" [formControl]="valor" />
+          <span matTextPrefix>R$&nbsp;</span>
+        </mat-form-field>
+      </div>
+      <!-- <div class="input">
         <mat-form-field class="example-full-width">
           <mat-label>Porte</mat-label>
           <input
@@ -53,7 +62,7 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-      </div>
+      </div> -->
     </div>
     <div
       style="
@@ -65,7 +74,7 @@
         margin: 20px 0px;
       "
     >
-      <div class="input">
+      <!-- <div class="input">
         <mat-form-field class="example-full-width" style="width: 200px">
           <mat-label>Pelagem</mat-label>
           <input
@@ -83,17 +92,7 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-      </div>
-      <div class="input">
-        <mat-form-field
-          class="example-full-width"
-          style="width: 220px !important"
-        >
-          <mat-label>Valor</mat-label>
-          <input matInput placeholder="0" [formControl]="valor" />
-          <span matTextPrefix>R$&nbsp;</span>
-        </mat-form-field>
-      </div>
+      </div> -->
     </div>
 
     <div

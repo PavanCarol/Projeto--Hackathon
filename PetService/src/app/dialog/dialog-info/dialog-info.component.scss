@@ -11,6 +11,7 @@
 
 h3{
     margin: 0px;
+    padding: 0px;
 }
 .fechar{
     display: flex;
@@ -26,4 +27,9 @@ h3{
     background-color: #f45e13;
     color: white;
     font-size: 16px;
+}
+
+.mat-mdc-button:not(:disabled) {
+    color: #f45e13;
+    background-color: rgb(255 173 132 / 86%);
 }

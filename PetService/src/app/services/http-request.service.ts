@@ -65,7 +65,9 @@ export class HttpRequestService {
     return this.http.get(`${this.apiUrl}/getAgendamentosClinica`);
   }
   getAgendamentoById(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/getBanhoTosa/${id}`);
+    return this.http.get(
+      `${this.apiUrl}/getBanhoTosa/${id}?$expand=cra6a_custo`
+    );
   }
 
   getClienteById(id: string): Observable<any> {

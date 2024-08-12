@@ -149,6 +149,7 @@ export class CalendarioComponent implements OnInit {
     if (type === 'banhoTosa') {
       this.httpService.getAgendamentoById(agendamentoId).subscribe(
         (agendamento) => {
+          console.log(agendamento); // Verifique o conteúdo do objeto
           this.httpService
             .getClienteById(agendamento['_cra6a_donopet_value'])
             .subscribe(
