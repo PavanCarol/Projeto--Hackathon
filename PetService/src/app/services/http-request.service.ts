@@ -116,4 +116,17 @@ export class HttpRequestService {
   updateCategoria(id: string, categoria: any): Observable<any> {
     return this.http.patch(`${this.apiUrl}/categoriaBanho/${id}`, categoria);
   }
+  estoque(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/estoque`, data);
+  }
+  getEstoqueItens(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/getestoque`);
+  }
+  updateEstoqueItem(item: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/estoque/${item.cra6a_estoqueid}`, item);
+  }
+  deleteEstoqueItem(item: any): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/estoque/${item.id}`);
+  }  
 }
+

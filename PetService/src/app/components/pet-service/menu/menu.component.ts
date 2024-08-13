@@ -56,7 +56,7 @@ export class MenuComponent {
       router: 'clinic',
     },
     {
-      icon: 'inventory',
+      icon: 'inventory_2',
       label: 'Estoque',
       router: 'stock',
     },

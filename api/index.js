@@ -1174,6 +1174,190 @@ app.put("/api/resetPassword", async (req, res) => {
   }
 });
 
+
+app.post('/api/estoque', async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const { nomeItem, categoria, valor, quantidade, imagemBase64: imagem } = req.body; // Captura os dados do corpo da solicitação
+    const categoriaMap = {
+      'Remédios': 0,
+      'Brinquedos': 1,
+      'Ração': 2,
+      'Ossinhos e Petiscos': 3,
+      'Higiene e Cosméticos': 4,
+      'Roupas e Acessórios': 5,
+      'Caminhas e Outros': 6,
+      'Coleira Guias e Peitorais': 7
+    };
+
+    // Converte a categoria de texto para o número correspondente
+    const categoriaNumerica = categoriaMap[categoria];
+    const url = "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques";
+
+    // Dados a serem enviados
+    const data = {
+      cra6a_nomeitem: nomeItem,
+      cra6a_categoria: categoriaNumerica,
+      cra6a_valor: Number(parseFloat(valor).toFixed(4)),
+      cra6a_quantidade:quantidade,
+      cra6a_imagem:imagem.split(",")[1],
+    };
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`, // Inclui o token de autenticação
+      },
+      body: JSON.stringify(data), // Envia os dados no corpo da solicitação
+    });
+
+    console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
+
+
+    console.log('Dados recebidos:', { nomeItem, categoria: categoriaNumerica, valor, quantidade });
+
+    // Simula um salvamento bem-sucedido
+    res.status(204).json({
+      sucesso: true,
+      mensagem: 'Estoque cadastrado com sucesso!',
+      data: { nomeItem, categoria: categoriaNumerica, valor, quantidade }
+    });
+  } catch (error) {
+    console.error('Erro ao cadastrar estoque:', error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao cadastrar estoque.',
+      error: error.message
+    });
+  }
+});
+
+app.get('/api/getestoque', async (req, res) => {
+  try {
+    const token = await getAuthToken(); // Obtém o token de autenticação
+
+    const url = 'https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques';
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'OData-MaxVersion': '4.0',
+        'OData-Version': '4.0',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      res.status(200).json(data.value); // Presumindo que os itens estão em `value`
+    } else {
+      const errorResponse = await response.text();
+      res.status(response.status).json({ sucesso: false, mensagem: errorResponse });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar os itens de estoque:', error.message);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao buscar os itens de estoque.',
+      error: error.message,
+    });
+  }
+});
+app.patch('/api/estoque/:id', async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const estoqueId = req.params.id; // ID do item a ser atualizado
+    const { cra6a_quantidade } = req.body; // Captura a nova quantidade do corpo da solicitação
+
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques(${estoqueId})`;
+
+    // Dados a serem enviadoss
+    const data = {
+      cra6a_quantidade: cra6a_quantidade,
+    };
+
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`, // Inclui o token de autenticação
+      },
+      body: JSON.stringify(data), // Envia os dados no corpo da solicitação
+    });
+
+    console.log(`Status da Resposta: ${response.status}`); // Log do status da resposta
+
+    if (response.ok) {
+      res.status(204).json({
+        sucesso: true,
+        mensagem: 'Quantidade atualizada com sucesso!',
+      });
+    } else {
+      const errorResponse = await response.text();
+      res.status(response.status).json({
+        sucesso: false,
+        mensagem: errorResponse,
+      });
+    }
+  } catch (error) {
+    console.error('Erro ao atualizar a quantidade do estoque:', error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao atualizar a quantidade do estoque.',
+      error: error.message
+    });
+  }
+});
+app.delete('/api/estoque/:id', async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const { id } = req.params; // Captura o ID dos parâmetros da rota
+
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques(${id})`;
+
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`, // Inclui o token de autenticação
+      },
+    });
+
+    if (response.ok) {
+      res.status(204).json({
+        sucesso: true,
+        mensagem: 'Item excluído com sucesso!',
+      });
+    } else {
+      const errorResponse = await response.text();
+      res.status(response.status).json({
+        sucesso: false,
+        mensagem: 'Erro ao excluir item.',
+        error: errorResponse
+      });
+    }
+  } catch (error) {
+    console.error('Erro ao excluir item:', error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao excluir item.',
+      error: error.message
+    });
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

@@ -1,0 +1,97 @@
+.header{
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    margin-bottom: 20px;
+    margin-left: 5px;
+  }
+  .hearder-button{
+    display: flex;
+    margin-left: 5px;
+  }
+  .btnCreateVet{
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    border-radius: 5px;
+    padding: 10px 8px;
+    background-color: #F45F13;
+    font-size: 16px;
+    color: white;
+  }
+
+  .estoque-item-card{
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    column-gap: 20px;
+  }
+
+  .categoria-container {
+    margin-bottom: 40px;
+  }
+  
+  .item-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espaço de 20px entre os itens */
+  }
+  
+  .item-bloco {
+    border-radius: 10px;
+    background-color: white;
+    padding: 15px;
+    text-align: center;
+    width: 150px; /* Largura do bloco de item */
+  }
+  
+  .item-imagem {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .imagem {
+    max-width: 100px;
+    max-height: 100px;
+  }
+  
+  .item-nome {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .item-preco,
+  .item-quantidade {
+    margin-bottom: 5px;
+  }
+
+  .menos{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    background-color: rgb(247, 52, 52);
+    color: black;
+  }
+
+  .mais{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    color: black;
+    padding: 10px;
+    background-color:  rgb(86, 238, 86);
+  }
+
+  .header-button{
+    display: flex;
+    margin-left: 5px;
+  }

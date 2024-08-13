@@ -1,0 +1,70 @@
+<div class="borda"></div>
+<div class="conteiner">
+  <h2>Criar item no estoque</h2>
+
+  <form [formGroup]="estoqueForm" (ngSubmit)="cadastrar()">
+    <div class="formulario__campo" style="width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center; margin-bottom: 15px;flex-direction: column;">
+        <div style="margin: 10px 0px; margin-bottom: 10px">
+          Imagem do item
+        </div>
+        <input
+          formControlName="imagem"
+          type="file"
+          name="imagem"
+          (change)="onFileChange($event)"
+        />
+      </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; column-gap: 32px; margin-bottom: 20px;">
+      
+        <div class="input">
+        <mat-form-field class="example-full-width" style="width: 200px">
+            <mat-label>Categoria</mat-label>
+            <input
+              aria-label="Categoria"
+              matInput
+              formControlName="categoria"
+              [matAutocomplete]="autoTipo"
+            />
+            <mat-autocomplete
+              #autoTipo="matAutocomplete"
+              style="width: 200px"
+            >
+              <mat-option *ngFor="let categoria of categoriatipo" [value]="categoria">
+                {{ categoria }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+      </div>
+      <div class="input">
+        <mat-form-field class="example-full-width" style="width: 200px !important">
+          <mat-label>Valor</mat-label>
+          <input matInput formControlName="valor" placeholder="0" />
+          <span matTextPrefix>R$&nbsp;</span>
+        </mat-form-field>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; column-gap: 32px;margin-bottom: 20px;">
+      <div class="input">
+        <mat-form-field class="example-full-width" style="width: 200px">
+          <mat-label>Nome do item</mat-label>
+          <input type="text" matInput formControlName="nomeItem" />
+        </mat-form-field>
+      </div>
+      <div class="input">
+        <mat-form-field class="example-full-width" style="width: 200px">
+          <mat-label>Quantidade no estoque</mat-label>
+          <input type="text" matInput formControlName="quantidade" />
+        </mat-form-field>
+      </div>
+    </div>
+  
+    <div style="display: flex; width: 100%; align-items: center; justify-content: center;">
+      <button type="submit" class="btnCreateBanho">
+        <mat-icon>save</mat-icon>Criar
+      </button>
+    </div>
+  </form>
+</div>

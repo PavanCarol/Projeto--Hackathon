@@ -1,1 +1,42 @@
-<p>stock works!</p>
+<div class="body">
+  <div class="header">
+    <h2 style="margin: 10px 5px">Estoque</h2>
+  </div>
+  <div class="header-button">
+    <a (click)="openDialog('300ms', '300ms')" class="btnCreateVet">
+      <mat-icon>add_circle</mat-icon>Adicionar no estoque
+    </a>
+  </div>
+  
+  <div *ngFor="let categoria of categoriasAgrupadas" class="categoria-container">
+    <h2>{{ categoria.nome }}</h2>
+    <div class="item-container">
+      <div *ngFor="let item of categoria.itens" class="item-bloco">
+        <div class="item-imagem">
+          <img [src]="'data:image/png;base64,' + item.cra6a_imagem" alt="Imagem do item" class="item-imagem">
+        </div>
+        <div class="item-nome">{{ item.cra6a_nomeitem }}</div>
+        <div class="item-preco">R$ {{ item.cra6a_valor }}</div>
+        <div class="item-quantidade">
+          <div>
+            Quantidade: 
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px;">
+            <button (click)="diminuirQuantidade(item)" class="menos">
+              <mat-icon>remove</mat-icon></button>
+            {{ item.cra6a_quantidade }}
+            <button (click)="aumentarQuantidade(item)" class="mais"><mat-icon>add</mat-icon></button>
+          </div>
+          </div>
+          <div style="margin-top: 10px;">
+            <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)">Salvar</button>
+            <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button>
+          </div>
+         </div>
+    </div>
+  </div>
+
+  <div *ngIf="categoriasAgrupadas.length === 0">
+    <p>Nenhum item encontrado no estoque.</p>
+  </div>
+</div>
