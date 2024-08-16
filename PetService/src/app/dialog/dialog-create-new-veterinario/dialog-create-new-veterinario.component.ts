@@ -6,18 +6,21 @@ import { Router } from '@angular/router';
   selector: 'app-dialog-create-new-veterinario',
   standalone: true,
   imports: [],
-  template: ` <div class="divGif">
-      <img src="img/gifs/feliz.gif" alt="image" class="img" />
-    </div>
-    <h1 mat-dialog-title>Sucesso ao cadastrar um novo Veterinário!!</h1>
-    <div mat-dialog-content class="divP">
-      <p style="font-size: 21px;font-weight: 600;">
-        O cadastro foi feito com sucesso
-      </p>
-    </div>
-    <div mat-dialog-actions class="btn">
-      <button mat-button (click)="onClose()">OK</button>
-    </div>`,
+  template: `
+  <div class="decoration"></div>
+  <div class="All-div">
+    <p class="title" mat-dialog-title>
+      Sucesso no cadastro</p>
+      <div mat-dialog-content class="divP">
+        <p>
+          O cadastro do novo Veterinário foi feito do Sucesso
+        </p>
+      </div>
+      <div mat-dialog-actions class="btn">
+        <button mat-button (click)="onClose()">OK</button>
+      </div>
+</div>
+    `,
   styleUrl: './dialog-create-new-veterinario.component.scss',
 })
 export class DialogCreateNewVeterinarioComponent {

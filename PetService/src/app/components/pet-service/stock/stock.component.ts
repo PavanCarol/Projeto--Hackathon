@@ -22,7 +22,9 @@ interface EstoqueItem {
 interface CategoriaAgrupada {
   nome: string;
   itens: EstoqueItem[];
+  isVisible: boolean;  // Adicione esta linha
 }
+
 @Component({
   selector: 'app-stock',
   standalone: true,
@@ -31,7 +33,9 @@ interface CategoriaAgrupada {
     MatIconModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatIconModule,
+    
   ],
   templateUrl: './stock.component.html',
   styleUrl: './stock.component.scss'
@@ -39,12 +43,28 @@ interface CategoriaAgrupada {
 
 export class StockComponent {
 
+  displayedColumns: string[] = ['cra6a_nomeitem', 'cra6a_valor', 'cra6a_quantidade', 'actions'];
+
+
   constructor(
     public dialog: MatDialog,
     private estoqueService: HttpRequestService,
     private snackBar: MatSnackBar
   ) {}
+  isEditVisible: boolean = false;
+  isAnimating: boolean = false;
 
+  showEdit(): void {
+    this.isEditVisible = true;
+    this.isAnimating = true;
+  }
+
+  hideEdit(): void {
+    this.isAnimating = false;
+    setTimeout(() => {
+      this.isEditVisible = false;
+    }, 5000); // Corresponde ao tempo da animação de saída (1s)
+  }
   estoqueItens: EstoqueItem[] = [];
   categoriasAgrupadas: CategoriaAgrupada[] = [];
 
@@ -64,6 +84,17 @@ export class StockComponent {
     );
   }
 
+  toggleCategoria(categoriaSelecionada: CategoriaAgrupada): void {
+    this.categoriasAgrupadas.forEach(categoria => {
+      if (categoria === categoriaSelecionada) {
+        categoria.isVisible = !categoria.isVisible;
+      } else {
+        categoria.isVisible = false;
+      }
+    });
+  }
+  
+  
   agruparPorCategoria(): void {
     const categoriasMap: { [key: number]: string } = {
       0: 'Remédios',
@@ -80,7 +111,7 @@ export class StockComponent {
       const categoriaNome = categoriasMap[item.cra6a_categoria] || 'Desconhecida';
       let categoria = acc.find(cat => cat.nome === categoriaNome);
       if (!categoria) {
-        categoria = { nome: categoriaNome, itens: [] };
+        categoria = { nome: categoriaNome, itens: [], isVisible: false };
         acc.push(categoria);
       }
       categoria.itens.push(item);

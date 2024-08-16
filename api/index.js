@@ -15,6 +15,52 @@ app.use(loggerMiddleware);
 
 // Criar um mapa para armazenar o estado do bot para cada usuário
 const botInstances = new Map();
+
+function verifyToken(req, res, next) {
+  const token = req.headers.authorization ? req.headers.authorization.split(" ")[1] : null;
+  const refreshToken = req.headers['x-refresh-token'] || null;
+  
+  console.log('Token:', token);
+  console.log('Refresh Token:', refreshToken);
+  
+  if (!token) {
+    return res.status(403).json({ mensagem: "Token não fornecido." });
+  }
+  
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      if (err.name === 'TokenExpiredError') {
+        if (refreshToken) {
+          jwt.verify(refreshToken, JWT_SECRET, (err, decodedRefresh) => {
+            if (err) {
+              return res.status(401).json({ mensagem: "Sessão expirada. Faça login novamente." });
+            } else {
+              const newToken = jwt.sign(
+                { id: decodedRefresh.id, email: decodedRefresh.email, name: decodedRefresh.name },
+                JWT_SECRET,
+                { expiresIn: "1h" }
+              );
+
+              // Adiciona o novo token ao cabeçalho
+              res.setHeader('x-new-token', newToken);
+              req.user = decodedRefresh;
+              next();
+            }
+          });
+        } else {
+          return res.status(401).json({ mensagem: "Token expirado. Faça login novamente." });
+        }
+      } else {
+        return res.status(401).json({ mensagem: "Falha na autenticação." });
+      }
+    } else {
+      req.user = decoded;
+      next();
+    }
+  });
+}
+
+
 // Função para obter o token de autenticação
 async function getAuthToken() {
   const url =
@@ -363,6 +409,7 @@ app.post("/api/login", async (req, res) => {
 
       if (data.value.length > 0) {
         const user = data.value[0];
+
         const jwtToken = jwt.sign(
           {
             id: user.accountid,
@@ -372,10 +419,22 @@ app.post("/api/login", async (req, res) => {
           JWT_SECRET,
           { expiresIn: "1h" }
         );
+        
+        const refreshToken = jwt.sign(
+          {
+            id: user.accountid,
+            email: user.emailaddress1,
+            name: user.name,
+          },
+          JWT_SECRET,
+          { expiresIn: "7d" }  // Expiração do refresh token mais longa
+        );
+        
         res.status(200).json({
           sucesso: true,
           mensagem: "Login bem-sucedido!",
           token: jwtToken,
+          refreshToken: refreshToken, // Inclua o refreshToken na resposta
         });
       } else {
         // Se não há registros encontrados, as credenciais são inválidas
@@ -396,6 +455,8 @@ app.post("/api/login", async (req, res) => {
     });
   }
 });
+
+
 // Função para obter detalhes do dono do pet
 async function getDonoPetDetails(token, donoPetId) {
   const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clienteses(${donoPetId})`;
@@ -628,7 +689,7 @@ app.put("/api/updateProfile", async (req, res) => {
   }
 });
 
-app.post("/api/clinica", async (req, res) => {
+app.post("/api/clinica", verifyToken, async (req, res) => {
   try {
     const {
       nome,
@@ -637,21 +698,27 @@ app.post("/api/clinica", async (req, res) => {
       posGratuacao,
       imagemBase64: imagem,
       date,
-    } = req.body; // Obtém os dados do corpo da solicitação
-    const token = await getAuthToken(); // Obtém o token de autenticação
+    } = req.body;
+
+    // Obtenha o ID do usuário a partir do req.user
+    const userId = req.user.id;  // Certifique-se de que `req.user` contém o ID do usuário
+
+    // Obtenha o token de autenticação para fazer a requisição à API do Dynamics
+    const authToken = await getAuthToken();
 
     // URL para criar um novo registro
-    const url =
-      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
+    const url = "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
 
-    // Dados a serem enviados
-    var record = {};
-    record.cra6a_nomeveterinario = nome; // Text
-    record.cra6a_anoatuacao = tempoAtuacao; // Whole Number
-    record.cra6a_datanascimento = date;
-    record.cra6a_faculdade = faculdade; // Text
-    record.cra6a_imagemveterinario = imagem.split(",")[1];
-    record.cra6a_posgraduacao = posGratuacao; // Text
+    // Dados a serem enviados, incluindo o ID da conta
+    var record = {
+      cra6a_nomeveterinario: nome,
+      cra6a_anoatuacao: tempoAtuacao,
+      cra6a_datanascimento: date,
+      cra6a_faculdade: faculdade,
+      cra6a_imagemveterinario: imagem.split(",")[1],
+      cra6a_posgraduacao: posGratuacao,
+      "cra6a_IdConta@odata.bind" : `/accounts(${userId})`, // Lookup
+    };
 
     const response = await fetch(url, {
       method: "POST",
@@ -661,7 +728,7 @@ app.post("/api/clinica", async (req, res) => {
         "Content-Type": "application/json; charset=utf-8",
         Accept: "application/json",
         Prefer: "odata.include-annotations=*",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${authToken}`,
       },
       body: JSON.stringify(record),
     });
@@ -669,26 +736,21 @@ app.post("/api/clinica", async (req, res) => {
     console.log(`Status da Resposta: ${response.status}`);
 
     if (response.status == 204) {
-      // Resposta 204 não tem corpo, então apenas confirme o sucesso
       res.status(201).json({
         sucesso: true,
         mensagem: "Cadastro na Clinica com sucesso",
       });
     } else {
-      // Para outras respostas, tente processar o corpo como JSON
-      const responseBody = await response.text(); // Obtém o corpo da resposta como texto
-      console.log(`Corpo da Resposta: ${responseBody}`); // Adiciona log para o corpo da resposta
-
+      const responseBody = await response.text();
+      console.log(`Corpo da Resposta: ${responseBody}`);
       if (response.ok) {
-        // Se a resposta for bem-sucedida, mas não for 204, faz o parse do corpo como JSON
-        const responseData = JSON.parse(responseBody); // Faz o parse do corpo da resposta
+        const responseData = JSON.parse(responseBody);
         res.status(201).json({
           sucesso: true,
           mensagem: "Cadastro realizado com sucesso!",
-          data: responseData, // Inclui os dados retornados na resposta
+          data: responseData,
         });
       } else {
-        // Se a resposta não for bem-sucedida, lance um erro
         throw new Error("Network response was not ok " + response.statusText);
       }
     }
@@ -701,13 +763,15 @@ app.post("/api/clinica", async (req, res) => {
     });
   }
 });
-app.get("/api/getClinica", async (req, res) => {
+
+
+app.get("/api/getClinica", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken(); // Obtém o token de autenticação
+    const userId = req.user.id;  // Obtém o ID do usuário logado
 
-    // URL para consultar todos os registros de clínica
-    const url =
-      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
+    // URL para consultar todos os registros de clínica, filtrando pelo ID da conta
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas?$filter=_cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -736,8 +800,9 @@ app.get("/api/getClinica", async (req, res) => {
   }
 });
 
+
 // Rota para obter uma clínica específica por ID
-app.get("/api/getClinica/:id", async (req, res) => {
+app.get("/api/getClinica/:id", verifyToken, async (req, res) =>  {
   try {
     const token = await getAuthToken(); // Obtém o token de autenticação
     const id = req.params.id;
@@ -771,7 +836,7 @@ app.get("/api/getClinica/:id", async (req, res) => {
 });
 app.get(
   "/api/getAgendamentosByVeterinario/:veterinarioId",
-  async (req, res) => {
+  verifyToken, async (req, res) =>  {
     try {
       const token = await getAuthToken();
       const veterinarioId = req.params.veterinarioId;
@@ -813,7 +878,7 @@ app.get(
 );
 
 // Rota para obter agendamentos da clínica
-app.get("/api/getAgendamentosClinica", async (req, res) => {
+app.get("/api/getAgendamentosClinica", verifyToken, async (req, res) =>  {
   try {
     const token = await getAuthToken();
     const url =
@@ -861,7 +926,7 @@ app.get("/api/getAgendamentosClinica", async (req, res) => {
   }
 });
 
-app.put("/api/atualizarStatusAgendamento", async (req, res) => {
+app.put("/api/atualizarStatusAgendamento", verifyToken, async (req, res) =>  {
   try {
     const { cra6a_agendamentoclinicaid, cra6a_status } = req.body; // Obtém os dados do corpo da solicitação
     const token = await getAuthToken(); // Obtém o token de autenticação
@@ -935,6 +1000,7 @@ async function getNomePetDetails(token, petId) {
 // Função para obter detalhes do veterinário
 async function getVeterinarioDetails(token, veterinarioId) {
   const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas(${veterinarioId})`;
+
   const response = await fetch(url, {
     method: "GET",
     headers: {
@@ -1175,9 +1241,10 @@ app.put("/api/resetPassword", async (req, res) => {
 });
 
 
-app.post('/api/estoque', async (req, res) => {
+app.post('/api/estoque',  verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
+    const userId = req.user.id;
     const { nomeItem, categoria, valor, quantidade, imagemBase64: imagem } = req.body; // Captura os dados do corpo da solicitação
     const categoriaMap = {
       'Remédios': 0,
@@ -1201,6 +1268,7 @@ app.post('/api/estoque', async (req, res) => {
       cra6a_valor: Number(parseFloat(valor).toFixed(4)),
       cra6a_quantidade:quantidade,
       cra6a_imagem:imagem.split(",")[1],
+      "cra6a_idconta@odata.bind": `/accounts(${userId})`,
     };
 
     const response = await fetch(url, {
@@ -1236,11 +1304,11 @@ app.post('/api/estoque', async (req, res) => {
   }
 });
 
-app.get('/api/getestoque', async (req, res) => {
+app.get('/api/getestoque', verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken(); // Obtém o token de autenticação
-
-    const url = 'https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques';
+    const userId = req.user.id;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques?$filter=_cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: 'GET',
@@ -1268,7 +1336,7 @@ app.get('/api/getestoque', async (req, res) => {
     });
   }
 });
-app.patch('/api/estoque/:id', async (req, res) => {
+app.patch('/api/estoque/:id', verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const estoqueId = req.params.id; // ID do item a ser atualizado
@@ -1316,7 +1384,7 @@ app.patch('/api/estoque/:id', async (req, res) => {
     });
   }
 });
-app.delete('/api/estoque/:id', async (req, res) => {
+app.delete('/api/estoque/:id', verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const { id } = req.params; // Captura o ID dos parâmetros da rota

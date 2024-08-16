@@ -1,3 +1,18 @@
+<div *ngIf="isEditVisible" class="edit">
+  <div class="background-overlay" 
+       (click)="hideEdit()" 
+       [ngClass]="{'fade-in-overlay': isAnimating, 'fade-out-overlay': !isAnimating}">
+  </div>
+  <div class="containerEdit">
+    <div class="body-edit" [ngClass]="{'animate': isAnimating, 'animate-leave': !isAnimating}">
+      <button (click)="hideEdit()" class="close-btn">Fechar</button>
+      <p>Conteúdo do editor</p>
+    </div>
+  </div>
+</div>
+
+
+
 <div class="body">
   <div class="header">
     <h2 style="margin: 10px 5px">Estoque</h2>
@@ -7,9 +22,54 @@
       <mat-icon>add_circle</mat-icon>Adicionar no estoque
     </a>
   </div>
+  <div class="categoria-container">
+    <div class="categoria-container">
+      <div class="categoria-nomes">
+        <div class="cateogiras" *ngFor="let categoria of categoriasAgrupadas"
+        (click)="toggleCategoria(categoria)"
+        [ngClass]="{'categoria-selecionada': categoria.isVisible, 'categoria-nao-selecionada': !categoria.isVisible}">
+       
+          {{ categoria.nome }}
+        </div>
+      </div>
+    
+      <div class="categoria-itens" *ngFor="let categoria of categoriasAgrupadas">
+        <table *ngIf="categoria.isVisible">
+          <thead>
+            <tr class="title">
+              <th>Nome do Item</th>
+              <th >Preço</th>
+              <th>Quantidade</th>
+              <th >Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of categoria.itens">
+              <td>{{ item.cra6a_nomeitem }}</td>
+              <td>R$ {{ item.cra6a_valor }}</td>
+              <td>
+                <button (click)="diminuirQuantidade(item)" class="menos"><mat-icon>remove</mat-icon></button>
+                {{item.cra6a_quantidade}}
+                <button (click)="aumentarQuantidade(item)" class="mais"><mat-icon>add</mat-icon></button>
+              </td>
+              <td>
+                <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)">Salvar</button>
+                <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+  </div>
   
-  <div *ngFor="let categoria of categoriasAgrupadas" class="categoria-container">
-    <h2>{{ categoria.nome }}</h2>
+  
+  
+  <!-- <div *ngFor="let categoria of categoriasAgrupadas" class="categoria-container">
+    <h2 style="background-color: white;
+    padding: 10PX;
+    border-radius: 5px;">{{ categoria.nome }}</h2>
     <div class="item-container">
       <div *ngFor="let item of categoria.itens" class="item-bloco">
         <div class="item-imagem">
@@ -30,13 +90,15 @@
           </div>
           <div style="margin-top: 10px;">
             <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)">Salvar</button>
-            <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button>
-          </div>
+             <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button> 
+          </div> 
+            <button mat-button (click)="showEdit()"><mat-icon>edit</mat-icon> Editar</button>
          </div>
     </div>
   </div>
 
   <div *ngIf="categoriasAgrupadas.length === 0">
     <p>Nenhum item encontrado no estoque.</p>
-  </div>
+  </div> -->
 </div>
+
