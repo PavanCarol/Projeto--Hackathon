@@ -104,13 +104,13 @@ app.post("/api/getToken", async (req, res) => {
 // Rota para interação com o bot
 app.post("/api/chat", async (req, res) => {
   try {
-    const { question, userId } = req.body;
+    const { question, userId, accountId } = req.body;
     let bot = botInstances.get(userId);
     if (!bot) {
       bot = new Bot(getAuthToken); // Passe a função getAuthToken ao construtor do Bot
-      botInstances.set(userId, bot);
+      botInstances.set(userId, bot);  
     }
-    const resposta = await bot.main(question);
+    const resposta = await bot.main(question, accountId);
     res.json({ erro: false, resposta });
   } catch (error) {
     console.error("Erro ao processar a solicitação do bot:", error);
@@ -210,9 +210,9 @@ function mapToChoiceValue(field, value) {
   return mappings[field] ? mappings[field][value] : null;
 }
 // Rota para tratar a categoriaBanho
-app.post("/api/categoriaBanho", async (req, res) => {
+app.post("/api/categoriaBanho", verifyToken, async (req, res) =>{
   try {
-    const { tipoBanho, valor } = req.body; // Captura os dados do corpo da requisição
+    const { tipoBanho, valor, accountId  } = req.body; // Captura os dados do corpo da requisição
     const token = await getAuthToken(); // Obtém o token de autenticação
 
     // URL para o endpoint da API do Dataverse ou outro serviço
@@ -225,6 +225,7 @@ app.post("/api/categoriaBanho", async (req, res) => {
       // cra6a_porte: mapToChoiceValue("cra6a_porte", porte),
       // cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", pelagem),
       cra6a_valor: Number(parseFloat(valor).toFixed(4)), // Formata o valor como Currency
+      "cra6a_IdConta@odata.bind" : `/accounts(${accountId})`
     };
 
     const response = await fetch(url, {
@@ -257,13 +258,14 @@ app.post("/api/categoriaBanho", async (req, res) => {
       .json({ sucesso: false, mensagem: "Erro ao criar registro." });
   }
 });
-app.get("/api/getcategoriaBanho", async (req, res) => {
+app.get("/api/getcategoriaBanho", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken(); // Obtém o token de autenticação
+    const userId = req.user.id;
 
     // URL para o endpoint da API do Dataverse ou outro serviço
     const url =
-      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos";
+      `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=_cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -481,11 +483,12 @@ async function getDonoPetDetails(token, donoPetId) {
 }
 
 // Rota para obter os agendamentos
-app.get("/api/getBanhoTosa", async (req, res) => {
+app.get("/api/getBanhoTosa", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
+    const userId = req.user.id;
     const url =
-      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas";
+      `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=_cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -521,7 +524,7 @@ app.get("/api/getBanhoTosa", async (req, res) => {
   }
 });
 // Rota para obter um agendamento específico por ID
-app.get("/api/getBanhoTosa/:id", async (req, res) => {
+app.get("/api/getBanhoTosa/:id",  verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const id = req.params.id;
@@ -881,8 +884,9 @@ app.get(
 app.get("/api/getAgendamentosClinica", verifyToken, async (req, res) =>  {
   try {
     const token = await getAuthToken();
+    const userId = req.user.id;
     const url =
-      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas";
+      `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=_cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -1268,7 +1272,7 @@ app.post('/api/estoque',  verifyToken, async (req, res) => {
       cra6a_valor: Number(parseFloat(valor).toFixed(4)),
       cra6a_quantidade:quantidade,
       cra6a_imagem:imagem.split(",")[1],
-      "cra6a_idconta@odata.bind": `/accounts(${userId})`,
+      "cra6a_IdConta@odata.bind": `/accounts(${userId})`,
     };
 
     const response = await fetch(url, {
