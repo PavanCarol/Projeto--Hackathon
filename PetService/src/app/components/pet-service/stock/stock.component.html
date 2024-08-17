@@ -7,6 +7,10 @@
     <div class="body-edit" [ngClass]="{'animate': isAnimating, 'animate-leave': !isAnimating}">
       <button (click)="hideEdit()" class="close-btn">Fechar</button>
       <p>Conteúdo do editor</p>
+      <p *ngIf="selectedItem">Nome do item: {{ selectedItem.cra6a_nomeitem }}</p>
+      <p *ngIf="selectedItem">Preço: R$ {{ selectedItem.cra6a_valor }}</p>
+      <p *ngIf="selectedItem">Quantidade: {{ selectedItem.cra6a_quantidade }}</p>
+      <!-- Adicione mais campos conforme necessário -->
     </div>
   </div>
 </div>
@@ -47,14 +51,15 @@
             <tr *ngFor="let item of categoria.itens">
               <td>{{ item.cra6a_nomeitem }}</td>
               <td>R$ {{ item.cra6a_valor }}</td>
-              <td>
-                <button (click)="diminuirQuantidade(item)" class="menos"><mat-icon>remove</mat-icon></button>
+               <td>
+                <!-- <button (click)="diminuirQuantidade(item)" class="menos"><mat-icon>remove</mat-icon></button> -->
                 {{item.cra6a_quantidade}}
-                <button (click)="aumentarQuantidade(item)" class="mais"><mat-icon>add</mat-icon></button>
-              </td>
+                <!-- <button (click)="aumentarQuantidade(item)" class="mais"><mat-icon>add</mat-icon></button> --> 
+              </td> 
               <td>
-                <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)">Salvar</button>
-                <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button>
+                <!-- <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)">Salvar</button>
+                <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button> -->
+                <button mat-button (click)="showEdit(item)"><mat-icon>edit</mat-icon> Editar</button>
               </td>
             </tr>
           </tbody>

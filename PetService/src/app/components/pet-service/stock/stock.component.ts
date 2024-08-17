@@ -42,6 +42,10 @@ interface CategoriaAgrupada {
 })
 
 export class StockComponent {
+ // Definição das propriedades existentes
+ isEditVisible: boolean = false;
+ isAnimating: boolean = false;
+ selectedItem: EstoqueItem | null = null; // Item selecionado para edição
 
   displayedColumns: string[] = ['cra6a_nomeitem', 'cra6a_valor', 'cra6a_quantidade', 'actions'];
 
@@ -51,19 +55,21 @@ export class StockComponent {
     private estoqueService: HttpRequestService,
     private snackBar: MatSnackBar
   ) {}
-  isEditVisible: boolean = false;
-  isAnimating: boolean = false;
 
-  showEdit(): void {
+  showEdit(item: EstoqueItem): void {
+    this.selectedItem = item;
     this.isEditVisible = true;
     this.isAnimating = true;
+    document.querySelector('.edit')?.classList.add('show');
   }
-
+  
   hideEdit(): void {
     this.isAnimating = false;
     setTimeout(() => {
       this.isEditVisible = false;
-    }, 5000); // Corresponde ao tempo da animação de saída (1s)
+      this.selectedItem = null;
+      document.querySelector('.edit')?.classList.remove('show');
+    }, 500);
   }
   estoqueItens: EstoqueItem[] = [];
   categoriasAgrupadas: CategoriaAgrupada[] = [];
@@ -84,6 +90,7 @@ export class StockComponent {
     );
   }
 
+ // Método para alternar a visibilidade das categorias
   toggleCategoria(categoriaSelecionada: CategoriaAgrupada): void {
     this.categoriasAgrupadas.forEach(categoria => {
       if (categoria === categoriaSelecionada) {
@@ -93,8 +100,7 @@ export class StockComponent {
       }
     });
   }
-  
-  
+
   agruparPorCategoria(): void {
     const categoriasMap: { [key: number]: string } = {
       0: 'Remédios',
