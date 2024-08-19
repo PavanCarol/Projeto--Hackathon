@@ -1388,10 +1388,61 @@ app.patch('/api/estoque/:id', verifyToken, async (req, res) => {
     });
   }
 });
+app.patch('/api/salvarlteracaoestoque/:id', verifyToken, async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const estoqueId = req.params.id;
+    const { cra6a_quantidade, cra6a_nomeitem,cra6a_valor,cra6a_imagem } = req.body;
+
+    const data = {
+      cra6a_quantidade: cra6a_quantidade,
+      cra6a_nomeitem:cra6a_nomeitem,
+      cra6a_valor:cra6a_valor,
+      cra6a_imagem:cra6a_imagem
+    };
+
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques(${estoqueId})`;
+
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data), // Envia todos os campos no corpo da solicitação
+    });
+
+    console.log(`Status da Resposta: ${response.status}`);
+
+    if (response.ok) {
+      res.status(204).json({
+        sucesso: true,
+        mensagem: 'Item atualizado com sucesso!',
+      });
+    } else {
+      const errorResponse = await response.text();
+      res.status(response.status).json({
+        sucesso: false,
+        mensagem: errorResponse,
+      });
+    }
+  } catch (error) {
+    console.error('Erro ao atualizar o item no estoque:', error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao atualizar o item no estoque.',
+      error: error.message
+    });
+  }
+});
+
 app.delete('/api/estoque/:id', verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
-    const { id } = req.params; // Captura o ID dos parâmetros da rota
+    const { id } = req.params;
 
     const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques(${id})`;
 
@@ -1402,7 +1453,7 @@ app.delete('/api/estoque/:id', verifyToken, async (req, res) => {
         "OData-Version": "4.0",
         "Content-Type": "application/json; charset=utf-8",
         Accept: "application/json",
-        Authorization: `Bearer ${token}`, // Inclui o token de autenticação
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -1429,6 +1480,166 @@ app.delete('/api/estoque/:id', verifyToken, async (req, res) => {
   }
 });
 
+app.get('/api/getTotalAgendamentosDia', verifyToken, async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const today = new Date().toISOString().split('T')[0]; // Obtém a data de hoje no formato YYYY-MM-DD
+
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=createdon ge ${today}T00:00:00Z and createdon le ${today}T23:59:59Z`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'OData-MaxVersion': '4.0',
+        'OData-Version': '4.0',
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const totalAgendamentos = data.value.length; // Conta o número de agendamentos retornados
+      res.status(200).json({ totalAgendamentos });
+    } else {
+      const errorResponse = await response.text();
+      res.status(response.status).json({
+        sucesso: false,
+        mensagem: errorResponse,
+      });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar total de agendamentos do dia:', error.message);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao buscar total de agendamentos do dia.',
+      error: error.message,
+    });
+  }
+});
+
+app.get('/api/gettotalBanhosDia', verifyToken, async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const dataAtual = new Date().toISOString().split('T')[0]; // Data atual no formato YYYY-MM-DD
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${dataAtual}T00:00:00Z and createdon le ${dataAtual}T23:59:59Z`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'OData-MaxVersion': '4.0',
+        'OData-Version': '4.0',
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const totalBanhos = data.value.length; // Conta o número de registros
+      res.status(200).json({ totalBanhos });
+    } else {
+      const errorResponse = await response.text();
+      res.status(response.status).json({ sucesso: false, mensagem: errorResponse });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar total de banhos por dia:', error.message);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao buscar total de banhos por dia.',
+      error: error.message
+    });
+  }
+});
+
+app.get('/api/getTotalFaturamentoMes', verifyToken, async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const inicioDoMes = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+    const fimDoMes = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString();
+
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoMes} and createdon le ${fimDoMes}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'OData-MaxVersion': '4.0',
+        'OData-Version': '4.0',
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const totalFaturamento = data.value.reduce((acc, item) => acc + item.cra6a_valor, 0); // Soma os valores
+      res.status(200).json({ totalFaturamento });
+    } else {
+      const errorResponse = await response.text();
+      res.status(response.status).json({ sucesso: false, mensagem: errorResponse });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar total de faturamento do mês:', error.message);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao buscar total de faturamento do mês.',
+      error: error.message,
+    });
+  }
+});
+
+app.get('/api/getFaturamentoMensal', verifyToken, async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const currentYear = new Date().getFullYear();
+    
+    // Inicializa um array para armazenar o faturamento de cada mês
+    let faturamentoMensal = Array(12).fill(0);
+
+    // Itera por cada mês do ano
+    for (let month = 0; month < 12; month++) {
+      // Define o primeiro e o último dia do mês
+      const inicioDoMes = new Date(currentYear, month, 1).toISOString();
+      const fimDoMes = new Date(currentYear, month + 1, 0).toISOString();
+
+      // Define a URL da requisição com os filtros de data
+      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoMes} and createdon le ${fimDoMes}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'OData-MaxVersion': '4.0',
+          'OData-Version': '4.0',
+          'Content-Type': 'application/json; charset=utf-8',
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const totalFaturamento = data.value.reduce((acc, item) => acc + (item.cra6a_valor || 0), 0);
+        faturamentoMensal[month] = totalFaturamento;
+      } else {
+        const errorResponse = await response.text();
+        console.error(`Erro ao buscar faturamento para o mês ${month + 1}:`, errorResponse);
+      }
+    }
+
+    // Retorna o faturamento mensal
+    res.status(200).json({ faturamentoMensal });
+  } catch (error) {
+    console.error('Erro ao buscar faturamento mensal:', error.message);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao buscar faturamento mensal.',
+      error: error.message,
+    });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

@@ -1,16 +1,87 @@
-<div *ngIf="isEditVisible" class="edit">
+<div *ngIf="isEditVisible && selectedItem" class="edit">
   <div class="background-overlay" 
        (click)="hideEdit()" 
        [ngClass]="{'fade-in-overlay': isAnimating, 'fade-out-overlay': !isAnimating}">
   </div>
   <div class="containerEdit">
     <div class="body-edit" [ngClass]="{'animate': isAnimating, 'animate-leave': !isAnimating}">
-      <button (click)="hideEdit()" class="close-btn">Fechar</button>
-      <p>Conteúdo do editor</p>
-      <p *ngIf="selectedItem">Nome do item: {{ selectedItem.cra6a_nomeitem }}</p>
-      <p *ngIf="selectedItem">Preço: R$ {{ selectedItem.cra6a_valor }}</p>
-      <p *ngIf="selectedItem">Quantidade: {{ selectedItem.cra6a_quantidade }}</p>
-      <!-- Adicione mais campos conforme necessário -->
+      <button (click)="hideEdit()" class="close-btn"><mat-icon>close</mat-icon></button>
+      <h2 style="margin-left: 20px;">Editar Item</h2>
+      <div class="item-imagemEditar" (click)="fileInput.click()">
+        <img [src]="'data:image/png;base64,' + selectedItem.cra6a_imagem" alt="Imagem do item" class="imagem">
+        <input
+          type="file"
+          name="imagem"
+          (change)="onFileChange($event)"
+          #fileInput
+          style="display: none;"
+          accept="image/*"
+        />
+      </div>
+      
+      <!-- Campo para Nome do Item -->
+      <div class="input" style="margin: 10px 20px;">
+        <mat-form-field
+          style="
+            width: 100% !important;
+            border-radius: 10px !important;
+            
+          "
+        >
+          <mat-label>Nome do item</mat-label>
+          <input
+            style="padding: 0px"
+            matInput
+            type="text"
+            [(ngModel)]="selectedItem.cra6a_nomeitem"
+          />
+        </mat-form-field>
+      </div>
+  
+      <!-- Campo para Preço -->
+      <div class="input" style="margin: 10px 20px;">
+        <mat-form-field
+          style="
+            width: 100% !important;
+            border-radius: 10px !important;
+          "
+        >
+          <mat-label>Preço</mat-label>
+          <input
+            style="padding: 0px"
+            matInput
+            type="number"
+            step="0.01"
+            min="0"
+            [(ngModel)]="selectedItem.cra6a_valor"
+          />
+        </mat-form-field>
+       
+      </div>
+  
+      <!-- Campo para Quantidade -->
+      <div class="input" style="margin: 10px 20px; margin-bottom: 40px;">
+        <mat-form-field
+          style="
+            width: 100% !important;
+            border-radius: 10px !important;
+          "
+        >
+          <mat-label>Quantidade</mat-label>
+          <input
+            style="padding: 0px"
+            matInput
+            type="number"
+            [(ngModel)]="selectedItem.cra6a_quantidade"
+          />
+        </mat-form-field>
+      </div>
+      <div style="display: flex; width: 100%;
+      align-items: center; justify-content: center; column-gap: 50px;">
+     <button class="save" (click)="salvarAlteracao(selectedItem)"><mat-icon>save</mat-icon>Salvar Alteração</button>
+       <button class="excluir" (click)="excluirItem(selectedItem)"><mat-icon>delete</mat-icon>Excluir Item</button>  
+
+      </div>
     </div>
   </div>
 </div>
@@ -26,10 +97,9 @@
       <mat-icon>add_circle</mat-icon>Adicionar no estoque
     </a>
   </div>
-  <div class="categoria-container">
-    <div class="categoria-container">
+    <div class="categoria-container" *ngFor="let categoria of categoriasAgrupadas">
       <div class="categoria-nomes">
-        <div class="cateogiras" *ngFor="let categoria of categoriasAgrupadas"
+        <div class="cateogiras"
         (click)="toggleCategoria(categoria)"
         [ngClass]="{'categoria-selecionada': categoria.isVisible, 'categoria-nao-selecionada': !categoria.isVisible}">
        
@@ -37,40 +107,69 @@
         </div>
       </div>
     
-      <div class="categoria-itens" *ngFor="let categoria of categoriasAgrupadas">
-        <table *ngIf="categoria.isVisible">
-          <thead>
-            <tr class="title">
-              <th>Nome do Item</th>
-              <th >Preço</th>
-              <th>Quantidade</th>
-              <th >Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of categoria.itens">
-              <td>{{ item.cra6a_nomeitem }}</td>
-              <td>R$ {{ item.cra6a_valor }}</td>
-               <td>
-                <!-- <button (click)="diminuirQuantidade(item)" class="menos"><mat-icon>remove</mat-icon></button> -->
-                {{item.cra6a_quantidade}}
-                <!-- <button (click)="aumentarQuantidade(item)" class="mais"><mat-icon>add</mat-icon></button> --> 
-              </td> 
-              <td>
-                <!-- <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)">Salvar</button>
-                <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button> -->
-                <button mat-button (click)="showEdit(item)"><mat-icon>edit</mat-icon> Editar</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="categoria-itens" *ngIf="categoria.isVisible">
+
+        <div class="item-container">
+          <div *ngFor="let item of categoria.itens" class="item-bloco">
+            <div class="item-imagem">
+              <img [src]="'data:image/png;base64,' + item.cra6a_imagem" alt="Imagem do item" class="imagem">
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <div class="item-nome">{{ item.cra6a_nomeitem }}</div>
+              <div class="item-preco">R$ {{ item.cra6a_valor | currency:'BRL':'symbol':'1.2-2' }}</div>
+              <div class="item-quantidade">
+                <div>
+                  Quantidade: 
+                </div>
+                <div style="display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 5px;
+                column-gap: 20px;">
+                  <button (click)="diminuirQuantidade(item)" class="menos">
+                    <mat-icon>remove</mat-icon></button>
+                  {{ item.cra6a_quantidade }}
+                  <button (click)="aumentarQuantidade(item)" class="mais"><mat-icon>add</mat-icon></button>
+                </div>
+                </div>
+                <div style="margin-top: 10px;">
+                  <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)">Salvar</button>
+                  <button mat-button (click)="showEdit(item)"><mat-icon>edit</mat-icon> Editar</button>
+                   <!-- <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button>  -->
+                </div> 
+               </div>
+            </div>
+        </div>
       </div>
     </div>
-    
   </div>
-  
-  
-  
+  <!-- <table *ngIf="categoria.isVisible">
+    <thead>
+      <tr class="title">
+        <th>Nome do Item</th>
+        <th >Preço</th>
+        <th>Quantidade</th>
+        <th >Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of categoria.itens">
+        <td>{{ item.cra6a_nomeitem }}</td>
+        <td>R$ {{ item.cra6a_valor }}</td>
+         <td>
+           <button (click)="diminuirQuantidade(item)" class="menos"><mat-icon>remove</mat-icon></button> 
+          {{item.cra6a_quantidade}}
+           <button (click)="aumentarQuantidade(item)" class="mais"><mat-icon>add</mat-icon></button> 
+        </td> 
+        <td>
+           <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)">Salvar</button>
+          <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button> 
+          <button mat-button (click)="showEdit(item)"><mat-icon>edit</mat-icon> Editar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table> -->
+    
   <!-- <div *ngFor="let categoria of categoriasAgrupadas" class="categoria-container">
     <h2 style="background-color: white;
     padding: 10PX;
@@ -105,5 +204,4 @@
   <div *ngIf="categoriasAgrupadas.length === 0">
     <p>Nenhum item encontrado no estoque.</p>
   </div> -->
-</div>
 

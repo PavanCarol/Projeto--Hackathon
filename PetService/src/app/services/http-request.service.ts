@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { EstoqueItem } from '../components/pet-service/stock/stock.component';
 
 @Injectable({
   providedIn: 'root',
@@ -125,8 +126,29 @@ export class HttpRequestService {
   updateEstoqueItem(item: any): Observable<any> {
     return this.http.patch(`${this.apiUrl}/estoque/${item.cra6a_estoqueid}`, item);
   }
+
+  updateAlteracao(item: EstoqueItem): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/salvarlteracaoestoque/${item.cra6a_estoqueid}`, item);
+  }
+  
   deleteEstoqueItem(item: any): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/estoque/${item.id}`);
+    return this.http.delete(`${this.apiUrl}/estoque/${item.cra6a_estoqueid}`);
   }  
+
+  getTotalAgendamentosDia(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getTotalAgendamentosDia`);
+  }
+  
+  getTotalBanhosDia(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/gettotalBanhosDia`);
+  }
+
+  getTotalFaturamentoMes(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/getTotalFaturamentoMes`);
+  }
+  getFaturamentoMensal(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getFaturamentoMensal`);
+  }
+  
 }
 

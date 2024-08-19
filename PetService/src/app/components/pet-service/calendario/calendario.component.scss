@@ -8,6 +8,7 @@
 .body{
     width: 100%;
     height: 100%;
+    margin: 0px 20px;
 }
 .fc-direction-ltr {
     direction: ltr;
@@ -21,3 +22,18 @@
     opacity: 0.6; /* Torna o evento meio transparente */
   }
   
+.legendas{
+  display: flex;
+  margin: 0px 20px;
+
+}
+  .bola{
+    width: 20px;
+    height: 20px;
+ 
+    border-radius: 50%;
+  }
+
+  .title{
+    font-weight: 500;
+  }
