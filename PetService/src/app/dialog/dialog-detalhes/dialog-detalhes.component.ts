@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpRequestService } from '../../services/http-request.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-dialog-detalhes',
@@ -32,7 +33,8 @@ export class DialogDetalhesComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogDetalhesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private httpRequestService: HttpRequestService
+    private httpRequestService: HttpRequestService,
+    private snackBar: MatSnackBar
   ) {}
 
   onNoClick(): void {
@@ -50,6 +52,9 @@ export class DialogDetalhesComponent {
         (response) => {
           console.log('Categoria atualizada com sucesso:', response);
           this.dialogRef.close(this.data.categoria); // Envia os valores de volta ao componente pai
+          this.snackBar.open('Item Atualizado com sucesso', 'Fechar', {
+            duration: 2000,
+          });
           window.location.reload();
         },
         (error) => {
@@ -66,6 +71,9 @@ export class DialogDetalhesComponent {
       (response) => {
         console.log('Categoria deletada com sucesso:', response);
         this.dialogRef.close({ deleted: true }); // Fecha o diálogo e indica que a categoria foi deletada
+        this.snackBar.open('Item deletado com sucesso', 'Fechar', {
+          duration: 2000,
+        });
         window.location.reload();
       },
       (error) => {

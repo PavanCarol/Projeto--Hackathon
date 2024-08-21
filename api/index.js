@@ -107,7 +107,7 @@ app.post("/api/chat", async (req, res) => {
     const { question, userId, accountId } = req.body;
     let bot = botInstances.get(userId);
     if (!bot) {
-      bot = new Bot(getAuthToken); // Passe a função getAuthToken ao construtor do Bot
+      bot = new Bot(getAuthToken, accountId); // Passe a função getAuthToken ao construtor do Bot
       botInstances.set(userId, bot);  
     }
     const resposta = await bot.main(question, accountId);

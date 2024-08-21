@@ -52,3 +52,13 @@
     height: 50px;
     background-color: #F45F13;
   }
+
+  @media only screen and (max-width:482px){
+    .forms{
+      display: flex;
+      align-items: center;
+      justify-self: center;
+      flex-direction: column;
+       width: 100%; 
+  }
+  }

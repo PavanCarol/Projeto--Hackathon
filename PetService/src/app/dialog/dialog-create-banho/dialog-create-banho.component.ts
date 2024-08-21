@@ -40,8 +40,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class DialogCreateBanhoComponent implements OnInit {
   // FormControls separados para cada campo
   registerTipoBanho = new FormControl('');
-  registerPorte = new FormControl('');
-  registerPelagem = new FormControl('');
+  // registerPorte = new FormControl('');
+  // registerPelagem = new FormControl('');
   valor = new FormControl('');
 
   // Dados estáticos para as opções
@@ -106,11 +106,11 @@ export class DialogCreateBanhoComponent implements OnInit {
   //     pelagem.toLowerCase().includes(filterValue)
   //   );
   // }
-  cadastrar() {
+  cadastrar():void {
     if (
       this.registerTipoBanho.valid &&
-      this.registerPorte.valid &&
-      this.registerPelagem.valid &&
+      // this.registerPorte.valid &&
+      // this.registerPelagem.valid &&
       this.valor.valid
     ) {
       // Coletar os valores do formulário
@@ -124,22 +124,11 @@ export class DialogCreateBanhoComponent implements OnInit {
       // Chamar o serviço para enviar os dados
       this.httpService.categoriaBanho(formData).subscribe(
         (response) => {
-          if (response.sucesso) {
             console.log('Registro criado com sucesso.');
             this.snackBar.open('Registro criado com sucesso.', 'Fechar', {
-              duration: 2000,
+              duration: 50000,
             });
             window.location.reload();
-          } else {
-            console.log('Erro:', response.mensagem);
-            this.snackBar.open(
-              'Erro ao registrar, tente novamente.',
-              'Fechar',
-              {
-                duration: 2000,
-              }
-            );
-          }
         },
         (error) => {
           console.error('Erro ao criar registro:', error);
@@ -147,6 +136,13 @@ export class DialogCreateBanhoComponent implements OnInit {
       );
     } else {
       console.error('Por favor, preencha todos os campos corretamente.');
+      this.snackBar.open(
+        'Erro ao registrar, tente novamente.',
+        'Fechar',
+        {
+          duration: 50000,
+        }
+      );
     }
   }
 }

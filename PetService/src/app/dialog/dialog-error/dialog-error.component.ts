@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   <p class="title" mat-dialog-title>Erro ao fazer o Login</p>
 <div mat-dialog-content class="divP">
   <p>OPPS! Parece que não existe esse cadastro</p>
-  <p>Por favor,verifique seu login ou crie um cadastro</p>
+  <p>Por favor,verifique seu login ou crie uma conta</p>
 </div>
 <div mat-dialog-actions class="btn">
   <button mat-button (click)="onClose()">OK</button>

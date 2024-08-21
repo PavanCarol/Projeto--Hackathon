@@ -48,7 +48,7 @@ function mapearTipoServico(tipoServico) {
 }
 
 class Bot {
-  constructor(getAuthToken) {
+  constructor(getAuthToken, accountId) {
     this.getAuthToken = getAuthToken;
     this.servicoPrecos = {};
     this.stepsCadastro = [
@@ -56,13 +56,13 @@ class Bot {
       "Qual é o seu número de telefone?",
       "Qual é o nome do seu pet?",
       "Qual é a raça do seu pet?",
+      // "Por favor, informe o porte do seu pet (Mini, Pequeno, Médio ou Grande):",
     ];
     this.stepsAgendamento = [
       "Qual é o horário desejado para o banho do seu pet? Por favor responda com a data DD/MM e o horário 00:00.",
       "Podemos colocar acessório no seu pet?",
       "Podemos passar perfume no seu pet?",
-      this.getServicoOpcoes(), // Mostrar opções de serviço
-      // "Por favor, informe o porte do seu pet (Mini, Pequeno, Médio ou Grande):",
+      this.getServicoOpcoes(accountId), // Mostrar opções de serviço
       // "Por favor, informe a pelagem do seu pet (Curto, Médio ou Longo):",
     ];
 
@@ -83,13 +83,26 @@ class Bot {
     this.awaitingConfirmation = false;
     this.veterinarios = [];
     console.log("Role do Bot: atendimento");
-    this.loadServicoPrecos();
+    this.loadServicoPrecos(accountId);
   }
-  async loadServicoPrecos() {
-    try {
-      const token = await this.getAuthToken();
-      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$select=cra6a_tipodebanho,cra6a_valor`;
+  async getServicoOpcoes(accountId) {
+    if (Object.keys(this.servicoPrecos).length === 0) {
+      await this.loadServicoPrecos(accountId);
+    }
+    let opcoes = "Escolha uma opção para o tipo de serviço: ";
+  
+    for (const [key, servico] of Object.entries(this.servicoPrecos)) {
+      opcoes += `${servico.tipo}:${key}. `;
+    }
+    return opcoes.trim();
+  }
 
+  async loadServicoPrecos(accountId) {
+    try {
+      console.log('Account ID:', accountId); 
+      const token = await this.getAuthToken();
+      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=_cra6a_idconta_value eq ${accountId}`;
+  
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -100,26 +113,23 @@ class Bot {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       if (!response.ok) {
-        throw new Error(
-          `Erro ao carregar preços de serviços: ${response.statusText}`
-        );
+        throw new Error(`Erro ao carregar preços de serviços: ${response.statusText}`);
       }
-
+  
       const data = await response.json();
       this.servicoPrecos = {};
-
+  
       data.value.forEach((item, index) => {
-        let nomeServico = ""; // Inicialize uma variável para o nome do serviço
-
-        // Use um switch para mapear os números para nomes
+        let nomeServico = "";
+  
         switch (item.cra6a_tipodebanho) {
           case 1:
             nomeServico = "Banho";
             break;
           case 2:
-            nomeServico = "Banho e Tosa na maquina";
+            nomeServico = "Banho e Tosa na máquina";
             break;
           case 3:
             nomeServico = "Banho e Tosa na tesoura";
@@ -131,11 +141,11 @@ class Bot {
             nomeServico = "Banho e Tosa completa";
             break;
           default:
-            nomeServico = "Tipo desconhecido"; // Caso o tipo não seja reconhecido
+            nomeServico = "Tipo desconhecido";
         }
-
+  
         this.servicoPrecos[index + 1] = {
-          tipo: nomeServico, // Armazene o nome em vez do número
+          tipo: nomeServico,
           preco: item.cra6a_valor,
         };
       });
@@ -143,17 +153,16 @@ class Bot {
       console.error("Erro ao carregar preços de serviços:", error);
     }
   }
-  async calcularValorBanho(tipoBanho) {
+  
+  async calcularValorBanho(tipoBanho, accountId) {
     try {
       const token = await this.getAuthToken();
-
+  
       // Construa a URL com os parâmetros corretamente codificados
-      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=(cra6a_tipodebanho eq ${encodeURIComponent(
-        tipoBanho
-      )})`;
-
+      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=cra6a_tipodebanho eq ${encodeURIComponent(tipoBanho)} and _cra6a_idconta_value eq ${encodeURIComponent(accountId)}`;
+  
       console.log("URL gerada:", url); // Adicione um log para verificar a URL
-
+  
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -164,13 +173,13 @@ class Bot {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       if (!response.ok) {
         throw new Error(
           `Erro ao carregar valor do serviço: ${response.statusText}`
         );
       }
-
+  
       const data = await response.json();
       if (data.value.length > 0) {
         return data.value[0].cra6a_valor; // Retornar o valor encontrado
@@ -184,18 +193,7 @@ class Bot {
       return "Indisponível"; // Retornar uma mensagem de erro caso algo dê errado
     }
   }
-
-  async getServicoOpcoes() {
-    if (Object.keys(this.servicoPrecos).length === 0) {
-      await this.loadServicoPrecos();
-    }
-    let opcoes = "Escolha uma opção para o tipo de serviço: ";
-
-    for (const [key, servico] of Object.entries(this.servicoPrecos)) {
-      opcoes += `${servico.tipo}:${key}. `;
-    }
-    return opcoes.trim();
-  }
+  
 
   async main(message, accountId) {
     if (this.verificandoCadastro) {
