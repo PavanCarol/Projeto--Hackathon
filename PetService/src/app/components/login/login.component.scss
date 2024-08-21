@@ -160,3 +160,136 @@
     font-weight: 400;
   }
 }
+
+@media only screen and (max-width: 1156px)  {
+  .img-name {
+    width: 329px;
+}
+.text-body {
+  width: 90%;
+  font-size: 30px;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 30px;
+}
+
+.text-body span{
+  font-size: 18px;
+  font-weight: 400;
+}
+.body {
+  background-color: hsla(213, 90%, 60%, 0.5);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  height: 100vh;
+  width: 590px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: _ngcontent-ng-c3520801163_slide 1s;
+}
+
+mat-form-field{
+  width: 350px !important;
+}
+
+.login {
+  width: 350px;
+}
+.links{
+  margin-top: 30px;
+  display: flex;
+  width: 399px;
+  justify-content: space-around;
+  align-items: center;
+  height: 13px;
+}
+}
+@media only screen and (max-width: 952px)  {
+  mat-form-field{
+    width: 300px !important;
+  }
+  .login {
+    width: 300px;
+  }
+  .text {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    row-gap: 20px;
+    margin-left: 30px;
+}
+}
+@media only screen and (max-width:879px){
+  .text-body span {
+    font-size: 15px;
+    font-weight: 400;
+}
+.text-body {
+  width: 90%;
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 30px;
+}
+.body{
+  background-color: hsla(213, 90%, 60%, 0.5);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  height: 100vh;
+  width: 354px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: _ngcontent-ng-c3520801163_slide 1s;
+}
+.img-name{
+  width: 250px;
+}
+}
+@media only screen and (max-width:666px){
+  .text{
+  display: none !important;
+}
+.container {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100% !important;
+}
+.body {
+  background-color: hsla(213, 90%, 60%, 0.5);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+  height: 100vh;
+  width: 100% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: _ngcontent-ng-c3520801163_slide 1s;
+}
+}
+@media only screen and (max-width:338px){
+  mat-form-field{
+    width: 200px !important;
+}
+.login {
+  width: 200px;
+}
+.links {
+  margin-top: 30px;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 13px;
+  column-gap: 19px;
+  flex-direction: column;
+}
+}

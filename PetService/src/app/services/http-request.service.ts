@@ -149,6 +149,8 @@ export class HttpRequestService {
   getFaturamentoMensal(): Observable<any> {
     return this.http.get(`${this.apiUrl}/getFaturamentoMensal`);
   }
-  
+  getAgendamentosBanhoClinicaMes(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/getAgendamentosBanhoClinicaMes`);
+  }
 }
 

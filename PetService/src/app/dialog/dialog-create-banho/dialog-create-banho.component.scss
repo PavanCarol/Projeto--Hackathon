@@ -19,14 +19,7 @@ input.example-right-align {
 }
 
 .btnCreateBanho{
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  column-gap: 10px;
-  border-radius: 5px;
-  padding: 10px 8px;
   background-color: #F45F13;
   font-size: 16px;
-  color: white;
-  border: none;
+  color: white !important;
 }

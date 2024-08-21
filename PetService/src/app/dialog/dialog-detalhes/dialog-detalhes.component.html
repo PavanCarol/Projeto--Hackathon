@@ -1,4 +1,9 @@
 <div class="borda"></div>
+<!-- <div style="display: flex; align-items: flex-start; justify-content: flex-start;">
+  <button (click)="onNoClick()"
+  style="display: flex; align-items: center; border: none !important; background-color: transparent !important;"
+  ><mat-icon>close</mat-icon></button>
+</div> -->
 <div class="conteiner">
   <h1 mat-dialog-title>Editar Categoria</h1>
   <div mat-dialog-content>
@@ -58,12 +63,13 @@
     </div>
   </div>
   <div mat-dialog-actions style="display: flex; column-gap: 20px">
-    <button mat-button (click)="onNoClick()">Cancelar</button>
-    <button mat-button (click)="onDelete()" style="color: rgb(247, 52, 52)">
-      Excluir
+    <button mat-button (click)="onDelete()" style="color: white; background-color: rgb(247, 52, 52); display: flex; align-items: center;">
+      <mat-icon>delete</mat-icon>
+      Excluir item
     </button>
-    <button mat-button (click)="onSave()" style="color: rgb(86, 238, 86)">
-      Salvar
+    <button mat-button (click)="onSave()" style="color: white; background-color: rgb(86, 238, 86)">
+      <mat-icon>save_as</mat-icon>
+      Salvar item
     </button>
   </div>
 </div>

@@ -15,15 +15,10 @@
     margin-left: 5px;
   }
   .btnCreateVet{
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    column-gap: 10px;
-    border-radius: 5px;
-    padding: 10px 8px;
     background-color: #F45F13;
+
     font-size: 16px;
-    color: white;
+    color: white !important;
   }
   // .btnCreateVet:hover{
   //   font-weight: 600;
@@ -77,7 +72,7 @@
     }
     
     .carousel-item{
-      min-width: 38%;
+      min-width: 48%;
       box-sizing: border-box;
   }
     
@@ -104,56 +99,41 @@
     }
 
     .buttonStatus{
-      display: flex; 
-      align-items: center;
-      column-gap: 20px;
+      display: flex;
+    align-items: center;
+    column-gap: 20px;
+    justify-content: center;
     }
 
     .buttonConfirmar{
-      border: none;
-      border-radius: 5px;
-      padding: 10px;
-      background-color: rgb(243, 243, 67);
+      color: rgb(213 209 14) !important;
       font-weight: 500;
     }
-
     .buttonConfirmar:hover{
-      border: none;
-      border-radius: 5px;
-      padding: 10px;
-      background-color: rgb(243, 243, 67);
-      font-weight: 600;
+     background-color: rgb(243, 243, 67, 0.5) !important;
+     cursor: pointer;
     }
+
 
     .buttonCancelar{
-      border: none;
-      border-radius: 5px;
-      padding: 10px;
-      background-color: rgb(247, 52, 52);
+      color: rgb(247, 52, 52) !important;
+      
       font-weight: 500;
     }
 
-    .buttonCancelar:hover{
-      border: none;
-      border-radius: 5px;
-      padding: 10px;
-      background-color: rgb(247, 52, 52);
-      font-weight: 500;
-    }
+    .buttonCancelar:hover {
+      cursor: pointer;
+      background-color: rgb(247, 52, 52, 0.5) !important;
+  }
+
 
     .buttonConcluido{
-      border: none;
-      border-radius: 5px;
-      padding: 10px;
-      background-color: rgb(86, 238, 86);
+      color: rgb(86, 238, 86) !important;
       font-weight: 500;
     }
 
     .buttonConcluido:hover{
-      border: none;
-      border-radius: 5px;
-      padding: 10px;
-      background-color: rgb(86, 238, 86);
+      background-color: rgb(86, 238, 86, 0.5);
       font-weight: 600;
     }
 

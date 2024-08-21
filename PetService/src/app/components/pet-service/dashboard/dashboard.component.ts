@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Chart, registerables } from 'chart.js';
 import { HttpRequestService } from '../../../services/http-request.service';
+import { CommonModule } from '@angular/common';
+import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 Chart.register(...registerables);
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatIconModule],
+  imports: [MatIconModule, CommonModule, MatButtonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -14,20 +17,32 @@ export class DashboardComponent implements OnInit {
   totalAgendamentosDia: number = 0;
   totalBanhosDia: number = 0;
   totalFaturamentoMes: number = 0;
-  faturamentoMensal: number[] = []; 
+  faturamentoMensal: number[] = [];
+  agendamentosBanhoMes: number[] = [];
+  agendamentosClinicaMes: number[] = [];
+  estoqueItens: any[] = []; 
   meses: string[] = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-  myChart: Chart | undefined; // Referência ao gráfico
 
-  constructor(private httpRequestService: HttpRequestService) {}
+  myChart: Chart | undefined; // Referência ao gráfico de faturamento
+  comparacaoChart: Chart | undefined; // Referência ao gráfico de comparação de agendamentos
+
+  constructor(private httpRequestService: HttpRequestService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.getTotalAgendamentosDia();
     this.getTotalBanhosDia();
-    this.createChart();
     this.getTotalFaturamentoMes();
     this.getFaturamentoMensal();
+    this.getAgendamentosBanhoClinicaMes();
+    this.loadEstoqueItens();
+  }
+
+  ngOnDestroy() {
     if (this.myChart) {
       this.myChart.destroy();
+    }
+    if (this.comparacaoChart) {
+      this.comparacaoChart.destroy();
     }
   }
 
@@ -74,51 +89,106 @@ getFaturamentoMensal(): void {
     }
   );
 }
-  // Método para criar o gráfico
-  createChart() {
+
+venderItem(item: any): void {
+  if (item.cra6a_quantidade > 0) {
+    item.cra6a_quantidade--;  // Reduz a quantidade do item
+    this.httpRequestService.updateEstoqueItem(item).subscribe(
+      (response) => {
+        this.snackBar.open('Item vendido!!', 'Fechar', {
+          duration: 2000,
+        });
+      },
+      (error) => {
+        console.error('Erro ao atualizar item no estoque:', error);
+      }
+    );
+  } else {
+    this.snackBar.open('Esse item no estoque acabou :( ', 'Fechar', {
+      duration: 2000,
+    });
+  }
+}
+
+getAgendamentosBanhoClinicaMes(): void {
+  this.httpRequestService.getAgendamentosBanhoClinicaMes().subscribe(
+    (response) => {
+      this.agendamentosBanhoMes = response.agendamentosBanho;
+      this.agendamentosClinicaMes = response.agendamentosClinica;
+      this.createComparisonChart();
+    },
+    (error) => {
+      console.error('Erro ao buscar agendamentos de banho e clínica do mês:', error);
+    }
+  );
+}
+loadEstoqueItens(): void {
+  this.httpRequestService.getEstoqueItens().subscribe(
+    (response) => {
+      this.estoqueItens = response;  // Armazena os itens de estoque na variável estoqueItens
+    },
+    (error) => {
+      console.error('Erro ao buscar itens de estoque:', error);
+    }
+  );
+}
+   // Método para criar o gráfico de faturamento
+   createChart() {
     const ctx = document.getElementById('myChart') as HTMLCanvasElement;
 
-    // Destrua o gráfico existente antes de criar um novo
     if (this.myChart) {
       this.myChart.destroy();
     }
 
     this.myChart = new Chart(ctx, {
-      type: 'bar', // Tipo de gráfico
+      type: 'bar',
       data: {
-        labels: this.meses, // Usando os nomes dos meses como rótulos
+        labels: this.meses,
         datasets: [
           {
             label: 'Faturamento Mensal',
-            data: this.faturamentoMensal, // Usando os dados do faturamento mensal
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)',
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)',
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)',
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)',
-            ],
+            data: this.faturamentoMensal,
+            backgroundColor: 'rgb(244, 95, 19, 0.2)',
+            borderColor: 'rgb(244, 95, 19, 1)',
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  }
+
+  // Método para criar o gráfico de comparação
+  createComparisonChart() {
+    const ctx = document.getElementById('comparisonChart') as HTMLCanvasElement;
+
+    if (this.comparacaoChart) {
+      this.comparacaoChart.destroy();
+    }
+
+    this.comparacaoChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: this.meses,
+        datasets: [
+          {
+            label: 'Agendamentos de Banho',
+            data: this.agendamentosBanhoMes,
+            backgroundColor: 'rgb(107, 218, 78, 0.2)',
+            borderColor: 'rgba(107, 218, 78, 1)',
+            borderWidth: 1,
+          },
+          {
+            label: 'Agendamentos de Clínica',
+            data: this.agendamentosClinicaMes,
+            backgroundColor: 'rgba(62, 143, 245, 0.2)',
+            borderColor: 'rgba(62, 143, 245, 1)',
             borderWidth: 1,
           },
         ],

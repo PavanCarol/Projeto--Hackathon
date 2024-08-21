@@ -212,7 +212,8 @@ function mapToChoiceValue(field, value) {
 // Rota para tratar a categoriaBanho
 app.post("/api/categoriaBanho", verifyToken, async (req, res) =>{
   try {
-    const { tipoBanho, valor, accountId  } = req.body; // Captura os dados do corpo da requisição
+    const { tipoBanho, valor } = req.body; // Captura os dados do corpo da requisição
+    const userId = req.user.id;
     const token = await getAuthToken(); // Obtém o token de autenticação
 
     // URL para o endpoint da API do Dataverse ou outro serviço
@@ -225,7 +226,7 @@ app.post("/api/categoriaBanho", verifyToken, async (req, res) =>{
       // cra6a_porte: mapToChoiceValue("cra6a_porte", porte),
       // cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", pelagem),
       cra6a_valor: Number(parseFloat(valor).toFixed(4)), // Formata o valor como Currency
-      "cra6a_IdConta@odata.bind" : `/accounts(${accountId})`
+      "cra6a_IdConta@odata.bind" : `/accounts(${userId})`
     };
 
     const response = await fetch(url, {
@@ -243,7 +244,7 @@ app.post("/api/categoriaBanho", verifyToken, async (req, res) =>{
     console.log(`Status da Resposta: ${response.status}`);
     if (response.ok) {
       res
-        .status(201)
+        .status(204)
         .json({ sucesso: true, mensagem: "Registro criado com sucesso!" });
     } else {
       const errorResponse = await response.text();
@@ -888,24 +889,26 @@ app.get("/api/getAgendamentosClinica", verifyToken, async (req, res) =>  {
     const url =
       `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=_cra6a_idconta_value eq ${userId}`;
 
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "OData-MaxVersion": "4.0",
-        "OData-Version": "4.0",
-        "Content-Type": "application/json; charset=utf-8",
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Erro ao buscar agendamentos da clínica: ${response.statusText}`
-      );
-    }
-
-    const agendamentos = await response.json();
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "OData-MaxVersion": "4.0",
+          "OData-Version": "4.0",
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (!response.ok) {
+        console.error(`Erro HTTP: ${response.statusText}`);
+        throw new Error(
+          `Erro ao buscar agendamentos da clínica: ${response.statusText}`
+        );
+      }
+      
+      const agendamentos = await response.json();
+      console.log("Agendamentos:", agendamentos); // Log dos agendamentos
     const agendamentosComDetalhes = await Promise.all(
       agendamentos.value.map(async (agendamento) => {
         const petDetails = await getNomePetDetails(
@@ -1636,6 +1639,65 @@ app.get('/api/getFaturamentoMensal', verifyToken, async (req, res) => {
     res.status(500).json({
       sucesso: false,
       mensagem: 'Erro ao buscar faturamento mensal.',
+      error: error.message,
+    });
+  }
+});
+
+app.get('/api/getAgendamentosBanhoClinicaMes', verifyToken, async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const inicioDoAno = `${new Date().getFullYear()}-01-01T00:00:00Z`;
+    const fimDoAno = `${new Date().getFullYear()}-12-31T23:59:59Z`;
+
+    // Agendamentos de Banho
+    const urlBanho = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno}`;
+    const responseBanho = await fetch(urlBanho, {
+      method: 'GET',
+      headers: {
+        'OData-MaxVersion': '4.0',
+        'OData-Version': '4.0',
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const dataBanho = await responseBanho.json();
+    const agendamentosBanho = new Array(12).fill(0);
+
+    dataBanho.value.forEach(item => {
+      const mes = new Date(item.createdon).getMonth();
+      agendamentosBanho[mes]++;
+    });
+
+    // Agendamentos de Clínica
+    const urlClinica = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno}`;
+    const responseClinica = await fetch(urlClinica, {
+      method: 'GET',
+      headers: {
+        'OData-MaxVersion': '4.0',
+        'OData-Version': '4.0',
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const dataClinica = await responseClinica.json();
+    const agendamentosClinica = new Array(12).fill(0);
+
+    dataClinica.value.forEach(item => {
+      const mes = new Date(item.createdon).getMonth();
+      agendamentosClinica[mes]++;
+    });
+
+    res.status(200).json({ agendamentosBanho, agendamentosClinica });
+  } catch (error) {
+    console.error('Erro ao buscar agendamentos de banho e clínica do mês:', error.message);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro ao buscar agendamentos de banho e clínica do mês.',
       error: error.message,
     });
   }

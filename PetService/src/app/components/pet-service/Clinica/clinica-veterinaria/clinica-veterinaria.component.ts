@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DialogNewVeterinarioComponent } from '../dialog-new-veterinario/dialog-new-veterinario.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-clinica-veterinaria',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule,MatButtonModule],
   templateUrl: './clinica-veterinaria.component.html',
   styleUrl: './clinica-veterinaria.component.scss',
 })

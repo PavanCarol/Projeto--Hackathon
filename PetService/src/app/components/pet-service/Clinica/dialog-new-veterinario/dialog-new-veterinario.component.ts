@@ -11,11 +11,12 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpRequestService } from '../../../../services/http-request.service';
 import { DialogCreateNewVeterinarioComponent } from '../../../../dialog/dialog-create-new-veterinario/dialog-create-new-veterinario.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-dialog-new-veterinario',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule, MatButtonModule],
   templateUrl: './dialog-new-veterinario.component.html',
   styleUrl: './dialog-new-veterinario.component.scss',
 })

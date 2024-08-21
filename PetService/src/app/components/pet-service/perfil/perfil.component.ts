@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { DialogCreateBanhoComponent } from '../../../dialog/dialog-create-banho/dialog-create-banho.component';
 import { Router } from '@angular/router';
 import { DialogDetalhesComponent } from '../../../dialog/dialog-detalhes/dialog-detalhes.component';
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-perfil',
   standalone: true,
@@ -22,6 +23,7 @@ import { DialogDetalhesComponent } from '../../../dialog/dialog-detalhes/dialog-
     MatSelectModule,
     FormsModule,
     MatFormFieldModule,
+    MatButtonModule
   ],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.scss',

@@ -10,12 +10,21 @@
         <div style="margin: 10px 0px; margin-bottom: 10px">
           Imagem do item
         </div>
-        <input
-          formControlName="imagem"
-          type="file"
-          name="imagem"
-          (change)="onFileChange($event)"
-        />
+        <div class="item-imagemEditar" (click)="fileInput.click()" style="cursor: pointer; width: 97%; margin: 0px 20px;">
+          <!-- Exibe a imagem se houver, caso contrário exibe o texto -->
+          <img *ngIf="imageBase64" [src]="imageBase64" alt="Imagem do item" class="imagem" />
+          <div *ngIf="!imageBase64" class="placeholder-text" style="color: white; font-weight: 600;">Clique para buscar a imagem</div>
+  
+          <input
+            formControlName="imagem"
+            type="file"
+            name="imagem"
+            (change)="onFileChange($event)"
+            #fileInput
+            style="display: none;"
+            accept="image/*"
+          />
+        </div>
       </div>
     <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; column-gap: 32px; margin-bottom: 20px;">
       
@@ -62,7 +71,7 @@
     </div>
   
     <div style="display: flex; width: 100%; align-items: center; justify-content: center;">
-      <button type="submit" class="btnCreateBanho">
+      <button mat-button type="submit" class="btnCreateBanho">
         <mat-icon>save</mat-icon>Criar
       </button>
     </div>

@@ -1,7 +1,7 @@
 <div class="header">
   <h2 style="margin: 10px 20px">Visão geral</h2>
 </div>
-<div class="infromation">
+<!-- <div class="infromation">
   <div class="bloco">
     <div class="title">
      <img src="img/veterinario.png"> 
@@ -24,6 +24,59 @@
       </div>
     </div>
   </div>
+   <div class="bloco">
+    <div class="title">
+      <img src="img/real-brasileiro.png">
+      <div style="display: flex; flex-direction: column;">
+        Total de faturamente mês 
+        <div style="font-size: 60px; font-weight: 600; color: hsl(213, 90%, 60%);">
+          R${{totalFaturamentoMes}}
+        </div>
+      </div>
+      </div>
+  </div>
+</div> -->
+<!-- <div style="display:flex; align-items: center; justify-content: space-between; margin-top: 50px;">
+   <div style="width: 100%; max-width: 600px; margin: 0 auto">
+    <canvas id="myChart"></canvas>
+  </div> 
+  
+   <div style="width: 100%; max-width: 600px; margin: 0 auto">
+    <canvas id="comparisonChart"></canvas>
+  </div> 
+</div> -->
+<div class="conteinerAll">
+  <div class="conteiner-valor">
+    <div class="allbloco">
+      <div class="bloco">
+        <div class="title">
+         <img src="img/veterinario.png"> 
+         <div style="display: flex; flex-direction: column;">
+           Total de agendamentos dia
+           <div style="font-size: 60px; font-weight: 600; color: hsl(213, 90%, 60%);">
+             {{ totalAgendamentosDia }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bloco">
+        <div class="title">
+          <img src="img/xampu.png">
+          <div style="display: flex; flex-direction: column;">
+            Total de banhos dia 
+            <div style="font-size: 60px; font-weight: 600; color: hsl(213, 90%, 60%);">
+              {{ totalBanhosDia  }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="width: 100%; max-width: 600px; margin: 0 auto">
+      <canvas id="comparisonChart"></canvas>
+    </div>
+    </div>
+<div class="conteiner-valor">
+<div style="display: flex; align-items: center;">
   <div class="bloco">
     <div class="title">
       <img src="img/real-brasileiro.png">
@@ -37,5 +90,30 @@
   </div>
 </div>
 <div style="width: 100%; max-width: 600px; margin: 0 auto">
-  <canvas id="myChart"></canvas>
+  <canvas id="myChart" style="height: 300px;
+    width: 600px;"></canvas>
 </div>
+</div>
+</div>
+  <div class="estoque-container">
+    <h2 style="margin: 10px 20px">Itens de Estoque</h2>
+    <div class="estoque">
+      <div class="estoque-item" *ngFor="let item of estoqueItens">
+        <img [src]="'data:image/png;base64,' + item.cra6a_imagem" alt="{{ item.cra6a_nomeitem }}" class="estoque-img"/>
+        <div class="estoque-details">
+          <p><strong>Nome:</strong> {{ item.cra6a_nomeitem }}</p>
+          <p><strong>Valor:</strong> R$ {{ item.cra6a_valor | number:'1.2-2' }}</p>
+          <p 
+          [ngClass]="{
+            'quantidade-baixa': item.cra6a_quantidade === 1,
+            'quantidade-zero': item.cra6a_quantidade === 0
+          }"
+        >
+          <strong>Quantidade:</strong> {{ item.cra6a_quantidade }}
+        </p>
+        </div>
+        <button mat-button class="buttonVendido" (click)="venderItem(item)">Vendido</button>
+      </div>
+    </div>
+  </div>
+  

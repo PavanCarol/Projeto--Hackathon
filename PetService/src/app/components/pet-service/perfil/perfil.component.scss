@@ -35,32 +35,17 @@
   }
 
   .alteracao{
-    display: flex;
-    align-items: center;
-    column-gap: 5px;
-    border-radius: 10px;
-    padding: 10px 25px;
-    border: none;
+    color: white !important;
     background-color: #f45e13;
     font-size: 16px;
   }
   .save{
-    display: flex;
-    align-items: center;
-    column-gap: 5px;
-    border-radius: 10px;
-    padding: 10px 25px;
-    border: none;
+    color: white !important;
     background-color: #6BDA4E;
     font-size: 16px;
   }
   .cancel{
-    display: flex;
-    align-items: center;
-    column-gap: 5px;
-    border-radius: 10px;
-    padding: 10px 25px;
-    border: none;
+    color: white !important;
     background-color: #FF2B2B;
     font-size: 16px;
   }
@@ -75,16 +60,9 @@
 }
 
 .btnCreateBanho{
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  column-gap: 10px;
-  border-radius: 5px;
-  padding: 10px 8px;
+  color: white !important;
   background-color: #F45F13;
   font-size: 16px;
-  color: white;
-  border: none;
   margin-bottom: 20px;
 }
 

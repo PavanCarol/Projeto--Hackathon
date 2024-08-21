@@ -69,15 +69,15 @@
     </div>
 
     <div class="buttons">
-      <button class="alteracao" *ngIf="isDisabled" (click)="toggleEdit()">
+      <button mat-button class="alteracao" *ngIf="isDisabled" (click)="toggleEdit()">
         <mat-icon>edit</mat-icon>
         Alterar
       </button>
-      <button class="cancel" *ngIf="!isDisabled" (click)="toggleEdit()">
+      <button mat-button class="cancel" *ngIf="!isDisabled" (click)="toggleEdit()">
         <mat-icon>save</mat-icon>
         Cancelar
       </button>
-      <button class="save" *ngIf="!isDisabled" (click)="saveChanges()">
+      <button mat-button class="save" *ngIf="!isDisabled" (click)="saveChanges()">
         <mat-icon>save</mat-icon>
         Salvar
       </button>
@@ -97,7 +97,7 @@
 
   <h2>Configuração Banho e Tosa</h2>
 
-  <button class="btnCreateBanho" (click)="openDialogBanho('300ms', '300ms')">
+  <button mat-button class="btnCreateBanho" (click)="openDialogBanho('300ms', '300ms')">
     <mat-icon>add_circle</mat-icon>Criar categoria banho
   </button>
   <div

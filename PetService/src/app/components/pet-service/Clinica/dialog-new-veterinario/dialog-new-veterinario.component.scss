@@ -11,6 +11,10 @@
     column-gap: 20px;
 
 }
+.borda{
+    background-color: #f45e13 !important;
+    padding: 32px;
+}
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
     background-color: var(--mdc-filled-text-field-container-color);
     width: 122px !important;
@@ -21,18 +25,9 @@
     justify-content: center !important;
 }
 .btnRegistro {
-    padding: 10px;
-    color: black;
+    margin-top: 30px;
+    color: white !important;
     background-color: #F45F13;
-    border: none;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 17px;
-    font-weight: 500;
-    column-gap: 5px;
-    margin-top: 10px;
 
     img{
         width: 27px;
@@ -51,4 +46,18 @@
   }
   .erro_texto{
     color: red;
+  }
+
+  .item-imagemEditar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    border-radius: 5px;
+  
+      .imagem{
+        background-color: white;
+        width: 80px;
+      }
   }

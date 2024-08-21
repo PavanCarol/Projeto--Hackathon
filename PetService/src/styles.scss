@@ -168,3 +168,23 @@ input:-internal-autofill-selected {
   color: black;
 }
 
+.fc .fc-button-primary:hover {
+  background-color: rgb(244, 95, 19) !important;
+  border-color: rgb(244, 95, 19, 1) !important;
+  color: var(--fc-button-text-color);
+}
+.fc .fc-button-primary {
+  background-color: rgb(244, 95, 19) !important;
+  border-color: rgb(244, 95, 19, 1) !important;
+  color: var(--fc-button-text-color);
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+  margin: 1.5em 20px !important;
+}
+
+.fc .fc-view-harness-active > .fc-view {
+  inset: 0px;
+  position: absolute;
+  margin: 0px 20px !important;
+}

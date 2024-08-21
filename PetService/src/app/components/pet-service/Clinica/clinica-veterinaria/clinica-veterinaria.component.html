@@ -3,9 +3,9 @@
     <h2 style="margin: 10px 5px">Clínica</h2>
   </div>
   <div class="hearder-vet">
-    <a (click)="openDialog('300ms', '300ms')" class="btnCreateVet">
+    <button mat-button (click)="openDialog('300ms', '300ms')" class="btnCreateVet">
       <mat-icon>add_circle</mat-icon>Criar registro
-    </a>
+    </button>
   </div>
   <div class="allVet">
     <div *ngIf="clinicas.length > 0" class="carousel-container">
@@ -67,6 +67,7 @@
             <ng-container [ngSwitch]="agendamento.cra6a_status">
               <div *ngSwitchDefault class="buttonStatus">
                 <button
+                mat-button
                   *ngIf="agendamento.cra6a_status !== 1"
                   (click)="
                     updateStatus(agendamento.cra6a_agendamentoclinicaid, 0)
@@ -76,6 +77,7 @@
                   Confirmar
                 </button>
                 <button
+                mat-button
                   *ngIf="agendamento.cra6a_status !== 1"
                   (click)="
                     updateStatus(agendamento.cra6a_agendamentoclinicaid, 2)
@@ -87,6 +89,7 @@
               </div>
               <div *ngSwitchCase="0">
                 <button
+                mat-button
                   (click)="
                     updateStatus(agendamento.cra6a_agendamentoclinicaid, 1)
                   "

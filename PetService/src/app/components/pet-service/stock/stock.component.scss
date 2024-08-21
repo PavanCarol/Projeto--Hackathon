@@ -11,16 +11,11 @@
     margin-left: 20px;
   }
 
-  .btnCreateVet{
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    column-gap: 10px;
-    border-radius: 5px;
-    padding: 10px 8px;
+  .btnCreateVet, .showedit{
+
     background-color: #F45F13;
     font-size: 16px;
-    color: white;
+    color: white !important;
   }
   .menos{
     display: flex;
@@ -30,7 +25,7 @@
     border-radius: 50%;
     padding: 10px;
     background-color: rgb(247, 52, 52);
-    color: black;
+    color: white;
   }
 
   .mais{
@@ -39,7 +34,7 @@
     justify-content: center;
     border: none;
     border-radius: 50%;
-    color: black;
+    color: white;
     padding: 10px;
     background-color:  rgb(86, 238, 86);
   }
@@ -209,23 +204,18 @@
 }
 
 .save{
-  display: flex;
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
   background-color: #F45F13;
-  color: white;
-  align-items: center;
+  color: white !important;
   font-weight: 500;
 }
+.salvarQunatidade{
+  background-color: rgb(86, 238, 86) !important;
+  font-weight: 500;
+  color: white !important;
+}
 .excluir{
-  display: flex;
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
   background-color: rgb(247, 52, 52);
-  color: white;
-  align-items: center;
+  color: white !important;
   font-weight: 500;
 }
 .item-imagemEditar{

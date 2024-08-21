@@ -78,8 +78,8 @@
       </div>
       <div style="display: flex; width: 100%;
       align-items: center; justify-content: center; column-gap: 50px;">
-     <button class="save" (click)="salvarAlteracao(selectedItem)"><mat-icon>save</mat-icon>Salvar Alteração</button>
-       <button class="excluir" (click)="excluirItem(selectedItem)"><mat-icon>delete</mat-icon>Excluir Item</button>  
+     <button mat-button class="save" (click)="salvarAlteracao(selectedItem)" ><mat-icon>save</mat-icon>Salvar Alteração</button>
+       <button mat-button class="excluir" (click)="excluirItem(selectedItem)"><mat-icon>delete</mat-icon>Excluir Item</button>  
 
       </div>
     </div>
@@ -93,9 +93,9 @@
     <h2 style="margin: 10px 5px">Estoque</h2>
   </div>
   <div class="header-button">
-    <a (click)="openDialog('300ms', '300ms')" class="btnCreateVet">
+    <button mat-button (click)="openDialog('300ms', '300ms')" class="btnCreateVet">
       <mat-icon>add_circle</mat-icon>Adicionar no estoque
-    </a>
+    </button>
   </div>
     <div class="categoria-container" *ngFor="let categoria of categoriasAgrupadas">
       <div class="categoria-nomes">
@@ -132,9 +132,11 @@
                   <button (click)="aumentarQuantidade(item)" class="mais"><mat-icon>add</mat-icon></button>
                 </div>
                 </div>
-                <div style="margin-top: 10px;">
-                  <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)">Salvar</button>
-                  <button mat-button (click)="showEdit(item)"><mat-icon>edit</mat-icon> Editar</button>
+                <div style="margin-top: 10px; display: flex; flex-direction: column; row-gap: 20px;">
+                  <button *ngIf="item.quantidadeAlterada" mat-button (click)="salvarQuantidade(item)"  class="salvarQunatidade">
+                    <mat-icon>save</mat-icon>
+                    Adicionar item</button>
+                  <button mat-button (click)="showEdit(item)" class="showedit"><mat-icon>edit</mat-icon> Editar</button>
                    <!-- <button mat-button color="warn" (click)="excluirItem(item)">Excluir</button>  -->
                 </div> 
                </div>
