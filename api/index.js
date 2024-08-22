@@ -17,38 +17,48 @@ app.use(loggerMiddleware);
 const botInstances = new Map();
 
 function verifyToken(req, res, next) {
-  const token = req.headers.authorization ? req.headers.authorization.split(" ")[1] : null;
-  const refreshToken = req.headers['x-refresh-token'] || null;
-  
-  console.log('Token:', token);
-  console.log('Refresh Token:', refreshToken);
-  
+  const token = req.headers.authorization
+    ? req.headers.authorization.split(" ")[1]
+    : null;
+  const refreshToken = req.headers["x-refresh-token"] || null;
+
+  console.log("Token:", token);
+  console.log("Refresh Token:", refreshToken);
+
   if (!token) {
     return res.status(403).json({ mensagem: "Token não fornecido." });
   }
-  
+
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) {
-      if (err.name === 'TokenExpiredError') {
+      if (err.name === "TokenExpiredError") {
         if (refreshToken) {
           jwt.verify(refreshToken, JWT_SECRET, (err, decodedRefresh) => {
             if (err) {
-              return res.status(401).json({ mensagem: "Sessão expirada. Faça login novamente." });
+              return res
+                .status(401)
+                .json({ mensagem: "Sessão expirada. Faça login novamente." });
             } else {
               const newToken = jwt.sign(
-                { id: decodedRefresh.id, email: decodedRefresh.email, name: decodedRefresh.name },
+                {
+                  id: decodedRefresh.id,
+                  email: decodedRefresh.email,
+                  name: decodedRefresh.name,
+                },
                 JWT_SECRET,
                 { expiresIn: "1h" }
               );
 
               // Adiciona o novo token ao cabeçalho
-              res.setHeader('x-new-token', newToken);
+              res.setHeader("x-new-token", newToken);
               req.user = decodedRefresh;
               next();
             }
           });
         } else {
-          return res.status(401).json({ mensagem: "Token expirado. Faça login novamente." });
+          return res
+            .status(401)
+            .json({ mensagem: "Token expirado. Faça login novamente." });
         }
       } else {
         return res.status(401).json({ mensagem: "Falha na autenticação." });
@@ -59,7 +69,6 @@ function verifyToken(req, res, next) {
     }
   });
 }
-
 
 // Função para obter o token de autenticação
 async function getAuthToken() {
@@ -108,7 +117,7 @@ app.post("/api/chat", async (req, res) => {
     let bot = botInstances.get(userId);
     if (!bot) {
       bot = new Bot(getAuthToken, accountId); // Passe a função getAuthToken ao construtor do Bot
-      botInstances.set(userId, bot);  
+      botInstances.set(userId, bot);
     }
     const resposta = await bot.main(question, accountId);
     res.json({ erro: false, resposta });
@@ -210,7 +219,7 @@ function mapToChoiceValue(field, value) {
   return mappings[field] ? mappings[field][value] : null;
 }
 // Rota para tratar a categoriaBanho
-app.post("/api/categoriaBanho", verifyToken, async (req, res) =>{
+app.post("/api/categoriaBanho", verifyToken, async (req, res) => {
   try {
     const { tipoBanho, valor } = req.body; // Captura os dados do corpo da requisição
     const userId = req.user.id;
@@ -226,7 +235,7 @@ app.post("/api/categoriaBanho", verifyToken, async (req, res) =>{
       // cra6a_porte: mapToChoiceValue("cra6a_porte", porte),
       // cra6a_pelagem: mapToChoiceValue("cra6a_pelagem", pelagem),
       cra6a_valor: Number(parseFloat(valor).toFixed(4)), // Formata o valor como Currency
-      "cra6a_IdConta@odata.bind" : `/accounts(${userId})`
+      "cra6a_IdConta@odata.bind": `/accounts(${userId})`,
     };
 
     const response = await fetch(url, {
@@ -265,8 +274,7 @@ app.get("/api/getcategoriaBanho", verifyToken, async (req, res) => {
     const userId = req.user.id;
 
     // URL para o endpoint da API do Dataverse ou outro serviço
-    const url =
-      `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=_cra6a_idconta_value eq ${userId}`;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=_cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -422,7 +430,7 @@ app.post("/api/login", async (req, res) => {
           JWT_SECRET,
           { expiresIn: "1h" }
         );
-        
+
         const refreshToken = jwt.sign(
           {
             id: user.accountid,
@@ -430,9 +438,9 @@ app.post("/api/login", async (req, res) => {
             name: user.name,
           },
           JWT_SECRET,
-          { expiresIn: "7d" }  // Expiração do refresh token mais longa
+          { expiresIn: "7d" } // Expiração do refresh token mais longa
         );
-        
+
         res.status(200).json({
           sucesso: true,
           mensagem: "Login bem-sucedido!",
@@ -458,7 +466,6 @@ app.post("/api/login", async (req, res) => {
     });
   }
 });
-
 
 // Função para obter detalhes do dono do pet
 async function getDonoPetDetails(token, donoPetId) {
@@ -488,8 +495,7 @@ app.get("/api/getBanhoTosa", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const userId = req.user.id;
-    const url =
-      `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=_cra6a_idconta_value eq ${userId}`;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=_cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: "GET",
@@ -525,7 +531,7 @@ app.get("/api/getBanhoTosa", verifyToken, async (req, res) => {
   }
 });
 // Rota para obter um agendamento específico por ID
-app.get("/api/getBanhoTosa/:id",  verifyToken, async (req, res) => {
+app.get("/api/getBanhoTosa/:id", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const id = req.params.id;
@@ -705,13 +711,14 @@ app.post("/api/clinica", verifyToken, async (req, res) => {
     } = req.body;
 
     // Obtenha o ID do usuário a partir do req.user
-    const userId = req.user.id;  // Certifique-se de que `req.user` contém o ID do usuário
+    const userId = req.user.id; // Certifique-se de que `req.user` contém o ID do usuário
 
     // Obtenha o token de autenticação para fazer a requisição à API do Dynamics
     const authToken = await getAuthToken();
 
     // URL para criar um novo registro
-    const url = "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
+    const url =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas";
 
     // Dados a serem enviados, incluindo o ID da conta
     var record = {
@@ -721,7 +728,7 @@ app.post("/api/clinica", verifyToken, async (req, res) => {
       cra6a_faculdade: faculdade,
       cra6a_imagemveterinario: imagem.split(",")[1],
       cra6a_posgraduacao: posGratuacao,
-      "cra6a_IdConta@odata.bind" : `/accounts(${userId})`, // Lookup
+      "cra6a_IdConta@odata.bind": `/accounts(${userId})`, // Lookup
     };
 
     const response = await fetch(url, {
@@ -768,11 +775,10 @@ app.post("/api/clinica", verifyToken, async (req, res) => {
   }
 });
 
-
 app.get("/api/getClinica", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken(); // Obtém o token de autenticação
-    const userId = req.user.id;  // Obtém o ID do usuário logado
+    const userId = req.user.id; // Obtém o ID do usuário logado
 
     // URL para consultar todos os registros de clínica, filtrando pelo ID da conta
     const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas?$filter=_cra6a_idconta_value eq ${userId}`;
@@ -804,9 +810,8 @@ app.get("/api/getClinica", verifyToken, async (req, res) => {
   }
 });
 
-
 // Rota para obter uma clínica específica por ID
-app.get("/api/getClinica/:id", verifyToken, async (req, res) =>  {
+app.get("/api/getClinica/:id", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken(); // Obtém o token de autenticação
     const id = req.params.id;
@@ -840,7 +845,8 @@ app.get("/api/getClinica/:id", verifyToken, async (req, res) =>  {
 });
 app.get(
   "/api/getAgendamentosByVeterinario/:veterinarioId",
-  verifyToken, async (req, res) =>  {
+  verifyToken,
+  async (req, res) => {
     try {
       const token = await getAuthToken();
       const veterinarioId = req.params.veterinarioId;
@@ -882,33 +888,32 @@ app.get(
 );
 
 // Rota para obter agendamentos da clínica
-app.get("/api/getAgendamentosClinica", verifyToken, async (req, res) =>  {
+app.get("/api/getAgendamentosClinica", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const userId = req.user.id;
-    const url =
-      `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=_cra6a_idconta_value eq ${userId}`;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=_cra6a_idconta_value eq ${userId}`;
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "OData-MaxVersion": "4.0",
-          "OData-Version": "4.0",
-          "Content-Type": "application/json; charset=utf-8",
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      
-      if (!response.ok) {
-        console.error(`Erro HTTP: ${response.statusText}`);
-        throw new Error(
-          `Erro ao buscar agendamentos da clínica: ${response.statusText}`
-        );
-      }
-      
-      const agendamentos = await response.json();
-      console.log("Agendamentos:", agendamentos); // Log dos agendamentos
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.error(`Erro HTTP: ${response.statusText}`);
+      throw new Error(
+        `Erro ao buscar agendamentos da clínica: ${response.statusText}`
+      );
+    }
+
+    const agendamentos = await response.json();
+    console.log("Agendamentos:", agendamentos); // Log dos agendamentos
     const agendamentosComDetalhes = await Promise.all(
       agendamentos.value.map(async (agendamento) => {
         const petDetails = await getNomePetDetails(
@@ -933,7 +938,7 @@ app.get("/api/getAgendamentosClinica", verifyToken, async (req, res) =>  {
   }
 });
 
-app.put("/api/atualizarStatusAgendamento", verifyToken, async (req, res) =>  {
+app.put("/api/atualizarStatusAgendamento", verifyToken, async (req, res) => {
   try {
     const { cra6a_agendamentoclinicaid, cra6a_status } = req.body; // Obtém os dados do corpo da solicitação
     const token = await getAuthToken(); // Obtém o token de autenticação
@@ -1247,34 +1252,40 @@ app.put("/api/resetPassword", async (req, res) => {
   }
 });
 
-
-app.post('/api/estoque',  verifyToken, async (req, res) => {
+app.post("/api/estoque", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const userId = req.user.id;
-    const { nomeItem, categoria, valor, quantidade, imagemBase64: imagem } = req.body; // Captura os dados do corpo da solicitação
+    const {
+      nomeItem,
+      categoria,
+      valor,
+      quantidade,
+      imagemBase64: imagem,
+    } = req.body; // Captura os dados do corpo da solicitação
     const categoriaMap = {
-      'Remédios': 0,
-      'Brinquedos': 1,
-      'Ração': 2,
-      'Ossinhos e Petiscos': 3,
-      'Higiene e Cosméticos': 4,
-      'Roupas e Acessórios': 5,
-      'Caminhas e Outros': 6,
-      'Coleira Guias e Peitorais': 7
+      Remédios: 0,
+      Brinquedos: 1,
+      Ração: 2,
+      "Ossinhos e Petiscos": 3,
+      "Higiene e Cosméticos": 4,
+      "Roupas e Acessórios": 5,
+      "Caminhas e Outros": 6,
+      "Coleira Guias e Peitorais": 7,
     };
 
     // Converte a categoria de texto para o número correspondente
     const categoriaNumerica = categoriaMap[categoria];
-    const url = "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques";
+    const url =
+      "https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques";
 
     // Dados a serem enviados
     const data = {
       cra6a_nomeitem: nomeItem,
       cra6a_categoria: categoriaNumerica,
       cra6a_valor: Number(parseFloat(valor).toFixed(4)),
-      cra6a_quantidade:quantidade,
-      cra6a_imagem:imagem.split(",")[1],
+      cra6a_quantidade: quantidade,
+      cra6a_imagem: imagem.split(",")[1],
       "cra6a_IdConta@odata.bind": `/accounts(${userId})`,
     };
 
@@ -1292,38 +1303,42 @@ app.post('/api/estoque',  verifyToken, async (req, res) => {
 
     console.log(`Status da Resposta: ${response.status}`); // Adiciona log para status da resposta
 
-
-    console.log('Dados recebidos:', { nomeItem, categoria: categoriaNumerica, valor, quantidade });
+    console.log("Dados recebidos:", {
+      nomeItem,
+      categoria: categoriaNumerica,
+      valor,
+      quantidade,
+    });
 
     // Simula um salvamento bem-sucedido
     res.status(204).json({
       sucesso: true,
-      mensagem: 'Estoque cadastrado com sucesso!',
-      data: { nomeItem, categoria: categoriaNumerica, valor, quantidade }
+      mensagem: "Estoque cadastrado com sucesso!",
+      data: { nomeItem, categoria: categoriaNumerica, valor, quantidade },
     });
   } catch (error) {
-    console.error('Erro ao cadastrar estoque:', error);
+    console.error("Erro ao cadastrar estoque:", error);
     res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao cadastrar estoque.',
-      error: error.message
+      mensagem: "Erro ao cadastrar estoque.",
+      error: error.message,
     });
   }
 });
 
-app.get('/api/getestoque', verifyToken, async (req, res) => {
+app.get("/api/getestoque", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken(); // Obtém o token de autenticação
     const userId = req.user.id;
     const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques?$filter=_cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'OData-MaxVersion': '4.0',
-        'OData-Version': '4.0',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -1332,18 +1347,20 @@ app.get('/api/getestoque', verifyToken, async (req, res) => {
       res.status(200).json(data.value); // Presumindo que os itens estão em `value`
     } else {
       const errorResponse = await response.text();
-      res.status(response.status).json({ sucesso: false, mensagem: errorResponse });
+      res
+        .status(response.status)
+        .json({ sucesso: false, mensagem: errorResponse });
     }
   } catch (error) {
-    console.error('Erro ao buscar os itens de estoque:', error.message);
+    console.error("Erro ao buscar os itens de estoque:", error.message);
     res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao buscar os itens de estoque.',
+      mensagem: "Erro ao buscar os itens de estoque.",
       error: error.message,
     });
   }
 });
-app.patch('/api/estoque/:id', verifyToken, async (req, res) => {
+app.patch("/api/estoque/:id", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const estoqueId = req.params.id; // ID do item a ser atualizado
@@ -1373,7 +1390,7 @@ app.patch('/api/estoque/:id', verifyToken, async (req, res) => {
     if (response.ok) {
       res.status(204).json({
         sucesso: true,
-        mensagem: 'Quantidade atualizada com sucesso!',
+        mensagem: "Quantidade atualizada com sucesso!",
       });
     } else {
       const errorResponse = await response.text();
@@ -1383,25 +1400,26 @@ app.patch('/api/estoque/:id', verifyToken, async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Erro ao atualizar a quantidade do estoque:', error);
+    console.error("Erro ao atualizar a quantidade do estoque:", error);
     res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao atualizar a quantidade do estoque.',
-      error: error.message
+      mensagem: "Erro ao atualizar a quantidade do estoque.",
+      error: error.message,
     });
   }
 });
-app.patch('/api/salvarlteracaoestoque/:id', verifyToken, async (req, res) => {
+app.patch("/api/salvarlteracaoestoque/:id", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const estoqueId = req.params.id;
-    const { cra6a_quantidade, cra6a_nomeitem,cra6a_valor,cra6a_imagem } = req.body;
+    const { cra6a_quantidade, cra6a_nomeitem, cra6a_valor, cra6a_imagem } =
+      req.body;
 
     const data = {
       cra6a_quantidade: cra6a_quantidade,
-      cra6a_nomeitem:cra6a_nomeitem,
-      cra6a_valor:cra6a_valor,
-      cra6a_imagem:cra6a_imagem
+      cra6a_nomeitem: cra6a_nomeitem,
+      cra6a_valor: cra6a_valor,
+      cra6a_imagem: cra6a_imagem,
     };
 
     const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_estoques(${estoqueId})`;
@@ -1423,7 +1441,7 @@ app.patch('/api/salvarlteracaoestoque/:id', verifyToken, async (req, res) => {
     if (response.ok) {
       res.status(204).json({
         sucesso: true,
-        mensagem: 'Item atualizado com sucesso!',
+        mensagem: "Item atualizado com sucesso!",
       });
     } else {
       const errorResponse = await response.text();
@@ -1433,16 +1451,16 @@ app.patch('/api/salvarlteracaoestoque/:id', verifyToken, async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Erro ao atualizar o item no estoque:', error);
+    console.error("Erro ao atualizar o item no estoque:", error);
     res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao atualizar o item no estoque.',
-      error: error.message
+      mensagem: "Erro ao atualizar o item no estoque.",
+      error: error.message,
     });
   }
 });
 
-app.delete('/api/estoque/:id', verifyToken, async (req, res) => {
+app.delete("/api/estoque/:id", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const { id } = req.params;
@@ -1463,40 +1481,40 @@ app.delete('/api/estoque/:id', verifyToken, async (req, res) => {
     if (response.ok) {
       res.status(204).json({
         sucesso: true,
-        mensagem: 'Item excluído com sucesso!',
+        mensagem: "Item excluído com sucesso!",
       });
     } else {
       const errorResponse = await response.text();
       res.status(response.status).json({
         sucesso: false,
-        mensagem: 'Erro ao excluir item.',
-        error: errorResponse
+        mensagem: "Erro ao excluir item.",
+        error: errorResponse,
       });
     }
   } catch (error) {
-    console.error('Erro ao excluir item:', error);
+    console.error("Erro ao excluir item:", error);
     res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao excluir item.',
-      error: error.message
+      mensagem: "Erro ao excluir item.",
+      error: error.message,
     });
   }
 });
 
-app.get('/api/getTotalAgendamentosDia', verifyToken, async (req, res) => {
+app.get("/api/getTotalAgendamentosDia", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
-    const today = new Date().toISOString().split('T')[0]; // Obtém a data de hoje no formato YYYY-MM-DD
+    const today = new Date().toISOString().split("T")[0]; // Obtém a data de hoje no formato YYYY-MM-DD
     const userId = req.user.id;
     const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=createdon ge ${today}T00:00:00Z and createdon le ${today}T23:59:59Z and _cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'OData-MaxVersion': '4.0',
-        'OData-Version': '4.0',
-        'Content-Type': 'application/json; charset=utf-8',
-        Accept: 'application/json',
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -1513,29 +1531,32 @@ app.get('/api/getTotalAgendamentosDia', verifyToken, async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Erro ao buscar total de agendamentos do dia:', error.message);
+    console.error(
+      "Erro ao buscar total de agendamentos do dia:",
+      error.message
+    );
     res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao buscar total de agendamentos do dia.',
+      mensagem: "Erro ao buscar total de agendamentos do dia.",
       error: error.message,
     });
   }
 });
 
-app.get('/api/gettotalBanhosDia', verifyToken, async (req, res) => {
+app.get("/api/gettotalBanhosDia", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
-    const dataAtual = new Date().toISOString().split('T')[0]; // Data atual no formato YYYY-MM-DD
+    const dataAtual = new Date().toISOString().split("T")[0]; // Data atual no formato YYYY-MM-DD
     const userId = req.user.id;
     const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${dataAtual}T00:00:00Z and createdon le ${dataAtual}T23:59:59Z and _cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'OData-MaxVersion': '4.0',
-        'OData-Version': '4.0',
-        'Content-Type': 'application/json; charset=utf-8',
-        Accept: 'application/json',
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -1546,57 +1567,72 @@ app.get('/api/gettotalBanhosDia', verifyToken, async (req, res) => {
       res.status(200).json({ totalBanhos });
     } else {
       const errorResponse = await response.text();
-      res.status(response.status).json({ sucesso: false, mensagem: errorResponse });
+      res
+        .status(response.status)
+        .json({ sucesso: false, mensagem: errorResponse });
     }
   } catch (error) {
-    console.error('Erro ao buscar total de banhos por dia:', error.message);
+    console.error("Erro ao buscar total de banhos por dia:", error.message);
     res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao buscar total de banhos por dia.',
-      error: error.message
+      mensagem: "Erro ao buscar total de banhos por dia.",
+      error: error.message,
     });
   }
 });
 
-app.get('/api/getTotalFaturamentoMes', verifyToken, async (req, res) => {
+app.get("/api/getTotalFaturamentoMes", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const userId = req.user.id;
-    const inicioDoMes = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
-    const fimDoMes = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString();
+    const inicioDoMes = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1
+    ).toISOString();
+    const fimDoMes = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth() + 1,
+      0
+    ).toISOString();
 
     const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoMes} and createdon le ${fimDoMes} and _cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'OData-MaxVersion': '4.0',
-        'OData-Version': '4.0',
-        'Content-Type': 'application/json; charset=utf-8',
-        Accept: 'application/json',
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
 
     if (response.ok) {
       const data = await response.json();
-      const totalFaturamento = data.value.reduce((acc, item) => acc + item.cra6a_valor, 0); // Soma os valores
+      const totalFaturamento = data.value.reduce(
+        (acc, item) => acc + item.cra6a_valor,
+        0
+      ); // Soma os valores
       res.status(200).json({ totalFaturamento });
     } else {
       const errorResponse = await response.text();
-      res.status(response.status).json({ sucesso: false, mensagem: errorResponse });
+      res
+        .status(response.status)
+        .json({ sucesso: false, mensagem: errorResponse });
     }
   } catch (error) {
-    console.error('Erro ao buscar total de faturamento do mês:', error.message);
+    console.error("Erro ao buscar total de faturamento do mês:", error.message);
     res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao buscar total de faturamento do mês.',
+      mensagem: "Erro ao buscar total de faturamento do mês.",
       error: error.message,
     });
   }
 });
 
-app.get('/api/getFaturamentoMensal', verifyToken, async (req, res) => {
+app.get("/api/getFaturamentoMensal", verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const currentYear = new Date().getFullYear();
@@ -1614,96 +1650,109 @@ app.get('/api/getFaturamentoMensal', verifyToken, async (req, res) => {
       const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoMes} and createdon le ${fimDoMes} and _cra6a_idconta_value eq ${userId}`;
 
       const response = await fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'OData-MaxVersion': '4.0',
-          'OData-Version': '4.0',
-          'Content-Type': 'application/json; charset=utf-8',
-          Accept: 'application/json',
+          "OData-MaxVersion": "4.0",
+          "OData-Version": "4.0",
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
         const data = await response.json();
-        const totalFaturamento = data.value.reduce((acc, item) => acc + (item.cra6a_valor || 0), 0);
+        const totalFaturamento = data.value.reduce(
+          (acc, item) => acc + (item.cra6a_valor || 0),
+          0
+        );
         faturamentoMensal[month] = totalFaturamento;
       } else {
         const errorResponse = await response.text();
-        console.error(`Erro ao buscar faturamento para o mês ${month + 1}:`, errorResponse);
+        console.error(
+          `Erro ao buscar faturamento para o mês ${month + 1}:`,
+          errorResponse
+        );
       }
     }
 
     // Retorna o faturamento mensal
     res.status(200).json({ faturamentoMensal });
   } catch (error) {
-    console.error('Erro ao buscar faturamento mensal:', error.message);
+    console.error("Erro ao buscar faturamento mensal:", error.message);
     res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro ao buscar faturamento mensal.',
+      mensagem: "Erro ao buscar faturamento mensal.",
       error: error.message,
     });
   }
 });
 
-app.get('/api/getAgendamentosBanhoClinicaMes', verifyToken, async (req, res) => {
-  try {
-    const token = await getAuthToken();
-    const inicioDoAno = `${new Date().getFullYear()}-01-01T00:00:00Z`;
-    const fimDoAno = `${new Date().getFullYear()}-12-31T23:59:59Z`;
-    const userId = req.user.id;
-    // Agendamentos de Banho
-    const urlBanho = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno} and _cra6a_idconta_value eq ${userId}`;
-    const responseBanho = await fetch(urlBanho, {
-      method: 'GET',
-      headers: {
-        'OData-MaxVersion': '4.0',
-        'OData-Version': '4.0',
-        'Content-Type': 'application/json; charset=utf-8',
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
+app.get(
+  "/api/getAgendamentosBanhoClinicaMes",
+  verifyToken,
+  async (req, res) => {
+    try {
+      const token = await getAuthToken();
+      const inicioDoAno = `${new Date().getFullYear()}-01-01T00:00:00Z`;
+      const fimDoAno = `${new Date().getFullYear()}-12-31T23:59:59Z`;
+      const userId = req.user.id;
+      // Agendamentos de Banho
+      const urlBanho = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno} and _cra6a_idconta_value eq ${userId}`;
+      const responseBanho = await fetch(urlBanho, {
+        method: "GET",
+        headers: {
+          "OData-MaxVersion": "4.0",
+          "OData-Version": "4.0",
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const dataBanho = await responseBanho.json();
-    const agendamentosBanho = new Array(12).fill(0);
+      const dataBanho = await responseBanho.json();
+      const agendamentosBanho = new Array(12).fill(0);
 
-    dataBanho.value.forEach(item => {
-      const mes = new Date(item.createdon).getMonth();
-      agendamentosBanho[mes]++;
-    });
+      dataBanho.value.forEach((item) => {
+        const mes = new Date(item.createdon).getMonth();
+        agendamentosBanho[mes]++;
+      });
 
-    // Agendamentos de Clínica
-    const urlClinica = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno} and _cra6a_idconta_value eq ${userId}`;
-    const responseClinica = await fetch(urlClinica, {
-      method: 'GET',
-      headers: {
-        'OData-MaxVersion': '4.0',
-        'OData-Version': '4.0',
-        'Content-Type': 'application/json; charset=utf-8',
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      // Agendamentos de Clínica
+      const urlClinica = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno} and _cra6a_idconta_value eq ${userId}`;
+      const responseClinica = await fetch(urlClinica, {
+        method: "GET",
+        headers: {
+          "OData-MaxVersion": "4.0",
+          "OData-Version": "4.0",
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const dataClinica = await responseClinica.json();
-    const agendamentosClinica = new Array(12).fill(0);
+      const dataClinica = await responseClinica.json();
+      const agendamentosClinica = new Array(12).fill(0);
 
-    dataClinica.value.forEach(item => {
-      const mes = new Date(item.createdon).getMonth();
-      agendamentosClinica[mes]++;
-    });
+      dataClinica.value.forEach((item) => {
+        const mes = new Date(item.createdon).getMonth();
+        agendamentosClinica[mes]++;
+      });
 
-    res.status(200).json({ agendamentosBanho, agendamentosClinica });
-  } catch (error) {
-    console.error('Erro ao buscar agendamentos de banho e clínica do mês:', error.message);
-    res.status(500).json({
-      sucesso: false,
-      mensagem: 'Erro ao buscar agendamentos de banho e clínica do mês.',
-      error: error.message,
-    });
+      res.status(200).json({ agendamentosBanho, agendamentosClinica });
+    } catch (error) {
+      console.error(
+        "Erro ao buscar agendamentos de banho e clínica do mês:",
+        error.message
+      );
+      res.status(500).json({
+        sucesso: false,
+        mensagem: "Erro ao buscar agendamentos de banho e clínica do mês.",
+        error: error.message,
+      });
+    }
   }
-});
+);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
