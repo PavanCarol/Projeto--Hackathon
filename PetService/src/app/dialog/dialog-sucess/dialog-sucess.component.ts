@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog-sucess',
   standalone: true,
-  imports: [],
+  imports: [MatButtonModule],
   template: `
   <div class="decoration"></div>
   <div style=" padding: 16px;">

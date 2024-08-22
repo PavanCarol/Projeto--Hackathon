@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-dialog-info',
   template: `
@@ -34,7 +34,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
       </div>
     </div>
     <div mat-dialog-actions class="fechar">
-      <button mat-button mat-dialog-close (click)="fecharDialog()">
+      <button mat-button (click)="fecharDialog()" class="btnFechar">
         Fechar
       </button>
     </div>

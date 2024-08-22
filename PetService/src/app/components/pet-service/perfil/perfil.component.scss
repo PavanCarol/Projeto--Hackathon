@@ -111,3 +111,51 @@ table{
     visibility: visible; /* Torna o ícone visível ao clicar na linha */
   }
 }
+
+@media only screen and (max-width: 1471px)  {
+
+  .mat-form-fieldemail, .mat-form-fieldpassword{
+    width: 307px  !important;
+  }
+}
+
+@media only screen and (max-width: 1086px)  {
+.alldivs{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  row-gap: 25px;
+}
+
+.diAll{
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+.mat-form-fieldemail{
+  width: 500px !important;
+    border-radius: 10px !important;
+}
+.mat-form-fieldpassword , .mat-form-fieldName{
+  width: 500px !important;
+    border-radius: 10px !important;
+}
+}
+
+@media only screen and (max-width: 770px)  {
+.tablediv{
+  margin: 0px 0px !important;
+  display: flex;
+  overflow-y: auto;
+  margin-bottom: 50px;
+}
+
+
+.mat-form-fieldpassword , .mat-form-fieldName, .mat-form-fieldemail{
+  width: 298px !important;
+    border-radius: 10px !important;
+}
+}

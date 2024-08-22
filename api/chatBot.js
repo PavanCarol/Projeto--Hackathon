@@ -50,6 +50,7 @@ function mapearTipoServico(tipoServico) {
 class Bot {
   constructor(getAuthToken, accountId) {
     this.getAuthToken = getAuthToken;
+    this.accountId = accountId;
     this.servicoPrecos = {};
     this.stepsCadastro = [
       "Qual é o seu nome?",
@@ -63,9 +64,7 @@ class Bot {
       "Podemos colocar acessório no seu pet?",
       "Podemos passar perfume no seu pet?",
       this.getServicoOpcoes(accountId), // Mostrar opções de serviço
-      // "Por favor, informe a pelagem do seu pet (Curto, Médio ou Longo):",
     ];
-
     this.stepsClinica = [
       "Qual é o horário desejado para a consulta?",
       "Escolha um dos veterinários: ",
@@ -82,6 +81,7 @@ class Bot {
     this.escolhendoServico = false;
     this.awaitingConfirmation = false;
     this.veterinarios = [];
+    this.agendamentoConcluido = false;  // Novo estado para verificar conclusão de agendamento
     console.log("Role do Bot: atendimento");
     this.loadServicoPrecos(accountId);
   }
@@ -89,12 +89,15 @@ class Bot {
     if (Object.keys(this.servicoPrecos).length === 0) {
       await this.loadServicoPrecos(accountId);
     }
-    let opcoes = "Escolha uma opção para o tipo de serviço: ";
+  
+    let opcoes = "Escolha uma opção para o tipo de serviço:\n";
   
     for (const [key, servico] of Object.entries(this.servicoPrecos)) {
-      opcoes += `${servico.tipo}:${key}. `;
+      opcoes += `
+  ${servico.tipo} (R$${servico.preco.toFixed(2)}): ${key}`; // Inclui o valor do serviço e o número da opção
     }
-    return opcoes.trim();
+  
+    return opcoes.trim(); // Retorna a string formatada
   }
 
   async loadServicoPrecos(accountId) {
@@ -120,46 +123,51 @@ class Bot {
   
       const data = await response.json();
       this.servicoPrecos = {};
+      if (data.value.length === 0) {
+        console.log("Nenhum serviço encontrado para este Account ID.");
+      } else {
+        data.value.forEach((item, index) => {
+          let nomeServico = "";
   
-      data.value.forEach((item, index) => {
-        let nomeServico = "";
-  
-        switch (item.cra6a_tipodebanho) {
-          case 1:
-            nomeServico = "Banho";
-            break;
-          case 2:
-            nomeServico = "Banho e Tosa na máquina";
-            break;
-          case 3:
-            nomeServico = "Banho e Tosa na tesoura";
-            break;
-          case 4:
-            nomeServico = "Banho e Tosa higiênica";
-            break;
-          case 5:
-            nomeServico = "Banho e Tosa completa";
-            break;
-          default:
-            nomeServico = "Tipo desconhecido";
+          switch (item.cra6a_tipodebanho) {
+            case 1:
+              nomeServico = "Banho";
+              break;
+            case 2:
+              nomeServico = "Banho e Tosa na máquina";
+              break;
+            case 3:
+              nomeServico = "Banho e Tosa na tesoura";
+              break;
+            case 4:
+              nomeServico = "Banho e Tosa higiênica";
+              break;
+              case 5:
+                nomeServico = "Banho e Tosa completa";
+                break;
+              default:
+                nomeServico = "Tipo desconhecido";
+            }
+    
+            // Armazena o serviço e seu preço no objeto `servicoPrecos`
+            this.servicoPrecos[index + 1] = {
+              tipo: nomeServico,
+              preco: item.cra6a_valor,
+            };
+          });
         }
-  
-        this.servicoPrecos[index + 1] = {
-          tipo: nomeServico,
-          preco: item.cra6a_valor,
-        };
-      });
-    } catch (error) {
-      console.error("Erro ao carregar preços de serviços:", error);
+      } catch (error) {
+        console.error("Erro ao carregar preços de serviços:", error);
+      }
     }
-  }
   
-  async calcularValorBanho(tipoBanho, accountId) {
+  async calcularValorBanho(tipoBanho) {
     try {
+      console.log("Calculando valor do banho para Account ID:", this.accountId);
       const token = await this.getAuthToken();
   
       // Construa a URL com os parâmetros corretamente codificados
-      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=cra6a_tipodebanho eq ${encodeURIComponent(tipoBanho)} and _cra6a_idconta_value eq ${encodeURIComponent(accountId)}`;
+      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_custos?$filter=cra6a_tipodebanho eq ${encodeURIComponent(tipoBanho)} and _cra6a_idconta_value eq ${encodeURIComponent(this.accountId)}`;
   
       console.log("URL gerada:", url); // Adicione um log para verificar a URL
   
@@ -194,150 +202,130 @@ class Bot {
     }
   }
   
-
   async main(message, accountId) {
-    if (this.verificandoCadastro) {
-      if (message.toLowerCase() === "sim") {
-        this.verificandoCadastro = false;
-        this.telefoneVerificado = true; // Habilitar a verificação de telefone
-        this.currentStep = 0;
-        return "Por favor, informe o seu número de telefone para verificarmos o cadastro.";
-      } else if (message.toLowerCase() === "não") {
-        this.verificandoCadastro = false;
-        this.informandoCadastro = true;
-        this.currentStep = 0;
-        return (
-          "sem problemas,vamos começar o seu cadastro. " +
-          this.stepsCadastro[this.currentStep++]
-        );
-      } else {
-        return "Olá, para agendar um horario de banho ou uma consulta precisamos verificar seu cadastro antes. Você já possui cadastro? (Responda 'sim' ou 'não')";
-      }
-    } else if (this.telefoneVerificado) {
-      this.telefoneVerificado = false; // Resetar a verificação de telefone após verificar
-      return await this.verificarTelefone(message);
-    } else if (this.escolhendoServico) {
-      const lowerCaseMessage = message.toLowerCase();
-      if (["banho"].includes(lowerCaseMessage)) {
-        this.escolhendoServico = false;
-        this.informandoAgendamento = true;
-        this.currentStep = 0;
-        return this.stepsAgendamento[this.currentStep++];
-      } else if (
-        ["clinica", "clínica", "Clinica", "Clínica"].includes(lowerCaseMessage)
-      ) {
-        this.escolhendoServico = false;
-        this.informandoClinica = true;
-        this.currentStep = 0;
-        return await this.stepsClinica[this.currentStep++];
-      } else {
-        return "Por favor, escolha entre 'banho' ou 'clínica'.";
-      }
-    }
+    const mensagemBaixa = message.toLowerCase();
 
-    if (
-      this.informandoCadastro ||
-      this.informandoAgendamento ||
-      this.informandoClinica
-    ) {
-      if (this.informandoCadastro) {
-        this.responsesCadastro[this.currentStep - 1] = message;
-        if (this.currentStep < this.stepsCadastro.length) {
-          return this.stepsCadastro[this.currentStep++];
-        } else {
-          this.responsesCadastro[this.currentStep - 1] = message;
-          const response = await this.enviarParaPowerApps();
-          if (response) {
-            this.informandoCadastro = false;
-            this.escolhendoServico = true;
-            this.currentStep = 0;
-            return "Cadastro realizado com sucesso! Você deseja agendar um banho ou marcar uma consulta? (Responda 'banho' ou 'clínica')";
-          } else {
-            this.reset();
-            return "Ocorreu um erro ao realizar o cadastro.";
-          }
-        }
-      }
-      if (this.awaitingConfirmation) {
-        if (message.toLowerCase() === "sim") {
-          console.log("Resposta 'sim' recebida. Tentando agendar o banho...");
-          const response = await this.agendarBanho(accountId);
-          if (response) {
-            this.reset();
-            return "Banho agendado com sucesso!";
-          } else {
-            this.reset();
-            return "Ocorreu um erro ao agendar o banho.";
-          }
-        } else if (message.toLowerCase() === "não") {
-          this.reset();
-          return "Agendamento cancelado.";
-        } else {
-          return "Por favor, responda com 'sim' ou 'não'.";
-        }
-      }
-      if (this.informandoAgendamento) {
-        this.responsesAgendamento[this.currentStep - 1] = message;
-
-        if (this.currentStep < this.stepsAgendamento.length) {
-          return this.stepsAgendamento[this.currentStep++];
-        } else {
-          const tipoServico = parseInt(this.responsesAgendamento[3]);
-          // const porte = this.responsesAgendamento[4];
-          // const pelagem = this.responsesAgendamento[5];
-
-          const valor = await this.calcularValorBanho(
-            tipoServico
-            // porte,
-            // pelagem
-          );
-          this.responsesAgendamento[this.currentStep - 1] = message;
-          const tipoServicoLabel = mapearTipoServico(tipoServico);
-
-          this.awaitingConfirmation = true; // Ativar o estado de confirmação
-          return `Então seu banho seria o ${tipoServicoLabel} o valor R$${valor},00. Deseja confirmar o agendamento? (sim/não)`;
-        }
-      }
-
-      if (this.informandoClinica) {
-        // Armazene a mensagem na resposta do passo atual
-        this.responsesClinica[this.currentStep - 1] = message;
-
-        // Avance o passo atual para o próximo
-        if (this.currentStep < this.stepsClinica.length) {
-          if (this.currentStep === 1) {
-            // Após a escolha do horário, listar os veterinários
-            const veterinarios = await this.listarVeterinarios();
-            this.currentStep++; // Avance o passo para evitar o loop
-            return "Escolha um dos veterinários: " + veterinarios.join(", ");
-          }
-          return this.stepsClinica[this.currentStep++];
-        } else {
-          // Verifique se a mensagem é um veterinário válido
-          if (this.isVeterinarioValido(message)) {
-            this.responsesClinica[this.currentStep - 1] = message;
-            const response = await this.agendarClinica(accountId);
-            if (response) {
-              this.reset();
-              return "Consulta agendada com sucesso!";
-            } else {
-              this.reset();
-              return "Ocorreu um erro ao agendar a consulta.";
-            }
-          } else {
-            // Se o veterinário não for válido, peça novamente
-            const veterinarios = await this.listarVeterinarios();
-            return (
-              "Veterinário inválido. Escolha um dos veterinários: " +
-              veterinarios.join(", ")
-            );
-          }
-        }
-      }
-    } else {
-      return await this.handleGeneralMessage(message);
-    }
+    // Verifica se o usuário deseja iniciar um novo agendamento e se o agendamento anterior foi concluído
+    if (this.agendamentoFeito && (mensagemBaixa.includes("agendar") || mensagemBaixa.includes("banho") || mensagemBaixa.includes("consulta"))) {
+      this.reset();  // Reseta o estado do bot apenas se o agendamento anterior foi feito
   }
+
+    // A lógica de reset acima deve garantir que `verificandoCadastro` seja verdadeiro após o reset
+    if (this.verificandoCadastro) {
+        if (mensagemBaixa === "sim") {
+            this.verificandoCadastro = false;
+            this.telefoneVerificado = true; 
+            this.currentStep = 0;
+            return "Por favor, informe o seu número de telefone para verificarmos o cadastro.";
+        } else if (mensagemBaixa === "não") {
+            this.verificandoCadastro = false;
+            this.informandoCadastro = true;
+            this.currentStep = 0;
+            return "Sem problemas, vamos começar o seu cadastro. " + this.stepsCadastro[this.currentStep++];
+        } else {
+            return "Olá, para agendar um horário de banho ou uma consulta precisamos verificar seu cadastro antes. Você já possui cadastro? (Responda 'sim' ou 'não')";
+        }
+    } else if (this.telefoneVerificado) {
+        this.telefoneVerificado = false;
+        return await this.verificarTelefone(message);
+    } else if (this.escolhendoServico) {
+        if (mensagemBaixa.includes("banho")) {
+            this.escolhendoServico = false;
+            this.informandoAgendamento = true;
+            this.currentStep = 0;
+            return this.stepsAgendamento[this.currentStep++];
+        } else if (mensagemBaixa.includes("clinica") || mensagemBaixa.includes("clínica")) {
+            this.escolhendoServico = false;
+            this.informandoClinica = true;
+            this.currentStep = 0;
+            return await this.stepsClinica[this.currentStep++];
+        } else {
+            return "Por favor, escolha entre 'banho' ou 'clínica'.";
+        }
+    }
+
+    if (this.informandoCadastro || this.informandoAgendamento || this.informandoClinica) {
+        if (this.informandoCadastro) {
+            this.responsesCadastro[this.currentStep - 1] = message;
+            if (this.currentStep < this.stepsCadastro.length) {
+                return this.stepsCadastro[this.currentStep++];
+            } else {
+                const response = await this.enviarParaPowerApps();
+                if (response) {
+                    this.informandoCadastro = false;
+                    this.escolhendoServico = true;
+                    this.currentStep = 0;
+                    return "Cadastro realizado com sucesso! Você deseja agendar um banho ou marcar uma consulta? (Responda 'banho' ou 'clínica')";
+                } else {
+                    this.reset();
+                    return "Ocorreu um erro ao realizar o cadastro.";
+                }
+            }
+        }
+        if (this.awaitingConfirmation) {
+            if (mensagemBaixa === "sim") {
+                const response = await this.agendarBanho(accountId);
+                if (response) {
+                    this.agendamentoFeito = true;  // Define a flag como true após agendamento
+                    this.reset();  // Reseta o estado após o agendamento
+                    return "Banho agendado com sucesso!";
+                } else {
+                    this.reset();
+                    return "Ocorreu um erro ao agendar o banho.";
+                }
+            } else if (mensagemBaixa === "não") {
+                this.reset();
+                return "Agendamento cancelado.";
+            } else {
+                return "Por favor, responda com 'sim' ou 'não'.";
+            }
+        }
+        if (this.informandoAgendamento) {
+            this.responsesAgendamento[this.currentStep - 1] = message;
+            if (this.currentStep < this.stepsAgendamento.length) {
+                return this.stepsAgendamento[this.currentStep++];
+            } else {
+                const tipoServico = parseInt(this.responsesAgendamento[3]);
+                const valor = await this.calcularValorBanho(tipoServico);
+                this.responsesAgendamento[this.currentStep - 1] = message;
+                const tipoServicoLabel = mapearTipoServico(tipoServico);
+                this.awaitingConfirmation = true;
+                return `Então seu banho seria o ${tipoServicoLabel} o valor R$${valor}. Deseja confirmar o agendamento? (sim/não)`;
+            }
+        }
+
+        if (this.informandoClinica) {
+            this.responsesClinica[this.currentStep - 1] = message;
+            if (this.currentStep < this.stepsClinica.length) {
+                if (this.currentStep === 1) {
+                    const veterinarios = await this.listarVeterinarios();
+                    this.currentStep++;
+                    return "Escolha um dos veterinários: " + veterinarios.join(", ");
+                }
+                return this.stepsClinica[this.currentStep++];
+            } else {
+                if (this.isVeterinarioValido(message)) {
+                    this.responsesClinica[this.currentStep - 1] = message;
+                    const response = await this.agendarClinica(accountId);
+                    if (response) {
+                        this.agendamentoFeito = true;  // Define a flag como true após agendamento
+                        this.reset();  // Reseta o estado após a consulta ser agendada
+                        return "Consulta agendada com sucesso!";
+                    } else {
+                        this.reset();
+                        return "Ocorreu um erro ao agendar a consulta.";
+                    }
+                } else {
+                    const veterinarios = await this.listarVeterinarios();
+                    return "Veterinário inválido. Escolha um dos veterinários: " + veterinarios.join(", ");
+                }
+            }
+        }
+    } else {
+        return await this.handleGeneralMessage(message);
+    }
+}
+
 
   isAppointmentRequest(message) {
     const keywords = [
@@ -606,8 +594,12 @@ class Bot {
     this.informandoCadastro = false;
     this.informandoAgendamento = false;
     this.informandoClinica = false;
-    this.verificandoCadastro = false; // Resetar verificação de cadastro
-  }
+    this.verificandoCadastro = true; // Sempre voltar para a verificação de cadastro
+    this.telefoneVerificado = false; // Redefine a verificação de telefone
+    this.escolhendoServico = false;
+    this.awaitingConfirmation = false;
+    this.agendamentoFeito = false;
+}
 }
 
 module.exports = Bot;

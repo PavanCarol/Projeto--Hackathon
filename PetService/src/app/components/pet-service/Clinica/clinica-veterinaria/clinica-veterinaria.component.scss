@@ -106,36 +106,24 @@
     }
 
     .buttonConfirmar{
-      color: rgb(213 209 14) !important;
+      background-color: rgb(243, 243, 67) !important;
+      color: white !important;
       font-weight: 500;
     }
-    .buttonConfirmar:hover{
-     background-color: rgb(243, 243, 67, 0.5) !important;
-     cursor: pointer;
-    }
-
 
     .buttonCancelar{
-      color: rgb(247, 52, 52) !important;
-      
+      background-color: rgb(247, 52, 52) !important;
+      color: white !important;
       font-weight: 500;
     }
-
-    .buttonCancelar:hover {
-      cursor: pointer;
-      background-color: rgb(247, 52, 52, 0.5) !important;
-  }
 
 
     .buttonConcluido{
-      color: rgb(86, 238, 86) !important;
+      background-color: rgb(86, 238, 86) !important;
+      color: white !important;
       font-weight: 500;
     }
 
-    .buttonConcluido:hover{
-      background-color: rgb(86, 238, 86, 0.5);
-      font-weight: 600;
-    }
 
     table{
       border-collapse: collapse;
@@ -145,7 +133,7 @@
      }
      
      tbody tr {
-      height: 45px;
+      height: 50px;
       border-bottom: 1px solid #ededed;
       background-color: #fbfbfb;
       text-align: center;

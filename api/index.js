@@ -1487,8 +1487,8 @@ app.get('/api/getTotalAgendamentosDia', verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const today = new Date().toISOString().split('T')[0]; // Obtém a data de hoje no formato YYYY-MM-DD
-
-    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=createdon ge ${today}T00:00:00Z and createdon le ${today}T23:59:59Z`;
+    const userId = req.user.id;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=createdon ge ${today}T00:00:00Z and createdon le ${today}T23:59:59Z and _cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: 'GET',
@@ -1526,7 +1526,8 @@ app.get('/api/gettotalBanhosDia', verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const dataAtual = new Date().toISOString().split('T')[0]; // Data atual no formato YYYY-MM-DD
-    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${dataAtual}T00:00:00Z and createdon le ${dataAtual}T23:59:59Z`;
+    const userId = req.user.id;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${dataAtual}T00:00:00Z and createdon le ${dataAtual}T23:59:59Z and _cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: 'GET',
@@ -1560,10 +1561,11 @@ app.get('/api/gettotalBanhosDia', verifyToken, async (req, res) => {
 app.get('/api/getTotalFaturamentoMes', verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
+    const userId = req.user.id;
     const inicioDoMes = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
     const fimDoMes = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString();
 
-    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoMes} and createdon le ${fimDoMes}`;
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoMes} and createdon le ${fimDoMes} and _cra6a_idconta_value eq ${userId}`;
 
     const response = await fetch(url, {
       method: 'GET',
@@ -1598,7 +1600,7 @@ app.get('/api/getFaturamentoMensal', verifyToken, async (req, res) => {
   try {
     const token = await getAuthToken();
     const currentYear = new Date().getFullYear();
-    
+    const userId = req.user.id;
     // Inicializa um array para armazenar o faturamento de cada mês
     let faturamentoMensal = Array(12).fill(0);
 
@@ -1609,7 +1611,7 @@ app.get('/api/getFaturamentoMensal', verifyToken, async (req, res) => {
       const fimDoMes = new Date(currentYear, month + 1, 0).toISOString();
 
       // Define a URL da requisição com os filtros de data
-      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoMes} and createdon le ${fimDoMes}`;
+      const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoMes} and createdon le ${fimDoMes} and _cra6a_idconta_value eq ${userId}`;
 
       const response = await fetch(url, {
         method: 'GET',
@@ -1649,9 +1651,9 @@ app.get('/api/getAgendamentosBanhoClinicaMes', verifyToken, async (req, res) => 
     const token = await getAuthToken();
     const inicioDoAno = `${new Date().getFullYear()}-01-01T00:00:00Z`;
     const fimDoAno = `${new Date().getFullYear()}-12-31T23:59:59Z`;
-
+    const userId = req.user.id;
     // Agendamentos de Banho
-    const urlBanho = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno}`;
+    const urlBanho = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_banhotosas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno} and _cra6a_idconta_value eq ${userId}`;
     const responseBanho = await fetch(urlBanho, {
       method: 'GET',
       headers: {
@@ -1672,7 +1674,7 @@ app.get('/api/getAgendamentosBanhoClinicaMes', verifyToken, async (req, res) => 
     });
 
     // Agendamentos de Clínica
-    const urlClinica = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno}`;
+    const urlClinica = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_agendamentoclinicas?$filter=createdon ge ${inicioDoAno} and createdon le ${fimDoAno} and _cra6a_idconta_value eq ${userId}`;
     const responseClinica = await fetch(urlClinica, {
       method: 'GET',
       headers: {
