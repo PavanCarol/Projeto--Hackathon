@@ -26,6 +26,8 @@ import { RegisterComponent } from './app/components/register/register.component'
 import { LoginComponent } from './app/components/login/login.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogInfoComponent } from './app/dialog/dialog-info/dialog-info.component';
+import { ConfirmacaoAntesComponent } from './app/dialog/confirmacao-antes/confirmacao-antes.component';
+import { DialogConfirmacaoExcluirCategoriaComponent } from './app/dialog/dialog-confirmacao-excluir-categoria/dialog-confirmacao-excluir-categoria.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,6 +35,8 @@ import { DialogInfoComponent } from './app/dialog/dialog-info/dialog-info.compon
     RegisterComponent,
     PetServiceComponent,
     DialogInfoComponent,
+    DialogConfirmacaoExcluirCategoriaComponent,
+    ConfirmacaoAntesComponent,
   ],
   imports: [
     CommonModule,

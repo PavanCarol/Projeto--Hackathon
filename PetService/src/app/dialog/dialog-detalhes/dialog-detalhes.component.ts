@@ -3,13 +3,18 @@ import { Component, Inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpRequestService } from '../../services/http-request.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DialogConfirmacaoExcluirCategoriaComponent } from '../dialog-confirmacao-excluir-categoria/dialog-confirmacao-excluir-categoria.component';
 
 @Component({
   selector: 'app-dialog-detalhes',
@@ -34,7 +39,8 @@ export class DialogDetalhesComponent {
     public dialogRef: MatDialogRef<DialogDetalhesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private httpRequestService: HttpRequestService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog
   ) {}
 
   onNoClick(): void {
@@ -67,19 +73,27 @@ export class DialogDetalhesComponent {
   onDelete(): void {
     const categoriaId = this.data.categoria.cra6a_custoid; // O ID da categoria a ser excluída
 
-    this.httpRequestService.deleteCategoria(categoriaId).subscribe(
-      (response) => {
-        console.log('Categoria deletada com sucesso:', response);
-        this.dialogRef.close({ deleted: true }); // Fecha o diálogo e indica que a categoria foi deletada
-        this.snackBar.open('Item deletado com sucesso', 'Fechar', {
-          duration: 2000,
-        });
-        window.location.reload();
-      },
-      (error) => {
-        console.error('Erro ao deletar categoria:', error);
-        // Aqui você pode mostrar uma mensagem de erro ao usuário
-      }
+    const dialogRef = this.dialog.open(
+      DialogConfirmacaoExcluirCategoriaComponent
     );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.httpRequestService.deleteCategoria(categoriaId).subscribe(
+          (response) => {
+            console.log('Categoria deletada com sucesso:', response);
+            this.dialogRef.close({ deleted: true }); // Fecha o diálogo e indica que a categoria foi deletada
+            this.snackBar.open('Item deletado com sucesso', 'Fechar', {
+              duration: 2000,
+            });
+            window.location.reload();
+          },
+          (error) => {
+            console.error('Erro ao deletar categoria:', error);
+            // Aqui você pode mostrar uma mensagem de erro ao usuário
+          }
+        );
+      }
+    });
   }
 }
