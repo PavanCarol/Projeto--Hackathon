@@ -774,6 +774,97 @@ app.post("/api/clinica", verifyToken, async (req, res) => {
     });
   }
 });
+app.patch("/api/clinica/:id", verifyToken, async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const clinicaId = req.params.id;  // ID que vem da URL
+    const { cra6a_nomeveterinario, cra6a_anoatuacao, cra6a_datanascimento, cra6a_faculdade, cra6a_imagemveterinario, cra6a_posgraduacao } = req.body;
+    
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas(${clinicaId})`;
+
+    const data = {
+      cra6a_nomeveterinario,
+      cra6a_anoatuacao,
+      cra6a_datanascimento,
+      cra6a_faculdade,
+      cra6a_imagemveterinario,
+      cra6a_posgraduacao,
+    };
+
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      res.status(204).json({
+        sucesso: true,
+        mensagem: "Informações do veterinário atualizadas com sucesso!",
+      });
+    } else {
+      const errorResponse = await response.text();
+      res.status(response.status).json({
+        sucesso: false,
+        mensagem: errorResponse,
+      });
+    }
+  } catch (error) {
+    console.error("Erro ao atualizar informações do veterinário:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao atualizar informações do veterinário.",
+      error: error.message,
+    });
+  }
+});
+
+app.delete("/api/clinica/:id", verifyToken, async (req, res) => {
+  try {
+    const token = await getAuthToken();
+    const clinicaId = req.params.id;  // ID que vem da URL
+    
+    const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas(${clinicaId})`;
+
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        "Content-Type": "application/json; charset=utf-8",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      res.status(204).json({
+        sucesso: true,
+        mensagem: "Veterinário deletado com sucesso!",
+      });
+    } else {
+      const errorResponse = await response.text();
+      res.status(response.status).json({
+        sucesso: false,
+        mensagem: errorResponse,
+      });
+    }
+  } catch (error) {
+    console.error("Erro ao deletar veterinário:", error);
+    res.status(500).json({
+      sucesso: false,
+      mensagem: "Erro ao deletar veterinário.",
+      error: error.message,
+    });
+  }
+});
+
 
 app.get("/api/getClinica", verifyToken, async (req, res) => {
   try {

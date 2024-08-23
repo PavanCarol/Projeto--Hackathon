@@ -152,5 +152,14 @@ export class HttpRequestService {
   getAgendamentosBanhoClinicaMes(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/getAgendamentosBanhoClinicaMes`);
   }
+  updateVeterinario(veterinario: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/clinica/${veterinario.cra6a_clinicaid}`, veterinario);
+  }
+
+  // Método para deletar o veterinário
+  deleteClinica(veterinarioId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/clinica/${veterinarioId}`);
+  }
+  
 }
 

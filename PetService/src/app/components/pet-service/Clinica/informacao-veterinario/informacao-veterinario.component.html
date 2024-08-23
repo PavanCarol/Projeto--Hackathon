@@ -1,3 +1,57 @@
+
+<div *ngIf="isEditVisible && selectedVeterinario" class="edit">
+  <div class="background-overlay" 
+       (click)="hideEdit()" 
+       [ngClass]="{'fade-in-overlay': isAnimating, 'fade-out-overlay': !isAnimating}">
+  </div>
+  <div class="containerEdit">
+    <div class="body-edit" [ngClass]="{'animate': isAnimating, 'animate-leave': !isAnimating}">
+      <button (click)="hideEdit()" class="close-btn"><mat-icon>close</mat-icon></button>
+      <h2 style="margin-left: 20px;">Editar Informações do Veterinário</h2>
+      <div class="item-imagemEditar" (click)="fileInput.click()">
+        <img [src]="'data:image/png;base64,' + selectedVeterinario.cra6a_imagemveterinario" alt="Imagem do Veterinário" class="imagem">
+        <input
+          type="file"
+          name="imagem"
+          (change)="onFileChange($event)"
+          #fileInput
+          style="display: none;"
+          accept="image/*"
+        />
+      </div>
+      <div class="input" style="margin: 10px 20px;">
+        <mat-form-field style="width: 100% !important; border-radius: 10px !important;">
+          <mat-label>Nome do Veterinário</mat-label>
+          <input matInput type="text" [(ngModel)]="selectedVeterinario.cra6a_nomeveterinario" />
+        </mat-form-field>
+      </div>
+      <div class="input" style="margin: 10px 20px;">
+        <mat-form-field style="width: 100% !important; border-radius: 10px !important;">
+          <mat-label>Faculdade</mat-label>
+          <input matInput type="text" [(ngModel)]="selectedVeterinario.cra6a_faculdade" />
+        </mat-form-field>
+      </div>
+      <div class="input" style="margin: 10px 20px;">
+        <mat-form-field style="width: 100% !important; border-radius: 10px !important;">
+          <mat-label>Pós-Graduação</mat-label>
+          <input matInput type="text" [(ngModel)]="selectedVeterinario.cra6a_posgraduacao" />
+        </mat-form-field>
+      </div>
+      <div style=" 
+      display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    column-gap: 15px;
+    margin: 24px 0px;
+      ">
+        <button mat-button class="save" (click)="salvarAlteracao(selectedVeterinario)"><mat-icon>save</mat-icon>Salvar Alteração</button>
+        <button mat-button class="excluir" (click)="excluirVeterinario(selectedVeterinario)"><mat-icon>delete</mat-icon>Excluir Veterinário</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="body">
   <h2 style="margin: 10px 5px">Informações do Veterinário</h2>
   <div class="header">
@@ -5,12 +59,17 @@
   </div>
   <div style="display: flex">
     <div *ngIf="clinica" class="allInformation">
+      <div style="display: flex; align-items: flex-end; justify-content: flex-end;">
+        <button mat-button (click)="showEdit(clinica)" class="showedit">
+          <mat-icon style="margin: 0px;">edit</mat-icon>
+        </button>
+      </div>
       <div
-        style="
+      style="
           display: flex;
           align-items: center;
           justify-content: space-around;
-        "
+          "
       >
         <img
           [src]="'data:image/png;base64,' + clinica.cra6a_imagemveterinario"
@@ -32,7 +91,7 @@
             margin-left: 40px;
           "
         >
-          <img src="img/equipamento-medico.png" width="24" />
+        <mat-icon style="color: #F45F13;">pets</mat-icon>
           <span style="font-weight: 600; margin: 0px 5px">
             Atuação no mercado:
           </span>
@@ -46,7 +105,7 @@
             margin-left: 40px;
           "
         >
-          <mat-icon>event</mat-icon>
+          <mat-icon style="color: #F45F13;">event</mat-icon>
           <span style="font-weight: 600; margin: 0px 5px">
             Data de Nascimento:
           </span>
@@ -60,7 +119,7 @@
             margin-left: 40px;
           "
         >
-          <mat-icon>school</mat-icon>
+          <mat-icon style="color: #F45F13;">school</mat-icon>
           <span style="font-weight: 600; margin: 0px 5px"> Faculdade: </span>
           {{ clinica.cra6a_faculdade }}
         </p>
@@ -72,7 +131,7 @@
             margin-left: 40px;
           "
         >
-          <mat-icon>workspace_premium</mat-icon>
+          <mat-icon style="color: #F45F13;">workspace_premium</mat-icon>
           <span style="font-weight: 600; margin: 0px 5px">
             Pós-Graduação:
           </span>

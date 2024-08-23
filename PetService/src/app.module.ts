@@ -28,6 +28,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DialogInfoComponent } from './app/dialog/dialog-info/dialog-info.component';
 import { ConfirmacaoAntesComponent } from './app/dialog/confirmacao-antes/confirmacao-antes.component';
 import { DialogConfirmacaoExcluirCategoriaComponent } from './app/dialog/dialog-confirmacao-excluir-categoria/dialog-confirmacao-excluir-categoria.component';
+import { ConfirmacaoAntesveterinarioComponent } from './app/dialog/confirmacao-antesveterinario/confirmacao-antesveterinario.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,6 +38,7 @@ import { DialogConfirmacaoExcluirCategoriaComponent } from './app/dialog/dialog-
     DialogInfoComponent,
     DialogConfirmacaoExcluirCategoriaComponent,
     ConfirmacaoAntesComponent,
+    ConfirmacaoAntesveterinarioComponent
   ],
   imports: [
     CommonModule,

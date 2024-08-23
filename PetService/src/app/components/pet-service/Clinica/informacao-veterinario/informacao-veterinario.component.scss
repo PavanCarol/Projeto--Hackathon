@@ -103,3 +103,200 @@ table{
     color: gray;
     font-weight: bold;
   }
+  .background-overlay {
+    position: fixed;
+    top: -1px;
+    left: -1px;
+    width: 101%;
+    height: 101%;
+    background-color: rgba(0, 0, 0, 0.6); /* Ajuste o valor alfa para a opacidade desejada */
+    z-index: 2; /* Certifique-se de que o overlay está acima da imagem, mas abaixo do conteúdo */
+  }
+  
+  .containerEdit {
+    position: relative;
+    z-index: 5; /* Certifique-se de que o conteúdo está acima do overlay */
+    display: flex;
+    width: 100%;
+    justify-content: flex-end; /* Para alinhar o conteúdo à direita */
+  }
+  
+  .animate {
+    animation: slideIn 1s forwards !important;
+  }
+  
+  @keyframes slideIn {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+  @keyframes slideOut {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  @keyframes fadeInOverlay {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes fadeOutOverlay {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  .fade-in-overlay {
+    animation: fadeInOverlay 1s forwards;
+  }
+  
+  .fade-out-overlay {
+    animation: fadeOutOverlay 1s forwards;
+  }
+  
+  /* Aplicando a animação de saída */
+.animate-leave {
+  animation: slideOut 1s forwards;
+}
+  
+  .body-edit {
+    background-color: white;
+    backdrop-filter: blur(10px);
+    height: 100vh;
+    width: 400px;
+    position: absolute;
+    right: 0; /* Alinhado à direita */
+  }
+  .categoria-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .categoria-nomes {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0px !important;
+    column-gap: 26px;
+    margin: 20px;
+  }
+  
+  .cateogiras {
+    background-color: white;
+    padding: 15px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    cursor: pointer;
+    transition: padding 0.3s ease; /* Suaviza a transição de padding */
+  }
+  
+  .categoria-selecionada {
+    font-weight: 600;
+  }
+
+
+
+.estoque-item-card {
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  column-gap: 20px;
+}
+
+.categoria-container {
+  margin-bottom: 20px;
+}
+
+.item-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espaço de 20px entre os itens */
+  margin: 20px;
+}
+
+.item-bloco {
+  border-radius: 10px;
+  background-color: white;
+  padding: 15px;
+  text-align: center;
+  width: 200px; /* Largura do bloco de item */
+}
+
+.item-imagem {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  
+  .imagem{
+    max-width: 100px;
+    width: 80px;
+
+  }
+}
+
+.item-nome {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.item-preco,
+.item-quantidade {
+  margin-bottom: 5px;
+}
+.close-btn{
+  border: none;
+  background-color: transparent;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: end;
+}
+
+.save{
+  background-color: #F45F13;
+  color: white !important;
+  font-weight: 500;
+}
+.salvarQunatidade{
+  background-color: rgb(86, 238, 86) !important;
+  font-weight: 500;
+  color: white !important;
+}
+.excluir{
+  background-color: rgb(247, 52, 52);
+  color: white !important;
+  font-weight: 500;
+}
+.item-imagemEditar{
+  display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 10px;
+
+    .imagem{
+      background-color: white;
+      width: 80px;
+    }
+}
+.btnCreateVet, .showedit{
+
+    background-color: rgb(244, 95, 19, 1);
+    font-size: 16px;
+    color: white !important;
+  }
