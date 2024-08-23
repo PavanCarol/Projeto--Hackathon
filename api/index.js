@@ -1005,22 +1005,27 @@ app.get("/api/getAgendamentosClinica", verifyToken, async (req, res) => {
 
     const agendamentos = await response.json();
     console.log("Agendamentos:", agendamentos); // Log dos agendamentos
+    
     const agendamentosComDetalhes = await Promise.all(
       agendamentos.value.map(async (agendamento) => {
-        const petDetails = await getNomePetDetails(
-          token,
-          agendamento["_cra6a_nomedopet_value"]
-        );
-        const veterinarioDetails = await getVeterinarioDetails(
-          token,
-          agendamento["_cra6a_veterinario_value"]
-        );
+        try {
+          const petDetails = await getNomePetDetails(token, agendamento["_cra6a_nomedopet_value"]);
+          const veterinarioDetails = await getVeterinarioDetails(token, agendamento["_cra6a_veterinario_value"]);
+          console.log("Valor de _cra6a_veterinario_value:", agendamento["_cra6a_veterinario_value"]);
 
-        agendamento.nomePet = petDetails.cra6a_nome_pet;
-        agendamento.nomeVeterinario = veterinarioDetails.cra6a_nomeveterinario;
+          if (petDetails && veterinarioDetails) {
+            agendamento.nomePet = petDetails.cra6a_nome_pet;
+            agendamento.nomeVeterinario = veterinarioDetails.cra6a_nomeveterinario;
+          } else {
+            console.error("Detalhes do pet ou veterinário não encontrados", agendamento);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar detalhes do pet ou veterinário:", error);
+        }
         return agendamento;
       })
     );
+    
 
     res.status(200).json({ value: agendamentosComDetalhes });
   } catch (error) {
@@ -1103,7 +1108,6 @@ async function getNomePetDetails(token, petId) {
 // Função para obter detalhes do veterinário
 async function getVeterinarioDetails(token, veterinarioId) {
   const url = `https://org4d13d757.crm2.dynamics.com/api/data/v9.2/cra6a_clinicas(${veterinarioId})`;
-
   const response = await fetch(url, {
     method: "GET",
     headers: {
