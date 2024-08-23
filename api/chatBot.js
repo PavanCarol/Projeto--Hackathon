@@ -309,7 +309,7 @@ class Bot {
           this.responsesAgendamento[this.currentStep - 1] = message;
           const tipoServicoLabel = mapearTipoServico(tipoServico);
           this.awaitingConfirmation = true;
-          return `Então seu banho seria o ${tipoServicoLabel} o valor R$${valor}. Deseja confirmar o agendamento? (sim/não)`;
+          return `Então o banho do seu pet seria o ${tipoServicoLabel} o valor R$${valor}. Deseja confirmar o agendamento? (sim/não)`;
         }
       }
 
